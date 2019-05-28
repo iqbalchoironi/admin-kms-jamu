@@ -3,6 +3,7 @@ import Axios from "axios";
 
 import CardHerbMed from './CardHerbMed'
 import SearchInput from './SearchInput'
+import Spinner from './Spinner'
 
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
@@ -92,7 +93,7 @@ class HerbMeds extends Component {
 
       render() {
         if (this.state.loading) {
-          return <div><br></br><br></br> <br></br>loading...</div>;
+          return <Spinner />;
         }
     
         if (!this.state.herbmeds) {
