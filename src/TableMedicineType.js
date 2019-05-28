@@ -200,7 +200,7 @@ const styles = theme => ({
   },
 });
 
-class EnhancedTable extends React.Component {
+class TableMedicineType extends React.Component {
 
     async componentDidMount() {
         // window.addEventListener('scroll', this.onScroll);
@@ -368,8 +368,8 @@ class EnhancedTable extends React.Component {
   }
 }
 
-EnhancedTable.propTypes = {
+TableMedicineType.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(EnhancedTable);
+export default withStyles(styles)(TableMedicineType);

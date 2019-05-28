@@ -21,6 +21,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
+import { Link } from 'react-router-dom'
+
 const styles = {
   list: {
     width: 250,
@@ -43,12 +45,7 @@ const styles = {
 class Navigation extends Component {
   state = {
     right: false,
-    auth: false,
-    anchorEl: null,
-  };
-
-  handleChange = event => {
-    this.setState({ auth: event.target.checked });
+    anchorEl: null
   };
 
   handleMenu = event => {
@@ -65,10 +62,17 @@ class Navigation extends Component {
     });
   };
 
+  logout = event => {
+    localStorage.removeItem("user");
+    window.location.href = '/';
+  }
+
   render() {
     const { classes } = this.props;
-    const { auth, anchorEl } = this.state;
+    const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
+    let user = localStorage.getItem("user")
+    user = JSON.parse(user)
 
     const sideList = (
       <div className={classes.list}>
@@ -82,59 +86,59 @@ class Navigation extends Component {
         </List>
         <Divider /> */}
         <List>
-            <ListItem button >
+            <ListItem button component={Link} to="/">
               <ListItemIcon>Dashboard</ListItemIcon>
               <ListItemText />
             </ListItem>
             <Divider />
-            <ListItem button >
+            <ListItem button component={Link} to="/herbmeds">
               <ListItemIcon>Herbal Medicine</ListItemIcon>
               <ListItemText />
             </ListItem>
 
-            <ListItem button >
+            <ListItem button component={Link} to="/medtype">
               <ListItemIcon>Medicine Type</ListItemIcon>
               <ListItemText />
             </ListItem>
 
-            <ListItem button >
+            <ListItem button component={Link} to="/company">
               <ListItemIcon>Company</ListItemIcon>
               <ListItemText />
             </ListItem>
 
-            <ListItem button >
+            <ListItem button component={Link} to="/dclass">
               <ListItemIcon>DClass</ListItemIcon>
               <ListItemText />
             </ListItem>
             <Divider />
 
-            <ListItem button >
+            <ListItem button component={Link} to="/plant">
               <ListItemIcon>Plant</ListItemIcon>
               <ListItemText />
             </ListItem>
 
-            <ListItem button >
+            <ListItem button component={Link} to="/crudedrug">
               <ListItemIcon>Crude Drug</ListItemIcon>
               <ListItemText />
             </ListItem>
             <Divider />
 
-            <ListItem button >
+            <ListItem button component={Link} to="/tacit">
               <ListItemIcon>Tacit Knowledge</ListItemIcon>
               <ListItemText />
             </ListItem>
 
-            <ListItem button >
+            <ListItem button component={Link} to="/explicit">
               <ListItemIcon>Explicit Knowledge</ListItemIcon>
               <ListItemText />
             </ListItem>
 
-            <ListItem button >
+            <ListItem button component={Link} to="/plantethnic">
               <ListItemIcon>Plant Ethnic</ListItemIcon>
               <ListItemText />
             </ListItem>
 
-            <ListItem button >
+            <ListItem button component={Link} to="/ethnic">
               <ListItemIcon>Ethnic</ListItemIcon>
               <ListItemText />
             </ListItem>
@@ -155,7 +159,7 @@ class Navigation extends Component {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Admin KMS Jamu
             </Typography>
-            {auth ? (
+            {user ? (
               <div>
                 <IconButton
                   aria-owns={open ? 'menu-appbar' : undefined}
@@ -180,12 +184,12 @@ class Navigation extends Component {
                   onClose={this.handleClose}
                 >
                   <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.logout}>Logout</MenuItem>
                 </Menu>
               </div>
             ) : <Button style={{
               backgroundColor:"white"
-            }}onClick={this.toggleDrawer('left', true)}>Login</Button>}
+            }} component={Link} to="/login">Login</Button>}
           </Toolbar>
         </AppBar>
         <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>

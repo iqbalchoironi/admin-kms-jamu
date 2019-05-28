@@ -52,9 +52,11 @@ function getSorting(order, orderBy) {
 }
 
 const rows = [
-  { id: '_id', numeric: false, disablePadding: true, label: 'Id' },
-  { id: 'name', numeric: true, disablePadding: false, label: 'name' },
-  { id: 'province', numeric: true, disablePadding: false, label: 'province' }
+  { id: '_id', numeric: false, disablePadding: true, label: 'Id Company' },
+  { id: 'idcompany', numeric: true, disablePadding: false, label: 'idcompany' },
+  { id: 'cname', numeric: true, disablePadding: false, label: 'cname' },
+  { id: 'address', numeric: true, disablePadding: false, label: 'address' },
+  { id: 'contact', numeric: true, disablePadding: false, label: 'contact' },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -200,32 +202,17 @@ const styles = theme => ({
   },
 });
 
-class TableEthnic extends React.Component {
+class TableCompany extends React.Component {
 
     async componentDidMount() {
         // window.addEventListener('scroll', this.onScroll);
-        await this.getDataProvince();
         this.getData();
-        
       }
 
-      async getDataProvince(){
-        const url = '/jamu/api/province';
-        const res = await Axios.get(url);
-        const { data } = await res;
-        let temp = [];
-        data.data.forEach(province => {
-          temp.push({label:province.province_name,value:province._id});
-        });
-        this.setState({
-          province: temp, 
-          loading: false
-        })
-      }
-      
       async getData(){
-        const url = '/jamu/api/ethnic';
+        const url = '/jamu/api/company';
         const res = await Axios.get(url);
+        console.log(res)
         const { data } = await res;
         let newData = this.state.data.concat(data.data);
         console.log(newData)
@@ -241,7 +228,6 @@ class TableEthnic extends React.Component {
     orderBy: 'calories',
     selected: [],
     data: [],
-    province: [],
     page: 0,
     rowsPerPage: 10,
   };
@@ -335,8 +321,10 @@ class TableEthnic extends React.Component {
                       <TableCell component="th" scope="row" padding="none">
                         {n._id}
                       </TableCell>
-                      <TableCell align="right">{n.name}</TableCell>
-                      <TableCell align="right">{n.province}</TableCell>
+                      <TableCell align="right">{n.idcompany}</TableCell>
+                      <TableCell align="right">{n.cname}</TableCell>
+                      <TableCell align="right">{n.address}</TableCell>
+                      <TableCell align="right">{n.contact}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -368,8 +356,8 @@ class TableEthnic extends React.Component {
   }
 }
 
-TableEthnic.propTypes = {
+TableCompany.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(TableEthnic);
+export default withStyles(styles)(TableCompany);

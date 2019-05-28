@@ -95,7 +95,7 @@ function CardHerbMed(props) {
             {props.name}
           </Typography>
           <Typography
-            className={"MuiTypography--subheading"}
+            // className={"MuiTypography--subheading"}
             className="block-with-text"
             variant={"caption"}
           >

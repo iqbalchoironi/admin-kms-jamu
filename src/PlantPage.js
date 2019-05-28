@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Axios from "axios";
 
 import CardExample from './card'
+import Spinner from './Spinner'
 import SearchInput from './SearchInput'
 
 import Typography from '@material-ui/core/Typography';
@@ -89,7 +90,7 @@ class Plant extends Component {
 
       render() {
         if (this.state.loading) {
-          return <div><br></br><br></br> <br></br>loading...</div>;
+          return <Spinner />
         }
     
         if (!this.state.plans) {
