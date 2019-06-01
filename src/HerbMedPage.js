@@ -9,6 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 
+import ModalHerbMed from './ModalHerbMed'
+
 class HerbMeds extends Component {
     constructor(props) {
         super(props);
@@ -18,11 +20,21 @@ class HerbMeds extends Component {
           inputSearch: '',
           onSearch:[],
           herbmeds : [],
+          modal: {
+            open: false,
+            mode: '',
+          },
+          onSelect: null,
           currentPage: 1
         }
         this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getDataSearch = this.getDataSearch.bind(this);
+        this.updateBtn = this.updateBtn.bind(this);
+        this.deleteBtn = this.deleteBtn.bind(this);
+        this.detailBtn = this.detailBtn.bind(this);
+        this.addBtn = this.addBtn.bind(this);
+        this.closeBtn = this.closeBtn.bind(this);
       }
 
       async componentDidMount() {
@@ -89,6 +101,58 @@ class HerbMeds extends Component {
       this.setState({
         [name]: value
       });
+    }
+
+    closeBtn() {
+      this.setState({
+        onSelect: null,
+        modal: {
+          open: false,
+          mode: ''
+        }
+      })
+    }
+
+    async updateBtn(id) {
+      console.log(id)
+      let onSelect =  await this.state.herbmeds.find( c => {
+        return c.idherbsmed === id
+      })
+      console.log(onSelect)
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'update'
+        }
+      })
+  }
+
+  detailBtn(e) {
+    let onSelect =  this.state.company.filter( c => {
+      return c.idcompany === e.target.dataset.value
+    })
+    
+    this.setState({
+      onSelect: onSelect,
+      modalOpen: 'detail'
+    })
+}
+
+    addBtn() {
+      this.setState({                             
+        modalOpen: 'add'
+      })
+    }
+
+    deleteBtn(e) {
+      let onSelect =  this.state.herbMed.filter( c => {
+        return c.idherbsmed === e.target.dataset.value
+      })
+      this.setState({      
+        onSelect: onSelect,                       
+        modalOpen: 'delete'
+      })
     }
 
       render() {
@@ -186,11 +250,15 @@ class HerbMeds extends Component {
               
               <div className="for-card">
                 {this.state.herbmeds.map(item =>
-                          <CardHerbMed key={item.idherbsmed} name={item.name} efficacy={item.efficacy} reff={item.refCrude}/>
+                          <CardHerbMed key={item.idherbsmed} id={item.idherbsmed} name={item.name} efficacy={item.efficacy} reff={item.refCrude} update={this.updateBtn}/>
                  )}
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
               </div>
+              {this.state.modal.open === true ? <ModalHerbMed data={this.state.onSelect} modal={this.state.modal} close={this.closeBtn}/>
+                        : 
+                        null
+              } 
             </div>
         );
       }
