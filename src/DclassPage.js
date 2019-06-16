@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import Axios from "axios";
 
-import CardHerbMed from './CardHerbMed'
+import CardDclass from './CardDclass'
 import SearchInput from './SearchInput'
 import Spinner from './Spinner'
+
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
@@ -140,7 +143,7 @@ class DclassPage extends Component {
               
               <div className="for-card">
                 {this.state.onSearch.map(item =>
-                          <CardHerbMed key={item.idherbsmed} name={item.name} efficacy={item.efficacy}/>
+                          <CardDclass key={item.idherbsmed} name={item.name} efficacy={item.efficacy}/>
                  )}
               </div>
             </div>
@@ -186,11 +189,20 @@ class DclassPage extends Component {
               
               <div className="for-card">
                 {this.state.dclass.map(item =>
-                          <CardHerbMed key={item.idclass} name={item.class} efficacy={item.description} reff={[]}/>
+                          <CardDclass key={item.idclass} name={item.class} efficacy={item.description} reff={[]}/>
                  )}
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
               </div>
+              <Fab style={{
+                 position:"fixed",
+                 width:"45px",
+                 height:"45px",
+                 bottom:"25px",
+                 right:"25px"
+               }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                <AddIcon />
+              </Fab>
             </div>
         );
       }

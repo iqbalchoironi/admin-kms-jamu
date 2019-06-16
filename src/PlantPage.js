@@ -5,6 +5,9 @@ import CardExample from './card'
 import Spinner from './Spinner'
 import SearchInput from './SearchInput'
 
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
@@ -188,6 +191,15 @@ class Plant extends Component {
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
               </div>
+              <Fab style={{
+                 position:"fixed",
+                 width:"45px",
+                 height:"45px",
+                 bottom:"25px",
+                 right:"25px"
+               }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                <AddIcon />
+              </Fab>
             </div>
         );
       }
