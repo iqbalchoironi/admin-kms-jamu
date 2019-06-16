@@ -6,13 +6,45 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Select from 'react-select';
 
 import Axios from 'axios'
 
+const List = ({ item }) => {
+  if(item.sname !== ''){
+    return <li>{item.label}</li>
+  }
+
+  return null;
+}
+
+const ModalRefCrude = (props) => {
+  return (
+    <Dialog open={props.open} onClose={props.close} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">You update herbal medicine with</DialogTitle>
+          <DialogContent>
+            <Select
+              onChange={props.handleChange('addCrude')}
+              options={props.baseCrude}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={props.close} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={props.handleAddCrude} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+  )
+}
 class ModalHerbMed extends Component {
     constructor(props) {
         super(props);
         this.state = {
+          openModalCrude: false,
+          addCrude: null,
           loading: true,
           _id: '',
           idherbsmed:'',
@@ -27,14 +59,16 @@ class ModalHerbMed extends Component {
           idtype: '',
           img: '',
           __v: null,
-          refMedtype: '',
-          refCompany: '',
-          refDclass: {},
-          refCrude: []
+          refMedtype: null,
+          refCompany: null,
+          refDclass: null,
+          refCrude: [],
         }
         this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
         this.valueChange = this.valueChange.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.togglePopup = this.togglePopup.bind(this);
+        this.handleAddCrude = this.handleAddCrude.bind(this);
       }
 
       async componentDidMount() {
@@ -62,12 +96,34 @@ class ModalHerbMed extends Component {
                 refMedtype: this.props.data.refMedtype,
                 refCompany: this.props.data.refCompany,
                 refDclass: this.props.data.refDclass,
-                refCrude: coba
+                refCrude: this.props.data.refCrude
             })
 
            
         }
       }
+
+      handleAddCrude = () => {
+        let newData = this.state.refCrude.concat(this.state.addCrude);
+        this.setState({
+          refCrude: newData,
+          addCrude: null
+        });
+        this.togglePopup();
+      }
+
+      togglePopup = () => {
+        this.setState({
+          openModalCrude: !this.state.openModalCrude
+        });
+      }
+
+      handleChange = name => value => {
+        this.setState({
+          [name]: value,
+        });
+        console.log(this.state)
+      };
 
       valueChange(event) {
         const target = event.target;
@@ -298,6 +354,12 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
+            <ul className="reff">
+                 {this.state.refCrude.map( item => (
+                    <List item = { item } />
+                ))} 
+            
+          </ul>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.close} color="primary">
@@ -452,6 +514,34 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
+            <Select
+              value={this.state.refMedtype}
+              onChange={this.handleChange('refMedtype')}
+              options={this.props.baseMedtype}
+            />
+            <Select
+              value={this.state.refCompany}
+              onChange={this.handleChange('refCompany')}
+              options={this.props.baseCompany}
+            />
+            <Select
+              value={this.state.refDclass}
+              onChange={this.handleChange('refDclass')}
+              options={this.props.baseDclass}
+            />
+            <Button onClick={this.togglePopup} color="primary">
+              Add Crude Drug
+            </Button>
+            {this.state.openModalCrude === true ? <ModalRefCrude baseCrude={this.props.baseCrude} handleChange={this.handleChange} handleAddCrude={this.handleAddCrude} close={this.togglePopup} open={this.state.openModalCrude} />
+              : 
+              null
+              }
+            <ul className="reff">
+                 {this.state.refCrude.map( item => (
+                    <List item = { item } />
+                ))} 
+            
+          </ul>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.close} color="primary">

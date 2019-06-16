@@ -22,6 +22,10 @@ class HerbMeds extends Component {
           inputSearch: '',
           onSearch:[],
           herbmeds : [],
+          crude: [],
+          company: [],
+          dclass: [],
+          medtype: [],
           modal: {
             open: false,
             mode: '',
@@ -60,11 +64,35 @@ class HerbMeds extends Component {
       
      async getData(){
       const url = '/jamu/api/herbsmed/pages/' + this.state.currentPage;
+      const urlCrude = '/jamu/api/crudedrug/getlist'
+      const urlCompany = '/jamu/api/company/getlist'
+      const urlDclass = '/jamu/api/dclass'
+      const urlMedtype = '/jamu/api/medtype'
       const res = await Axios.get(url);
+      const resCrude = await Axios.get(urlCrude);
+      const resCompany = await Axios.get(urlCompany);
+      const resDclass = await Axios.get(urlDclass);
+      const resMedtype = await Axios.get(urlMedtype);
       const { data } = await res;
       let newData = this.state.herbmeds.concat(data.data);
+      let dataCrude =  await resCrude.data.data.map(dt => {
+        return {label:dt.sname,value:dt._id}
+      });
+      let dataCompany = await resCompany.data.data.map(dt => {
+        return {label:dt.cname,value:dt._id}
+      });
+      let dataDclass = await resDclass.data.data.map(dt => {
+        return {label:dt.class,value:dt._id}
+      });
+      let dataMedtype = await resMedtype.data.data.map(dt => {
+        return {label:dt.medname,value:dt._id}
+      });
       this.setState({
         herbmeds: newData, 
+        crude: dataCrude,
+        company: dataCompany,
+        dclass: dataDclass,
+        medtype: dataMedtype,
         loading: false
       })
     }
@@ -263,7 +291,7 @@ class HerbMeds extends Component {
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
               </div>
-              {this.state.modal.open === true ? <ModalHerbMed data={this.state.onSelect} modal={this.state.modal} close={this.closeBtn}/>
+              {this.state.modal.open === true ? <ModalHerbMed data={this.state.onSelect} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
                         : 
                         null
               } 
