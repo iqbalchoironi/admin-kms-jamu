@@ -8,6 +8,8 @@ import Spinner from './Spinner'
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 import ModalHerbMed from './ModalHerbMed'
 
@@ -114,11 +116,9 @@ class HerbMeds extends Component {
     }
 
     async updateBtn(id) {
-      console.log(id)
       let onSelect =  await this.state.herbmeds.find( c => {
         return c.idherbsmed === id
       })
-      console.log(onSelect)
       this.setState({
         onSelect: onSelect,
         modal: {
@@ -128,30 +128,38 @@ class HerbMeds extends Component {
       })
   }
 
-  detailBtn(e) {
-    let onSelect =  this.state.company.filter( c => {
-      return c.idcompany === e.target.dataset.value
+  async detailBtn(id) {
+    let onSelect =  await this.state.herbmeds.find( c => {
+      return c.idherbsmed === id
     })
-    
     this.setState({
       onSelect: onSelect,
-      modalOpen: 'detail'
+      modal: {
+        open: true,
+        mode: 'detail'
+      }
     })
 }
 
     addBtn() {
-      this.setState({                             
-        modalOpen: 'add'
+      this.setState({
+        modal: {
+          open: true,
+          mode: 'add'
+        }
       })
     }
 
-    deleteBtn(e) {
-      let onSelect =  this.state.herbMed.filter( c => {
-        return c.idherbsmed === e.target.dataset.value
+    async deleteBtn(id) {
+      let onSelect =  await this.state.herbmeds.find( c => {
+        return c.idherbsmed === id
       })
-      this.setState({      
-        onSelect: onSelect,                       
-        modalOpen: 'delete'
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'delete'
+        }
       })
     }
 
@@ -250,7 +258,7 @@ class HerbMeds extends Component {
               
               <div className="for-card">
                 {this.state.herbmeds.map(item =>
-                          <CardHerbMed key={item.idherbsmed} id={item.idherbsmed} name={item.name} efficacy={item.efficacy} reff={item.refCrude} update={this.updateBtn}/>
+                          <CardHerbMed key={item.idherbsmed} id={item.idherbsmed} name={item.name} image={item.img} efficacy={item.efficacy} reff={item.refCrude} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
                  )}
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
@@ -259,6 +267,15 @@ class HerbMeds extends Component {
                         : 
                         null
               } 
+               <Fab style={{
+                 position:"fixed",
+                 width:"45px",
+                 height:"45px",
+                 bottom:"25px",
+                 right:"25px"
+               }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                <AddIcon />
+              </Fab>
             </div>
         );
       }

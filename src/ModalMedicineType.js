@@ -6,44 +6,30 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Select from 'react-select';
 
 import Axios from 'axios'
 
-class ModalCompany extends Component {
+class ModalMedType extends Component {
     constructor(props) {
         super(props);
         this.state = {
           loading: true,
           _id: '',
-          idcompany:'',
-          cname: '',
-          address: '',
-          city: '',
-          country: '',
-          postcode: '',
-          contact: '',
-          url: ''
+          idtype:'',
+          medname: ''
         }
         this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
         this.valueChange = this.valueChange.bind(this);
-        this.onChange = this.onChange.bind(this);
       }
 
       async componentDidMount() {
-        if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){
-            this.setState({
+        if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){           
+           this.setState({
                 _id: this.props.data._id,
-                idcompany:this.props.data.idcompany,
-                cname: this.props.data.cname,
-                address: this.props.data.address,
-                city: this.props.data.city,
-                country: this.props.data.country,
-                postcode: this.props.data.postcode,
-                contact: this.props.data.contact,
-                url: this.props.data.url
-            })
-
-           
+                idtype: this.props.data.idtype,
+                medname: this.props.data.medname
+           })
         }
       }
 
@@ -57,10 +43,6 @@ class ModalCompany extends Component {
         });
       }
 
-      onChange(e) {
-        this.setState({url:e.target.files[0]})
-      }
-
       handleSubmitUpdate = event => {
         console.log(this.state)
         let user = localStorage.getItem("user")
@@ -72,16 +54,10 @@ class ModalCompany extends Component {
                 }
             };
             
-        let url = '/jamu/api/company/update/' + this.state.idcompany
+        let url = '/jamu/api/medtype/update/' + this.state.idtype
 
       Axios.patch( url,{
-        cname: this.state.cname,
-        address: this.state.address,
-        city: this.state.city,
-        country: this.state.country,
-        postcode: this.state.postcode,
-        contact: this.state.contact,
-        url: this.state.url,
+        medname: this.state.medname
         } ,axiosConfig)
         .then(data => {
             const res = data.data;
@@ -104,16 +80,10 @@ class ModalCompany extends Component {
                 }
             };
             
-        let url = '/jamu/api/company/add'
+        let url = '/jamu/api/medtype/add'
       Axios.post( url, {
-        idcompany: this.state.idcompany,
-        cname: this.state.cname,
-        address: this.state.address,
-        city: this.state.city,
-        country: this.state.country,
-        postcode: this.state.postcode,
-        contact: this.state.contact,
-        url: this.state.url,
+        idtype: this.state.idtype,
+        medname: this.state.medname
         },axiosConfig)
         .then(data => {
             const res = data.data;
@@ -135,12 +105,12 @@ class ModalCompany extends Component {
                 }
             };
             
-        let url = '/jamu/api/company/delete/' + this.state.idcompany
+        let url = '/jamu/api/medtype/delete/' + this.state.idtype
       Axios.delete( url,axiosConfig)
         .then(data => {
             const res = data.data;
             console.log(res)
-            window.location.href = '/company';
+            window.location.href = '/medtype';
         })
         .catch(err => {
             console.log(err)
@@ -158,71 +128,11 @@ render() {
             <TextField
               autoFocus
               margin="dense"
-              id="cname"
-              label="Company Name"
-              name="cname"
+              id="name"
+              label="Name Herbal Medicine Type"
+              name="medname"
               type="text"
-              value={this.state.cname}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="address"
-              label="Address"
-              name="address"
-              type="text"
-              value={this.state.address}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="city"
-              label="City"
-              name="city"
-              type="text"
-              value={this.state.city}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="country"
-              label="Country"
-              name="country"
-              type="text"
-              value={this.state.country}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="postcode"
-              label="Post Code"
-              name="postcode"
-              type="text"
-              value={this.state.postcode}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="contact"
-              label="Contact"
-              name="contact"
-              type="text"
-              value={this.state.contact}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="url"
-              label="Url"
-              name="url"
-              type="text"
-              value={this.state.url}
+              value={this.state.medname}
               fullWidth
               onChange={this.valueChange}
             />
@@ -271,83 +181,23 @@ render() {
           <DialogTitle id="form-dialog-title">Create</DialogTitle>
           <DialogContent>
           <TextField
+              margin="dense"
+              id="idtype"
+              label="ID Type of Herbal Medicine"
+              name="idtype"
+              type="text"
+              value={this.state.idtype}
+              fullWidth
+              onChange={this.valueChange}
+            />
+          <TextField
               autoFocus
               margin="dense"
-              id="idcompany"
-              label="ID Company"
-              name="idcompany"
+              id="name"
+              label="Name of Herbal Medicine Type"
+              name="medname"
               type="text"
-              value={this.state.idcompany}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="cname"
-              label="Company Name"
-              name="cname"
-              type="text"
-              value={this.state.cname}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="address"
-              label="Address"
-              name="address"
-              type="text"
-              value={this.state.address}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="city"
-              label="City"
-              name="city"
-              type="text"
-              value={this.state.city}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="country"
-              label="Country"
-              name="country"
-              type="text"
-              value={this.state.country}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="postcode"
-              label="Post Code"
-              name="postcode"
-              type="text"
-              value={this.state.postcode}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="contact"
-              label="Contact"
-              name="contact"
-              type="text"
-              value={this.state.contact}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="url"
-              label="Url"
-              name="url"
-              type="text"
-              value={this.state.url}
+              value={this.state.medname}
               fullWidth
               onChange={this.valueChange}
             />
@@ -366,4 +216,4 @@ render() {
     }
 }
 
-export default ModalCompany;
+export default ModalMedType;

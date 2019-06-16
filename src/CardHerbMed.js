@@ -111,8 +111,14 @@ function CardHerbMed(props) {
           </ul>
         </CardContent>
         <CardActions className={"MuiCardActions-root"}>
+        <Button color={"primary"} fullWidth onClick={props.detail.bind(this, id)}>
+          Detail <Icon>chevron_right_rounded</Icon>
+        </Button>
         <Button color={"primary"} fullWidth onClick={props.update.bind(this, id)}>
           Update <Icon>chevron_right_rounded</Icon>
+        </Button>
+        <Button color={"primary"} fullWidth onClick={props.delete.bind(this, id)}>
+          Delete <Icon>chevron_right_rounded</Icon>
         </Button>
       </CardActions>
       </Card>
