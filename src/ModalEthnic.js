@@ -6,41 +6,41 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Select from 'react-select';
 
 import Axios from 'axios'
 
-class ModalCompany extends Component {
+class ModalEthnic extends Component {
     constructor(props) {
         super(props);
         this.state = {
           loading: true,
           _id: '',
-          idcompany:'',
-          cname: '',
-          address: '',
-          city: '',
-          country: '',
-          postcode: '',
-          contact: '',
-          url: ''
+          name:'',
+          province: '',
+          refPlantethnic: [],
+          baseProvince: []
         }
         this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
         this.valueChange = this.valueChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.onChange = this.onChange.bind(this);
       }
 
       async componentDidMount() {
         if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){
+          let province = ''  
+          if (this.props.data.refProvince){
+              province = this.props.baseProvince.find(p => p.value === this.props.data.refProvince )
+            } else {
+              province = this.props.baseProvince.find(p => p.value === this.props.data.province )
+            }
             this.setState({
                 _id: this.props.data._id,
-                idcompany:this.props.data.idcompany,
-                cname: this.props.data.cname,
-                address: this.props.data.address,
-                city: this.props.data.city,
-                country: this.props.data.country,
-                postcode: this.props.data.postcode,
-                contact: this.props.data.contact,
-                url: this.props.data.url
+                name: this.props.data.name,
+                province: province !== undefined ? province : null ,
+                refPlantethnic: this.props.data.refPlantethnic,
+                baseProvince: this.props.baseProvince
             })
 
            
@@ -57,6 +57,14 @@ class ModalCompany extends Component {
         });
       }
 
+      
+      handleChange = name => value => {
+        this.setState({
+          [name]: value,
+        });
+        console.log(this.state)
+      };
+
       onChange(e) {
         this.setState({url:e.target.files[0]})
       }
@@ -72,16 +80,13 @@ class ModalCompany extends Component {
                 }
             };
             
-        let url = '/jamu/api/company/update/' + this.state.idcompany
+        let url = '/jamu/api/ethnic/update/' + this.state._id
 
       Axios.patch( url,{
-        cname: this.state.cname,
+        name: this.state.name,
         address: this.state.address,
-        city: this.state.city,
-        country: this.state.country,
-        postcode: this.state.postcode,
-        contact: this.state.contact,
-        url: this.state.url,
+        province: this.state.province.value,
+        refPlantethnic: this.refPlantethnic
         } ,axiosConfig)
         .then(data => {
             const res = data.data;
@@ -104,16 +109,12 @@ class ModalCompany extends Component {
                 }
             };
             
-        let url = '/jamu/api/company/add'
+        let url = '/jamu/api/ethnic/add'
       Axios.post( url, {
-        idcompany: this.state.idcompany,
-        cname: this.state.cname,
+        name: this.state.name,
         address: this.state.address,
-        city: this.state.city,
-        country: this.state.country,
-        postcode: this.state.postcode,
-        contact: this.state.contact,
-        url: this.state.url,
+        province: this.state.province,
+        refPlantethnic: this.refPlantethnic
         },axiosConfig)
         .then(data => {
             const res = data.data;
@@ -135,12 +136,12 @@ class ModalCompany extends Component {
                 }
             };
             
-        let url = '/jamu/api/company/delete/' + this.state.idcompany
+        let url = '/jamu/api/ethnic/delete/' + this.state._id
       Axios.delete( url,axiosConfig)
         .then(data => {
             const res = data.data;
             console.log(res)
-            window.location.href = '/company';
+            window.location.href = '/ethnic';
         })
         .catch(err => {
             console.log(err)
@@ -158,73 +159,18 @@ render() {
             <TextField
               autoFocus
               margin="dense"
-              id="cname"
-              label="Company Name"
-              name="cname"
+              id="name"
+              label="Ethnic Name"
+              name="name"
               type="text"
-              value={this.state.cname}
+              value={this.state.name}
               fullWidth
               onChange={this.valueChange}
             />
-             <TextField
-              margin="dense"
-              id="address"
-              label="Address"
-              name="address"
-              type="text"
-              value={this.state.address}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="city"
-              label="City"
-              name="city"
-              type="text"
-              value={this.state.city}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="country"
-              label="Country"
-              name="country"
-              type="text"
-              value={this.state.country}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="postcode"
-              label="Post Code"
-              name="postcode"
-              type="text"
-              value={this.state.postcode}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="contact"
-              label="Contact"
-              name="contact"
-              type="text"
-              value={this.state.contact}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="url"
-              label="Url"
-              name="url"
-              type="text"
-              value={this.state.url}
-              fullWidth
-              onChange={this.valueChange}
+            <Select
+              value={this.state.province}
+              onChange={this.handleChange('province')}
+              options={this.state.baseProvince}
             />
           </DialogContent>
           <DialogActions>
@@ -273,81 +219,21 @@ render() {
           <TextField
               autoFocus
               margin="dense"
-              id="idcompany"
-              label="ID Company"
-              name="idcompany"
+              id="name"
+              label="Ethnic Name"
+              name="name"
               type="text"
-              value={this.state.idcompany}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="cname"
-              label="Company Name"
-              name="cname"
-              type="text"
-              value={this.state.cname}
+              value={this.state.name}
               fullWidth
               onChange={this.valueChange}
             />
              <TextField
               margin="dense"
-              id="address"
-              label="Address"
-              name="address"
+              id="province"
+              label="Province"
+              name="province"
               type="text"
-              value={this.state.address}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="city"
-              label="City"
-              name="city"
-              type="text"
-              value={this.state.city}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="country"
-              label="Country"
-              name="country"
-              type="text"
-              value={this.state.country}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="postcode"
-              label="Post Code"
-              name="postcode"
-              type="text"
-              value={this.state.postcode}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="contact"
-              label="Contact"
-              name="contact"
-              type="text"
-              value={this.state.contact}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="url"
-              label="Url"
-              name="url"
-              type="text"
-              value={this.state.url}
+              value={this.state.province}
               fullWidth
               onChange={this.valueChange}
             />
@@ -366,4 +252,4 @@ render() {
     }
 }
 
-export default ModalCompany;
+export default ModalEthnic;

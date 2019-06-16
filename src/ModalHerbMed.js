@@ -191,104 +191,268 @@ class ModalHerbMed extends Component {
     }
 
 render() {
-  return (
-    <div>
-      <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+  if(this.props.modal.mode === 'update'){
+    return (
+      <div>
+        <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idherbsmed}</DialogTitle>
+          <DialogContent>
+            {/* <DialogContentText>
+              You update herbal medicine with id {this.state.idherbsmed}
+            </DialogContentText> */}
+            <Button
+              containerElement='imageherbmeds' // <-- Just add me!
+              label="herbal medicine image">
+              <input type="file" />
+            </Button>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              name="name"
+              type="text"
+              value={this.state.name}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="nameloc1"
+              label="Name Location 1"
+              name="nameloc1"
+              type="text"
+              value={this.state.nameloc1}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="nameloc2"
+              label="Name Location 2"
+              name="nameloc2"
+              type="text"
+              value={this.state.nameloc2}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              multiline rows={10}
+              margin="dense"
+              id="efficacy"
+              label="Efficacy"
+              name="efficacy"
+              type="text"
+              value={this.state.efficacy}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="name"
+              label="Efficacy Location"
+              name="efficacyloc"
+              type="text"
+              value={this.state.efficacyloc}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="ref"
+              label="Refren"
+              name="ref"
+              type="text"
+              value={this.state.ref}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="idclass"
+              label="Id Class"
+              name="idclass"
+              type="text"
+              value={this.state.idclass}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="idtype"
+              label="Id Ttype"
+              name="idtype"
+              type="text"
+              value={this.state.idtype}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="idcompany"
+              label="Id Company"
+              name="idcompany"
+              type="text"
+              value={this.state.idcompany}
+              fullWidth
+              onChange={this.valueChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.props.close} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.props.close} color="primary">
+              Update
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }else if(this.props.modal.mode === 'delete') {
+    return (
+      <Dialog
+        open={this.props.modal.open}
+        onClose={this.props.close}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
+          <DialogContentText id="alert-dialog-description">
+            Let Google help apps determine location. This means sending anonymous location data to
+            Google, even when no apps are running.
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            name="name"
-            type="text"
-            value={this.state.name}
-            fullWidth
-            onChange={this.valueChange}
-          />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            name="name"
-            type="text"
-            value={this.state.name}
-            fullWidth
-            onChange={this.valueChange}
-          />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            name="name"
-            type="text"
-            value={this.state.name}
-            fullWidth
-            onChange={this.valueChange}
-          />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            name="name"
-            type="text"
-            value={this.state.name}
-            fullWidth
-            onChange={this.valueChange}
-          />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            name="name"
-            type="text"
-            value={this.state.name}
-            fullWidth
-            onChange={this.valueChange}
-          />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            name="name"
-            type="text"
-            value={this.state.name}
-            fullWidth
-            onChange={this.valueChange}
-          />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            name="name"
-            type="text"
-            value={this.state.name}
-            fullWidth
-            onChange={this.valueChange}
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.close} color="primary">
-            Cancel
+            NO
           </Button>
-          <Button onClick={this.props.close} color="primary">
-            Update
+          <Button onClick={this.props.close} color="primary" autoFocus>
+            YES
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
-  );
+    )
+  }else if(this.props.modal.mode === 'detail') {
+
+  }else if(this.props.modal.mode === 'add') {
+    return (
+      <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idherbsmed}</DialogTitle>
+          <DialogContent>
+            {/* <DialogContentText>
+              You update herbal medicine with id {this.state.idherbsmed}
+            </DialogContentText> */}
+            <Button
+              containerElement='imageherbmeds' // <-- Just add me!
+              label="herbal medicine image">
+              <input type="file" />
+            </Button>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              name="name"
+              type="text"
+              value={this.state.name}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="nameloc1"
+              label="Name Location 1"
+              name="nameloc1"
+              type="text"
+              value={this.state.nameloc1}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="nameloc2"
+              label="Name Location 2"
+              name="nameloc2"
+              type="text"
+              value={this.state.nameloc2}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              multiline rows={10}
+              margin="dense"
+              id="efficacy"
+              label="Efficacy"
+              name="efficacy"
+              type="text"
+              value={this.state.efficacy}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="name"
+              label="Efficacy Location"
+              name="efficacyloc"
+              type="text"
+              value={this.state.efficacyloc}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="ref"
+              label="Refren"
+              name="ref"
+              type="text"
+              value={this.state.ref}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="idclass"
+              label="Id Class"
+              name="idclass"
+              type="text"
+              value={this.state.idclass}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="idtype"
+              label="Id Ttype"
+              name="idtype"
+              type="text"
+              value={this.state.idtype}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="idcompany"
+              label="Id Company"
+              name="idcompany"
+              type="text"
+              value={this.state.idcompany}
+              fullWidth
+              onChange={this.valueChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.props.close} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.props.close} color="primary">
+              Create
+            </Button>
+          </DialogActions>
+        </Dialog>
+    )
+  }
     }
 }
 
