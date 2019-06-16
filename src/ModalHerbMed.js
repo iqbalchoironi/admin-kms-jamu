@@ -127,39 +127,40 @@ class ModalHerbMed extends Component {
     }
 
     handleSubmitAdd = event => {
-        console.log(this.state)
-        let user = localStorage.getItem("user")
-        user = JSON.parse(user)
-        let axiosConfig = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': user.token
-                }
-            };
-            
-        let url = '/jamu/api/herbsmed/add'
-      Axios.post( url, {
-        idherb: this.state.idherb,
-        idherbsmed: this.state.idherbsmed,
-        name: this.state.name,
-        nameloc1: this.state.nameloc1,
-        nameloc2: this.state.nameloc2,
-        efficacy: this.state.efficacy,
-        efficacyloc: this.state.efficacyloc,
-        ref: this.state.ref,
-        idclass: this.state.idclass,
-        idcompany: this.state.idcompany,
-        idtype: this.state.idtype,
-        img: this.state.img,
-        __v: this.state.__v,
-        refCompany: this.state.refCompany,
-        refDclass: this.state.refDclass,
-        refCrude: this.state.refCrude,
-        },axiosConfig)
+
+      let user = localStorage.getItem("user")
+      user = JSON.parse(user)
+      let axiosConfig = {
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'Authorization': user.token
+              }
+          };
+          
+      let url = '/jamu/api/herbsmed/add';
+
+      const formData = new FormData();
+      formData.append('idherbsmed',this.state.idherbsmed);
+      formData.append('name',this.state.name);
+      formData.append('nameloc1',this.state.nameloc1);
+      formData.append('nameloc2',this.state.nameloc2);
+      formData.append('efficacy',this.state.efficacy);
+      formData.append('efficacyloc',this.state.efficacyloc);
+      formData.append('ref',this.state.ref);
+      formData.append('idclass',this.state.idclass);
+      formData.append('idcompany',this.state.idcompany);
+      formData.append('idtype',this.state.idtype);
+      formData.append('img',this.state.img);
+      formData.append('refMedtype',this.state.refMedtype);
+      formData.append('refCompany',this.state.refCompany);
+      formData.append('refDclass',this.state.refDclass._id);
+      this.state.refCrude.map(item =>{
+        formData.append('refCrude',item);
+      })
+      Axios.post( url,formData,axiosConfig)
         .then(data => {
             const res = data.data;
             console.log(res)
-            window.location.href = '/herbmed';
         })
         .catch(err => {
             console.log(err)
@@ -347,10 +348,20 @@ render() {
             <Button
               containerElement='imageherbmeds' // <-- Just add me!
               label="herbal medicine image">
-              <input type="file" />
+              <input type="file" name="img" onChange={this.onChange} />
             </Button>
             <TextField
               autoFocus
+              margin="dense"
+              id="idherbsmed"
+              label="ID Herbal Medicine"
+              name="idherbsmed"
+              type="text"
+              value={this.state.name}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
               margin="dense"
               id="name"
               label="Name"
@@ -446,7 +457,7 @@ render() {
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.close} color="primary">
+            <Button onClick={this.props.handleSubmitAdd} color="primary">
               Create
             </Button>
           </DialogActions>
