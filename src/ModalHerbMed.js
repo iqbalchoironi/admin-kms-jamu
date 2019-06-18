@@ -10,9 +10,9 @@ import Select from 'react-select';
 
 import Axios from 'axios'
 
-const List = ({ item }) => {
-  if(item.sname !== ''){
-    return <li>{item.label}</li>
+const List = (props) => {
+  if(props.item.sname !== ''){
+    return <li>{props.item.label} <button id={props.item.value} onClick={props.delete}>delete</button></li>
   }
 
   return null;
@@ -69,6 +69,7 @@ class ModalHerbMed extends Component {
         this.onChange = this.onChange.bind(this);
         this.togglePopup = this.togglePopup.bind(this);
         this.handleAddCrude = this.handleAddCrude.bind(this);
+        this.handleDeleteCrude = this.handleDeleteCrude.bind(this);
       }
 
       async componentDidMount() {
@@ -110,6 +111,14 @@ class ModalHerbMed extends Component {
           addCrude: null
         });
         this.togglePopup();
+      }
+
+      handleDeleteCrude = (e) => {
+        console.log(e.target.id)
+        let newData = this.state.refCrude.filter(dt => dt.value !== e.target.id);
+        this.setState({
+          refCrude: newData
+        });
       }
 
       togglePopup = () => {
@@ -169,7 +178,7 @@ class ModalHerbMed extends Component {
       formData.append('refCompany',this.state.refCompany);
       formData.append('refDclass',this.state.refDclass._id);
       this.state.refCrude.map(item =>{
-        formData.append('refCrude',item);
+        formData.append('refCrude',item.value);
       })
       Axios.patch( url,formData ,axiosConfig)
         .then(data => {
@@ -207,11 +216,11 @@ class ModalHerbMed extends Component {
       formData.append('idcompany',this.state.idcompany);
       formData.append('idtype',this.state.idtype);
       formData.append('img',this.state.img);
-      formData.append('refMedtype',this.state.refMedtype);
-      formData.append('refCompany',this.state.refCompany);
-      formData.append('refDclass',this.state.refDclass._id);
+      formData.append('refMedtype',this.state.refMedtype.value);
+      formData.append('refCompany',this.state.refCompany.value);
+      formData.append('refDclass',this.state.refDclass.value);
       this.state.refCrude.map(item =>{
-        formData.append('refCrude',item);
+        formData.append('refCrude',item.value);
       })
       Axios.post( url,formData,axiosConfig)
         .then(data => {
@@ -239,7 +248,7 @@ class ModalHerbMed extends Component {
         .then(data => {
             const res = data.data;
             console.log(res)
-            window.location.href = '/company';
+            window.location.href = '/herbmed';
         })
         .catch(err => {
             console.log(err)
@@ -419,7 +428,7 @@ render() {
               label="ID Herbal Medicine"
               name="idherbsmed"
               type="text"
-              value={this.state.name}
+              value={this.state.idherbsmed}
               fullWidth
               onChange={this.valueChange}
             />
@@ -538,7 +547,7 @@ render() {
               }
             <ul className="reff">
                  {this.state.refCrude.map( item => (
-                    <List item = { item } />
+                    <List item = { item } delete={this.handleDeleteCrude} />
                 ))} 
             
           </ul>
@@ -547,7 +556,7 @@ render() {
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.handleSubmitAdd} color="primary">
+            <Button onClick={this.handleSubmitAdd} color="primary">
               Create
             </Button>
           </DialogActions>
