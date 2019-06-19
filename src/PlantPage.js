@@ -11,25 +11,44 @@ import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
+import ModalPlant from './ModalPlant';
 
-class Plant extends Component {
+class PlantPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
           loading: true,
           loadData: false,
           inputSearch: '',
-          plans : [],
+          plant : [],
           onSearch : [],
+          crude: [],
+          modal: {
+            open: false,
+            mode: '',
+          },
           currentPage: 1
         }
         this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getDataSearch = this.getDataSearch.bind(this);
+        this.updateBtn = this.updateBtn.bind(this);
+        this.deleteBtn = this.deleteBtn.bind(this);
+        this.detailBtn = this.detailBtn.bind(this);
+        this.addBtn = this.addBtn.bind(this);
+        this.closeBtn = this.closeBtn.bind(this);
       }
 
       async componentDidMount() {
         window.addEventListener('scroll', this.onScroll, false);
+        const urlCrude = '/jamu/api/crudedrug/getlist'
+        const resCrude = await Axios.get(urlCrude);
+        let dataCrude =  await resCrude.data.data.map(dt => {
+          return {label:dt.sname,value:dt._id}
+        });
+        this.setState({
+          crude: dataCrude
+        })
         this.getData();
       }
 
@@ -38,7 +57,6 @@ class Plant extends Component {
           (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
           !this.props.isLoading
         ){
-          // Do awesome stuff like loading more content!
           await this.setState({
             loadData: true,
             currentPage: this.state.currentPage + 1
@@ -51,9 +69,9 @@ class Plant extends Component {
       const url = '/jamu/api/plant/pages/' + this.state.currentPage;
       const res = await Axios.get(url);
       const { data } = await res;
-      let newData = this.state.plans.concat(data.data);
+      let newData = this.state.plant.concat(data.data);
       this.setState({
-        plans: newData, 
+        plant: newData, 
         loading: false
       })
     }
@@ -91,12 +109,70 @@ class Plant extends Component {
       });
     }
 
+    closeBtn() {
+      this.setState({
+        onSelect: null,
+        modal: {
+          open: false,
+          mode: ''
+        }
+      })
+    }
+
+    async updateBtn(id) {
+      let onSelect =  await this.state.plant.find( c => {
+        return c.idplant === id
+      })
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'update'
+        }
+      })
+  }
+
+  async detailBtn(id) {
+    let onSelect =  await this.state.plant.find( c => {
+      return c.idplant === id
+    })
+    this.setState({
+      onSelect: onSelect,
+      modal: {
+        open: true,
+        mode: 'detail'
+      }
+    })
+}
+
+    addBtn() {
+      this.setState({
+        modal: {
+          open: true,
+          mode: 'add'
+        }
+      })
+    }
+
+    async deleteBtn(id) {
+      let onSelect =  await this.state.plant.find( c => {
+        return c.idplant === id
+      })
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'delete'
+        }
+      })
+    }
+
       render() {
         if (this.state.loading) {
           return <Spinner />
         }
     
-        if (!this.state.plans) {
+        if (!this.state.plant) {
           return <div><br></br><br></br> <br></br>didn't get a person</div>;
         }
 
@@ -185,11 +261,15 @@ class Plant extends Component {
               </div>
               
               <div className="for-card">
-                {this.state.plans.map(item =>
-                          <CardExample key={item.id} name={item.sname} image={item.refimg} reff={item.refCrude} />
+                {this.state.plant.map(item =>
+                          <CardExample key={item.id} id={item.idplant} name={item.sname} image={item.refimg} reff={item.refCrude} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
                         )}
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
+                {this.state.modal.open === true ? <ModalPlant baseCrude={this.state.crude} data={this.state.onSelect} modal={this.state.modal} close={this.closeBtn}/>
+                : 
+                null
+                }
               </div>
               <Fab style={{
                  position:"fixed",
@@ -205,4 +285,4 @@ class Plant extends Component {
       }
 }
 
-export default Plant;
+export default PlantPage;

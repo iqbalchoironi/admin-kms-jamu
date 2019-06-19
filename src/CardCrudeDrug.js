@@ -5,9 +5,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
@@ -58,7 +55,7 @@ const List = ({ item }) => {
   return null;
 }
 
-function CardDclass(props) {
+function CardCrudeDrug(props) {
   const {
     classes
   } = props;
@@ -99,13 +96,19 @@ function CardDclass(props) {
           >
             {props.name}
           </Typography>
-          {/* <Typography
+          <Typography
             // className={"MuiTypography--subheading"}
             className="block-with-text"
             variant={"caption"}
           >
            {props.efficacy}
-          </Typography> */}
+          </Typography>
+          <ul className="reff">
+                 {props.reff.map( item => (
+                    <List item = { item } />
+                ))} 
+            
+          </ul>
         </CardContent>
         <CardActions className={"MuiCardActions-root"}>
         {/* <Button color={"primary"} fullWidth onClick={props.detail.bind(this, id)}>
@@ -123,4 +126,4 @@ function CardDclass(props) {
   );
 }
 
-export default withStyles(styles)(CardDclass);
+export default withStyles(styles)(CardCrudeDrug);
