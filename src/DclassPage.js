@@ -11,6 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
+import ModalDclass from './ModalDclass';
 
 class DclassPage extends Component {
     constructor(props) {
@@ -21,11 +22,20 @@ class DclassPage extends Component {
           inputSearch: '',
           onSearch:[],
           dclass : [],
+          modal: {
+            open: false,
+            mode: '',
+          },
           currentPage: 1
         }
         // this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getDataSearch = this.getDataSearch.bind(this);
+        this.updateBtn = this.updateBtn.bind(this);
+        this.deleteBtn = this.deleteBtn.bind(this);
+        this.detailBtn = this.detailBtn.bind(this);
+        this.addBtn = this.addBtn.bind(this);
+        this.closeBtn = this.closeBtn.bind(this);
       }
 
       async componentDidMount() {
@@ -94,6 +104,64 @@ class DclassPage extends Component {
       });
     }
 
+    closeBtn() {
+      this.setState({
+        onSelect: null,
+        modal: {
+          open: false,
+          mode: ''
+        }
+      })
+    }
+
+    async updateBtn(id) {
+      let onSelect =  await this.state.dclass.find( c => {
+        return c.idclass === id
+      })
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'update'
+        }
+      })
+  }
+
+  async detailBtn(id) {
+    let onSelect =  await this.state.dclass.find( c => {
+      return c.idclass === id
+    })
+    this.setState({
+      onSelect: onSelect,
+      modal: {
+        open: true,
+        mode: 'detail'
+      }
+    })
+}
+
+    addBtn() {
+      this.setState({
+        modal: {
+          open: true,
+          mode: 'add'
+        }
+      })
+    }
+
+    async deleteBtn(id) {
+      let onSelect =  await this.state.dclass.find( c => {
+        return c.idclass === id
+      })
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'delete'
+        }
+      })
+    }
+
       render() {
         if (this.state.loading) {
           return <Spinner />;
@@ -143,7 +211,7 @@ class DclassPage extends Component {
               
               <div className="for-card">
                 {this.state.onSearch.map(item =>
-                          <CardDclass key={item.idherbsmed} name={item.name} efficacy={item.efficacy}/>
+                          <CardDclass key={item.idclass} id={item.idclass} name={item.name} efficacy={item.efficacy}/>
                  )}
               </div>
             </div>
@@ -189,10 +257,14 @@ class DclassPage extends Component {
               
               <div className="for-card">
                 {this.state.dclass.map(item =>
-                          <CardDclass key={item.idclass} name={item.class} efficacy={item.description} reff={[]}/>
+                          <CardDclass key={item.idclass} id={item.idclass} name={item.class} efficacy={item.description} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
                  )}
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
+                {this.state.modal.open === true ? <ModalDclass data={this.state.onSelect} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
+                        : 
+                        null
+                }
               </div>
               <Fab style={{
                  position:"fixed",

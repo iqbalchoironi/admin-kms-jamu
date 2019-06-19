@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import Axios from "axios";
 
-import CardHerbMed from './CardHerbMed'
+import CardCrudeDrug from './CardCrudeDrug'
 import SearchInput from './SearchInput'
 import Spinner from './Spinner'
 
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
+import ModalCrude from './ModalCrude';
+
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 class HerbMeds extends Component {
     constructor(props) {
@@ -18,15 +22,33 @@ class HerbMeds extends Component {
           inputSearch: '',
           onSearch:[],
           herbmeds : [],
+          plant: [],
+          modal: {
+            open: false,
+            mode: '',
+          },
           currentPage: 1
         }
         this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getDataSearch = this.getDataSearch.bind(this);
+        this.updateBtn = this.updateBtn.bind(this);
+        this.deleteBtn = this.deleteBtn.bind(this);
+        this.detailBtn = this.detailBtn.bind(this);
+        this.addBtn = this.addBtn.bind(this);
+        this.closeBtn = this.closeBtn.bind(this);
       }
 
       async componentDidMount() {
         window.addEventListener('scroll', this.onScroll, false);
+        const urlPlant = '/jamu/api/plant/getlist'
+        const resPlant = await Axios.get(urlPlant);
+        let dataPlant =  await resPlant.data.data.map(dt => {
+          return {label:dt.sname,value:dt._id}
+        });
+        this.setState({
+          plant: dataPlant
+        })
         this.getData();
       }
 
@@ -45,7 +67,7 @@ class HerbMeds extends Component {
       };
       
      async getData(){
-      const url = '/jamu/api/herbsmed/pages/' + this.state.currentPage;
+      const url = '/jamu/api/crudedrug/pages/' + this.state.currentPage;
       const res = await Axios.get(url);
       const { data } = await res;
       let newData = this.state.herbmeds.concat(data.data);
@@ -60,7 +82,7 @@ class HerbMeds extends Component {
       this.setState({
         loadData: true
       })
-      const url = '/jamu/api/herbsmed/search';
+      const url = '/jamu/api/crudedrug/search';
       let axiosConfig = {
         headers: {
             'Content-Type': 'application/json'
@@ -89,6 +111,64 @@ class HerbMeds extends Component {
       this.setState({
         [name]: value
       });
+    }
+
+    closeBtn() {
+      this.setState({
+        onSelect: null,
+        modal: {
+          open: false,
+          mode: ''
+        }
+      })
+    }
+
+    async updateBtn(id) {
+      let onSelect =  await this.state.herbmeds.find( c => {
+        return c.idherbsmed === id
+      })
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'update'
+        }
+      })
+  }
+
+  async detailBtn(id) {
+    let onSelect =  await this.state.herbmeds.find( c => {
+      return c.idherbsmed === id
+    })
+    this.setState({
+      onSelect: onSelect,
+      modal: {
+        open: true,
+        mode: 'detail'
+      }
+    })
+}
+
+    addBtn() {
+      this.setState({
+        modal: {
+          open: true,
+          mode: 'add'
+        }
+      })
+    }
+
+    async deleteBtn(id) {
+      let onSelect =  await this.state.herbmeds.find( c => {
+        return c.idherbsmed === id
+      })
+      this.setState({
+        onSelect: onSelect,
+        modal: {
+          open: true,
+          mode: 'delete'
+        }
+      })
     }
 
       render() {
@@ -140,7 +220,7 @@ class HerbMeds extends Component {
               
               <div className="for-card">
                 {this.state.onSearch.map(item =>
-                          <CardHerbMed key={item.idherbsmed} name={item.name} efficacy={item.efficacy}/>
+                          <CardCrudeDrug key={item.idcrudedrug} name={item.name} efficacy={item.efficacy}/>
                  )}
               </div>
             </div>
@@ -186,11 +266,24 @@ class HerbMeds extends Component {
               
               <div className="for-card">
                 {this.state.herbmeds.map(item =>
-                          <CardHerbMed key={item.idherbsmed} name={item.name} efficacy={item.efficacy} reff={item.refCrude}/>
+                          <CardCrudeDrug key={item.idcrudedrug} id={item.idcrudedrug} name={item.sname} efficacy={item.effect} reff={item.refPlant} update={this.updateBtn} delete={this.deleteBtn}/>
                  )}
                 {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
                   : null }
               </div>
+              {this.state.modal.open === true ? <ModalCrude data={this.state.onSelect} modal={this.state.modal} baseMedtype={this.state.medtype} basePlant={this.state.plant} close={this.closeBtn}/>
+                        : 
+                        null
+              } 
+               <Fab style={{
+                 position:"fixed",
+                 width:"45px",
+                 height:"45px",
+                 bottom:"25px",
+                 right:"25px"
+               }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                <AddIcon />
+              </Fab>
             </div>
         );
       }

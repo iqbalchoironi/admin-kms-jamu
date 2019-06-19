@@ -18,111 +18,101 @@ const List = (props) => {
   return null;
 }
 
-const ModalRefCrude = (props) => {
+const ModalRefPlant = (props) => {
   return (
     <Dialog open={props.open} onClose={props.close} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">You update herbal medicine with</DialogTitle>
           <DialogContent>
             <Select
-              onChange={props.handleChange('addCrude')}
-              options={props.baseCrude}
+              onChange={props.handleChange('addPlant')}
+              options={props.basePlant}
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={props.close} color="primary">
               Cancel
             </Button>
-            <Button onClick={props.handleAddCrude} color="primary">
+            <Button onClick={props.handleAddPlant} color="primary">
               Add
             </Button>
           </DialogActions>
         </Dialog>
   )
 }
-class ModalHerbMed extends Component {
+class ModalCrude extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          openModalCrude: false,
-          addCrude: null,
+          openModalPlant: false,
+          addPlant: null,
           loading: true,
           _id: '',
-          idherbsmed:'',
+          idPlant:'',
           name: '',
-          nameloc1: '',
-          nameloc2: '',
-          efficacy: '',
-          efficacyloc: '',
+          name_loc1: '',
+          name_loc2: '',
+          gname: '',
+          effect: '',
           ref: '',
-          idclass: '',
-          idcompany: '',
-          idtype: '',
-          img: '',
-          __v: null,
-          refMedtype: null,
-          refCompany: null,
-          refDclass: null,
-          refCrude: [],
+          effect_loc: '',
+          comment: '',
+          refPlant: [],
         }
         this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
         this.valueChange = this.valueChange.bind(this);
         this.onChange = this.onChange.bind(this);
         this.togglePopup = this.togglePopup.bind(this);
-        this.handleAddCrude = this.handleAddCrude.bind(this);
-        this.handleDeleteCrude = this.handleDeleteCrude.bind(this);
+        this.handleAddPlant = this.handleAddPlant.bind(this);
+        this.handleDeletePlant = this.handleDeletePlant.bind(this);
       }
 
       async componentDidMount() {
         if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){
             
-          let dataCrude =  await this.props.data.refCrude.map(dt => {
+          let dataPlant =  await this.props.data.refPlant.map(dt => {
             return {label:dt.sname,value:dt._id}
           });
             
             this.setState({
                 _id: this.props.data._id,
-                idherbsmed:this.props.data.idherbsmed,
-                name: this.props.data.name,
-                nameloc1: this.props.data.nameloc1,
-                nameloc2: this.props.data.nameloc2,
-                efficacy: this.props.data.efficacy,
-                efficacyloc: this.props.data.efficacyloc,
+                idPlant: this.props.data.idPlant,
+                sname: this.props.data.sname,
+                name_en: this.props.data.name_en,
+                name_loc1: this.props.data.name_loc1,
+                name_loc2: this.props.data.name_loc2,
+                gname: this.props.data.gname,
+                position: this.props.data.position,
+                effect: this.props.data.effect,
+                effect_loc: this.props.data.effect_loc,
+                comment: this.props.data.comment,
                 ref: this.props.data.ref,
-                idclass: this.props.data.idclass,
-                idcompany: this.props.data.idcompany,
-                idtype: this.props.data.idtype,
-                img: this.props.data.img,
-                __v: this.props.data.__v,
-                refMedtype: this.props.data.refMedtype,
-                refCompany: this.props.data.refCompany,
-                refDclass: this.props.data.refDclass,
-                refCrude: dataCrude
+                refPlant: dataPlant
             })
 
            
         }
       }
 
-      handleAddCrude = () => {
-        let newData = this.state.refCrude.concat(this.state.addCrude);
+      handleAddPlant = () => {
+        let newData = this.state.refPlant.concat(this.state.addPlant);
         this.setState({
-          refCrude: newData,
-          addCrude: null
+          refPlant: newData,
+          addPlant: null
         });
         this.togglePopup();
       }
 
-      handleDeleteCrude = (e) => {
+      handleDeletePlant = (e) => {
         console.log(e.target.id)
-        let newData = this.state.refCrude.filter(dt => dt.value !== e.target.id);
+        let newData = this.state.refPlant.filter(dt => dt.value !== e.target.id);
         this.setState({
-          refCrude: newData
+          refPlant: newData
         });
       }
 
       togglePopup = () => {
         this.setState({
-          openModalCrude: !this.state.openModalCrude
+          openModalPlant: !this.state.openModalPlant
         });
       }
 
@@ -158,28 +148,22 @@ class ModalHerbMed extends Component {
                 }
             };
             
-        let url = '/jamu/api/herbsmed/update/' + this.state.idherbsmed
-
-        const formData = new FormData();
-      formData.append('_id',this.state._id);
-      formData.append('idherbsmed',this.state.idherbsmed);
-      formData.append('name',this.state.name);
-      formData.append('nameloc1',this.state.nameloc1);
-      formData.append('nameloc2',this.state.nameloc2);
-      formData.append('efficacy',this.state.efficacy);
-      formData.append('efficacyloc',this.state.efficacyloc);
-      formData.append('ref',this.state.ref);
-      formData.append('idclass',this.state.idclass);
-      formData.append('idcompany',this.state.idcompany);
-      formData.append('idtype',this.state.idtype);
-      formData.append('img',this.state.img);
-      formData.append('refMedtype',this.state.refMedtype);
-      formData.append('refCompany',this.state.refCompany);
-      formData.append('refDclass',this.state.refDclass._id);
-      this.state.refCrude.map(item =>{
-        formData.append('refCrude',item.value);
-      })
-      Axios.patch( url,formData ,axiosConfig)
+        let url = '/jamu/api/crudedrug/update/' + this.state.idPlant
+        let refPlant = this.state.refPlant.map(data => data.value)
+      Axios.patch( url,{
+        idcrude: this.state.idcrude,
+        sname: this.state.sname,
+        name_en: this.state.name_en,
+        name_loc1: this.state.name_loc1,
+        name_loc2: this.state.name_loc2,
+        gname: this.state.gname,
+        position: this.state.position,
+        effect: this.state.effect,
+        effect_loc: this.state.effect_loc,
+        comment: this.state.comment,
+        ref: this.state.ref,
+        refPlant: refPlant
+      },axiosConfig)
         .then(data => {
             const res = data.data;
             console.log(res)
@@ -201,27 +185,22 @@ class ModalHerbMed extends Component {
               }
           };
           
-      let url = '/jamu/api/herbsmed/add';
-
-      const formData = new FormData();
-      formData.append('idherbsmed',this.state.idherbsmed);
-      formData.append('name',this.state.name);
-      formData.append('nameloc1',this.state.nameloc1);
-      formData.append('nameloc2',this.state.nameloc2);
-      formData.append('efficacy',this.state.efficacy);
-      formData.append('efficacyloc',this.state.efficacyloc);
-      formData.append('ref',this.state.ref);
-      formData.append('idclass',this.state.idclass);
-      formData.append('idcompany',this.state.idcompany);
-      formData.append('idtype',this.state.idtype);
-      formData.append('img',this.state.img);
-      formData.append('refMedtype',this.state.refMedtype.value);
-      formData.append('refCompany',this.state.refCompany.value);
-      formData.append('refDclass',this.state.refDclass.value);
-      this.state.refCrude.map(item =>{
-        formData.append('refCrude',item.value);
-      })
-      Axios.post( url,formData,axiosConfig)
+      let url = '/jamu/api/crudedrug/add';
+      let refPlant = this.state.refPlant.map(data => data.value)
+      Axios.post( url,{
+        idcrude: this.state.idcrude,
+        sname: this.state.sname,
+        name_en: this.state.name_en,
+        name_loc1: this.state.name_loc1,
+        name_loc2: this.state.name_loc2,
+        gname: this.state.gname,
+        position: this.state.position,
+        effect: this.state.effect,
+        effect_loc: this.state.effect_loc,
+        comment: this.state.comment,
+        ref: this.state.ref,
+        refPlant: refPlant
+      },axiosConfig)
         .then(data => {
             const res = data.data;
             console.log(res)
@@ -242,12 +221,12 @@ class ModalHerbMed extends Component {
                 }
             };
             
-        let url = '/jamu/api/herbsmed/delete/' + this.state.idherbsmed
+        let url = '/jamu/api/crudedrug/delete/' + this.state.idcrude
       Axios.delete( url,axiosConfig)
         .then(data => {
             const res = data.data;
             console.log(res)
-            window.location.href = '/herbmed';
+            window.location.href = '/crudedrug';
         })
         .catch(err => {
             console.log(err)
@@ -260,69 +239,107 @@ render() {
     return (
       <div>
         <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idherbsmed}</DialogTitle>
+          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idPlant}</DialogTitle>
           <DialogContent>
             {/* <DialogContentText>
-              You update herbal medicine with id {this.state.idherbsmed}
+              You update herbal medicine with id {this.state.idPlant}
             </DialogContentText> */}
-            <Button
-              containerElement='imageherbmeds' // <-- Just add me!
-              label="herbal medicine image">
-              <input type="file" />
-            </Button>
             <TextField
               autoFocus
               margin="dense"
-              id="name"
-              label="Name"
-              name="name"
+              id="idPlant"
+              label="ID for Crude Drug"
+              name="idcrude"
               type="text"
-              value={this.state.name}
+              value={this.state.idcrude}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="sname"
+              label="sname"
+              name="sname"
+              type="text"
+              value={this.state.sname}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name_en"
+              label="name in english"
+              name="name_en"
+              type="text"
+              value={this.state.name_en}
               fullWidth
               onChange={this.valueChange}
             />
              <TextField
               margin="dense"
-              id="nameloc1"
+              id="name_loc1"
               label="Name Location 1"
-              name="nameloc1"
+              name="name_loc1"
               type="text"
-              value={this.state.nameloc1}
+              value={this.state.name_loc1}
               fullWidth
               onChange={this.valueChange}
             />
              <TextField
               margin="dense"
-              id="nameloc2"
+              id="name_loc2"
               label="Name Location 2"
-              name="nameloc2"
+              name="name_loc2"
               type="text"
-              value={this.state.nameloc2}
+              value={this.state.name_loc2}
               fullWidth
               onChange={this.valueChange}
             />
              <TextField
+              margin="dense"
+              id="gname"
+              label="GLobal Name"
+              name="gname"
+              type="text"
+              value={this.state.gname}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="effect"
+              label="Effect"
+              name="effect"
+              type="text"
+              value={this.state.effect}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="effect_loc"
+              label="Location of Effect"
+              name="effect_loc"
+              type="text"
+              value={this.state.effect_loc}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
               multiline rows={10}
               margin="dense"
-              id="efficacy"
-              label="Efficacy"
-              name="efficacy"
+              id="comment"
+              label="Comment"
+              name="comment"
               type="text"
-              value={this.state.efficacy}
+              value={this.state.comment}
               fullWidth
               onChange={this.valueChange}
             />
-             <TextField
-              margin="dense"
-              id="name"
-              label="Efficacy Location"
-              name="efficacyloc"
-              type="text"
-              value={this.state.efficacyloc}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
+            <TextField
+              multiline rows={10}
               margin="dense"
               id="ref"
               label="Refren"
@@ -332,46 +349,16 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
-            <TextField
-              margin="dense"
-              id="idclass"
-              label="Id Class"
-              name="idclass"
-              type="text"
-              value={this.state.idclass}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="idtype"
-              label="Id Ttype"
-              name="idtype"
-              type="text"
-              value={this.state.idtype}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="idcompany"
-              label="Id Company"
-              name="idcompany"
-              type="text"
-              value={this.state.idcompany}
-              fullWidth
-              onChange={this.valueChange}
-            />
             <Button onClick={this.togglePopup} color="primary">
-              Add Crude Drug
+              Add Refren Plant
             </Button>
-            {this.state.openModalCrude === true ? <ModalRefCrude baseCrude={this.props.baseCrude} handleChange={this.handleChange} handleAddCrude={this.handleAddCrude} close={this.togglePopup} open={this.state.openModalCrude} />
+            {this.state.openModalPlant === true ? <ModalRefPlant basePlant={this.props.basePlant} handleChange={this.handleChange} handleAddPlant={this.handleAddPlant} close={this.togglePopup} open={this.state.openModalPlant} />
               : 
               null
               }
             <ul className="reff">
-                 {this.state.refCrude.map( item => (
-                    <List item = { item } delete={this.handleDeleteCrude} />
+                 {this.state.refPlant.map( item => (
+                    <List item = { item } delete={this.handleDeletePlant} />
                 ))} 
             
           </ul>
@@ -417,79 +404,107 @@ render() {
   }else if(this.props.modal.mode === 'add') {
     return (
       <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idherbsmed}</DialogTitle>
+          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idPlant}</DialogTitle>
           <DialogContent>
             {/* <DialogContentText>
-              You update herbal medicine with id {this.state.idherbsmed}
+              You update herbal medicine with id {this.state.idPlant}
             </DialogContentText> */}
-            <Button
-              containerElement='imageherbmeds' // <-- Just add me!
-              label="herbal medicine image">
-              <input type="file" name="img" onChange={this.onChange} />
-            </Button>
             <TextField
               autoFocus
               margin="dense"
-              id="idherbsmed"
-              label="ID Herbal Medicine"
-              name="idherbsmed"
+              id="idPlant"
+              label="ID for Crude Drug"
+              name="idcrude"
               type="text"
-              value={this.state.idherbsmed}
+              value={this.state.idcrude}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="sname"
+              label="sname"
+              name="sname"
+              type="text"
+              value={this.state.sname}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name_en"
+              label="name in english"
+              name="name_en"
+              type="text"
+              value={this.state.name_en}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="name_loc1"
+              label="Name Location 1"
+              name="name_loc1"
+              type="text"
+              value={this.state.name_loc1}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="name_loc2"
+              label="Name Location 2"
+              name="name_loc2"
+              type="text"
+              value={this.state.name_loc2}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="gname"
+              label="GLobal Name"
+              name="gname"
+              type="text"
+              value={this.state.gname}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="effect"
+              label="Effect"
+              name="effect"
+              type="text"
+              value={this.state.effect}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="name"
-              label="Name"
-              name="name"
+              id="effect_loc"
+              label="Location of Effect"
+              name="effect_loc"
               type="text"
-              value={this.state.name}
+              value={this.state.effect_loc}
               fullWidth
               onChange={this.valueChange}
             />
-             <TextField
-              margin="dense"
-              id="nameloc1"
-              label="Name Location 1"
-              name="nameloc1"
-              type="text"
-              value={this.state.nameloc1}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
-              margin="dense"
-              id="nameloc2"
-              label="Name Location 2"
-              name="nameloc2"
-              type="text"
-              value={this.state.nameloc2}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
+            <TextField
               multiline rows={10}
               margin="dense"
-              id="efficacy"
-              label="Efficacy"
-              name="efficacy"
+              id="comment"
+              label="Comment"
+              name="comment"
               type="text"
-              value={this.state.efficacy}
+              value={this.state.comment}
               fullWidth
               onChange={this.valueChange}
             />
-             <TextField
-              margin="dense"
-              id="name"
-              label="Efficacy Location"
-              name="efficacyloc"
-              type="text"
-              value={this.state.efficacyloc}
-              fullWidth
-              onChange={this.valueChange}
-            />
-             <TextField
+            <TextField
+              multiline rows={10}
               margin="dense"
               id="ref"
               label="Refren"
@@ -499,61 +514,16 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
-            <TextField
-              margin="dense"
-              id="idclass"
-              label="Id Class"
-              name="idclass"
-              type="text"
-              value={this.state.idclass}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="idtype"
-              label="Id Ttype"
-              name="idtype"
-              type="text"
-              value={this.state.idtype}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <TextField
-              margin="dense"
-              id="idcompany"
-              label="Id Company"
-              name="idcompany"
-              type="text"
-              value={this.state.idcompany}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            <Select
-              value={this.state.refMedtype}
-              onChange={this.handleChange('refMedtype')}
-              options={this.props.baseMedtype}
-            />
-            <Select
-              value={this.state.refCompany}
-              onChange={this.handleChange('refCompany')}
-              options={this.props.baseCompany}
-            />
-            <Select
-              value={this.state.refDclass}
-              onChange={this.handleChange('refDclass')}
-              options={this.props.baseDclass}
-            />
             <Button onClick={this.togglePopup} color="primary">
-              Add Crude Drug
+              Add Refren Plant
             </Button>
-            {this.state.openModalCrude === true ? <ModalRefCrude baseCrude={this.props.baseCrude} handleChange={this.handleChange} handleAddCrude={this.handleAddCrude} close={this.togglePopup} open={this.state.openModalCrude} />
+            {this.state.openModalPlant === true ? <ModalRefPlant basePlant={this.props.basePlant} handleChange={this.handleChange} handleAddPlant={this.handleAddPlant} close={this.togglePopup} open={this.state.openModalPlant} />
               : 
               null
               }
             <ul className="reff">
-                 {this.state.refCrude.map( item => (
-                    <List item = { item } delete={this.handleDeleteCrude} />
+                 {this.state.refPlant.map( item => (
+                    <List item = { item } delete={this.handleDeletePlant} />
                 ))} 
             
           </ul>
@@ -572,4 +542,4 @@ render() {
     }
 }
 
-export default ModalHerbMed;
+export default ModalCrude;
