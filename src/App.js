@@ -17,10 +17,13 @@ import ExplicitPage from './ExplicitPage'
 import TableEthnic from './TableEthnic'
 import TablePlantEthnic from './TablePlantEthnic'
 
+import FormExplicit from './FormExplicit'
+
 
 
 
 import './App.css'
+import FormTacit from './FormTacit';
 
 function App() {
   const path = window.location.pathname;
@@ -41,7 +44,9 @@ function App() {
               <Route exact path="/crudedrug" component={CrudeDrugPage} />
   
               <Route exact path="/tacit" component={TacitPage} />
+              <Route exact path="/form/tacit" component={FormTacit} />
               <Route exact path="/explicit" component={ExplicitPage} />
+              <Route exact path="/form/explicit" component={FormExplicit} />
               {/* compound */}
               
               <Route exact path="/ethnic" component={TableEthnic} />
