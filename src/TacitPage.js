@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link2 from '@material-ui/core/Link';
 import SearchInput from './SearchInput'
+import Button from '@material-ui/core/Button';
 
 import Person from '@material-ui/icons/Person';
 import CollectionsBookmark from '@material-ui/icons/CollectionsBookmark'
@@ -83,7 +84,7 @@ class TacitPage extends Component {
       }
     
         logout = event => {
-            window.location.href = '/form/explicit';
+            window.location.href = '/form/tacit';
         }
         handleClick(offset,page) {
           console.log(page)
@@ -125,6 +126,9 @@ class TacitPage extends Component {
                     display:"flex",
                     flexDirection:"row-reverse"
                   }}>
+                    <Button variant="outlined" onClick={this.logout} size="medium" color="primary" >
+                      Add
+                    </Button>
                     <SearchInput />
                   </div>
                 </div>
