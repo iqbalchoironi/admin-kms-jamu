@@ -15,7 +15,7 @@ import Icon from "@material-ui/core/Icon";
 const styles = muiBaseTheme => ({
   card: {
     maxWidth: 300,
-    height: 320,
+    height: 260,
     margin: "auto",
     transition: "0.3s",
     boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
@@ -99,13 +99,11 @@ function CardDclass(props) {
           >
             {props.name}
           </Typography>
-          {/* <Typography
-            // className={"MuiTypography--subheading"}
-            className="block-with-text"
-            variant={"caption"}
-          >
+          <p style={{
+            color:"grey"
+          }} className="block-with-text">
            {props.efficacy}
-          </Typography> */}
+          </p>
         </CardContent>
         <CardActions className={"MuiCardActions-root"}>
         {/* <Button color={"primary"} fullWidth onClick={props.detail.bind(this, id)}>

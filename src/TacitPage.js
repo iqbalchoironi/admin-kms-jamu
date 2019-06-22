@@ -13,7 +13,24 @@ import CollectionsBookmark from '@material-ui/icons/CollectionsBookmark'
 import DateRange from '@material-ui/icons/DateRange'
 import Pagination from "material-ui-flat-pagination";
 
+import Fab from '@material-ui/core/Fab';
+import Icon from '@material-ui/core/Icon';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { makeStyles } from '@material-ui/core/styles';
+import ModalTacit from './ModalTacit';
+
+const useStyles = makeStyles(theme => ({
+  fab: {
+    margin: theme.spacing(1),
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
+}));
+
 function ListTacit (props) {
+  const classes = useStyles();
+  const id = props.id
     return (
         <div style={{
             marginTop: "25px"
@@ -34,6 +51,12 @@ function ListTacit (props) {
         <p className="block-with-text">
             {props.abstract}
         </p>
+        <Fab color="secondary" aria-label="Edit" className={classes.fab} onClick={props.update.bind(this, id)}>
+          <Icon>edit_icon</Icon>
+        </Fab>
+        <Fab aria-label="Delete" className={classes.fab} onClick={props.delete.bind(this, id)}>
+          <DeleteIcon />
+        </Fab>
        </div>
     )
 }
@@ -47,8 +70,17 @@ class TacitPage extends Component {
           loadData: false,
           explicit : [],
           currentPage: 1,
+          modal: {
+            open: false,
+            mode: '',
+          }
         }
         // this.onScroll = this.onScroll.bind(this);
+        this.updateBtn = this.updateBtn.bind(this);
+        this.deleteBtn = this.deleteBtn.bind(this);
+        this.detailBtn = this.detailBtn.bind(this);
+        this.addBtn = this.addBtn.bind(this);
+        this.closeBtn = this.closeBtn.bind(this);
       }
     
       async componentDidMount() {
@@ -89,6 +121,64 @@ class TacitPage extends Component {
         handleClick(offset,page) {
           console.log(page)
           this.setState({ offset });
+        }
+
+        closeBtn() {
+          this.setState({
+            onSelect: null,
+            modal: {
+              open: false,
+              mode: ''
+            }
+          })
+        }
+    
+        async updateBtn(id) {
+          let onSelect =  await this.state.explicit.find( c => {
+            return c._id === id
+          })
+          this.setState({
+            onSelect: onSelect,
+            modal: {
+              open: true,
+              mode: 'update'
+            }
+          })
+      }
+    
+      async detailBtn(id) {
+        let onSelect =  await this.state.explicit.find( c => {
+          return c.idherbsmed === id
+        })
+        this.setState({
+          onSelect: onSelect,
+          modal: {
+            open: true,
+            mode: 'detail'
+          }
+        })
+    }
+    
+        addBtn() {
+          this.setState({
+            modal: {
+              open: true,
+              mode: 'add'
+            }
+          })
+        }
+    
+        async deleteBtn(id) {
+          let onSelect =  await this.state.explicit.find( c => {
+            return c._id === id
+          })
+          this.setState({
+            onSelect: onSelect,
+            modal: {
+              open: true,
+              mode: 'delete'
+            }
+          })
         }
 
     render (){
@@ -154,7 +244,7 @@ class TacitPage extends Component {
                         minHeight:"500px"
                     }}>
                       {this.state.explicit.map(item =>
-                        <ListTacit key={item._id} id={item._id} name={item.firstName+' '+item.lastName} title={item.title} abstract={item.abstract} />
+                        <ListTacit key={item._id} id={item._id} name={item.firstName+' '+item.lastName} title={item.title} abstract={item.abstract} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
                       )}
                   </div>
               </div>  
@@ -169,6 +259,10 @@ class TacitPage extends Component {
                 total={250}
                 onClick={(e,offset, page) => this.handleClick(offset,page)}
               />
+              {this.state.modal.open === true ? <ModalTacit data={this.state.onSelect} modal={this.state.modal} close={this.closeBtn}/>
+                        : 
+                        null
+              }
             </div>
         );
     }
