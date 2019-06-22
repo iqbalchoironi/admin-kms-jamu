@@ -12,6 +12,8 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 import ModalHerbMed from './ModalHerbMed'
+import SnackBar from "./SnackBar";
+import Pagination from "material-ui-flat-pagination";
 
 class HerbMeds extends Component {
     constructor(props) {
@@ -30,10 +32,18 @@ class HerbMeds extends Component {
             open: false,
             mode: '',
           },
+          snackbar: {
+            open: false,
+            success: false,
+            message: '',
+          },
           onSelect: null,
-          currentPage: 1
+          currentPage: 1,
+          offset:5,
+          pages: null,
+          lenght: null
         }
-        this.onScroll = this.onScroll.bind(this);
+        //this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getDataSearch = this.getDataSearch.bind(this);
         this.updateBtn = this.updateBtn.bind(this);
@@ -41,29 +51,50 @@ class HerbMeds extends Component {
         this.detailBtn = this.detailBtn.bind(this);
         this.addBtn = this.addBtn.bind(this);
         this.closeBtn = this.closeBtn.bind(this);
+        this.handleClick =  this.handleClick.bind(this);
+        this.afterUpdate = this.afterUpdate.bind(this);
       }
 
       async componentDidMount() {
-        window.addEventListener('scroll', this.onScroll, false);
+        //window.addEventListener('scroll', this.onScroll, false);
         this.getData();
       }
 
-      async onScroll() {
-        if (
-          (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
-          !this.props.isLoading
-        ){
-          // Do awesome stuff like loading more content!
-          await this.setState({
-            loadData: true,
-            currentPage: this.state.currentPage + 1
-          })
-          this.getData();
-        }
-      };
+      // async onScroll() {
+      //   if (
+      //     (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
+      //     !this.props.isLoading
+      //   ){
+      //     // Do awesome stuff like loading more content!
+      //     await this.setState({
+      //       loadData: true,
+      //       currentPage: this.state.currentPage + 1
+      //     })
+      //     this.getData();
+      //   }
+      // };
+
+      async handleClick(offset,page) {
+        console.log(page)
+        await this.setState({ currentPage: page, offset });
+        this.getDataPage();
+      }
       
+      async getDataPage (){
+        this.setState({
+          loading: true
+        })
+        const url = '/jamu/api/herbsmed/pages/' + this.state.currentPage;
+        const res = await Axios.get(url);
+        const { data } = await res;
+        this.setState({
+          herbmeds: data.data,
+          loading: false
+        })
+      }
+
      async getData(){
-      const url = '/jamu/api/herbsmed/pages/' + this.state.currentPage;
+      const url = '/jamu/api/herbsmed/pages/'+ this.state.currentPage;
       const urlCrude = '/jamu/api/crudedrug/getlist'
       const urlCompany = '/jamu/api/company/getlist'
       const urlDclass = '/jamu/api/dclass'
@@ -74,7 +105,6 @@ class HerbMeds extends Component {
       const resDclass = await Axios.get(urlDclass);
       const resMedtype = await Axios.get(urlMedtype);
       const { data } = await res;
-      let newData = this.state.herbmeds.concat(data.data);
       let dataCrude =  await resCrude.data.data.map(dt => {
         return {label:dt.sname,value:dt._id}
       });
@@ -88,7 +118,9 @@ class HerbMeds extends Component {
         return {label:dt.medname,value:dt._id}
       });
       this.setState({
-        herbmeds: newData, 
+        pages: data.pages,
+        lenght: data.lenght,
+        herbmeds: data.data, 
         crude: dataCrude,
         company: dataCompany,
         dclass: dataDclass,
@@ -97,6 +129,23 @@ class HerbMeds extends Component {
       })
     }
 
+    async afterUpdate (success, message){
+      const url = '/jamu/api/herbsmed/pages/'+ this.state.currentPage;
+      const res = await Axios.get(url);
+      const { data } = await res;
+      this.setState({
+        herbmeds: data.data,
+        modal: {
+          open: false,
+          mode: '',
+        },
+        snackbar: {
+          open: true,
+          success: success,
+          message: message,
+        }
+      })
+    }
     async getDataSearch(){
       console.log(this.state.inputSearch)
       this.setState({
@@ -126,8 +175,6 @@ class HerbMeds extends Component {
       const target = event.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
       const name = target.name;
-      console.log(value)
-      console.log(name)
       this.setState({
         [name]: value
       });
@@ -139,6 +186,11 @@ class HerbMeds extends Component {
         modal: {
           open: false,
           mode: ''
+        },
+        snackbar: {
+          open: false,
+          success: false,
+          message: '',
         }
       })
     }
@@ -192,13 +244,6 @@ class HerbMeds extends Component {
     }
 
       render() {
-        if (this.state.loading) {
-          return <Spinner />;
-        }
-    
-        if (!this.state.herbmeds) {
-          return <div><br></br><br></br> <br></br>didn't get a person</div>;
-        }
 
         if(this.state.inputSearch !== '' && this.state.onSearch !== []){
           return (
@@ -248,63 +293,84 @@ class HerbMeds extends Component {
       }
 
         return (
-            <div style={{
-              display: "flex",
-              flexDirection:"column",
-              paddingTop:"30px"
-
-            }}>
-            <div style={{
-                width:"90%",
-                display:"flex",
-                flexDirection:"row",
-                margin:"auto"
+          <div>
+            {this.state.loading ?
+              <Spinner />
+              :
+              <div style={{
+                display: "flex",
+                flexDirection:"column",
+                paddingTop:"30px"
+  
               }}>
               <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row"
-              }}>
-                <Breadcrumbs aria-label="Breadcrumb">
-                  <Link color="inherit" href="/" >
-                    KMS Jamu
-                  </Link>
-                  <Link color="inherit" >
-                    Explore
-                  </Link>
-                  <Typography color="textPrimary">Herbal Medicine</Typography>
-                </Breadcrumbs>
+                  width:"90%",
+                  display:"flex",
+                  flexDirection:"row",
+                  margin:"auto"
+                }}>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row"
+                }}>
+                  <Breadcrumbs aria-label="Breadcrumb">
+                    <Link color="inherit" href="/" >
+                      KMS Jamu
+                    </Link>
+                    <Link color="inherit" >
+                      Explore
+                    </Link>
+                    <Typography color="textPrimary">Herbal Medicine</Typography>
+                  </Breadcrumbs>
+                </div>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row-reverse"
+                }}>
+                  <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
+                </div>
+                </div>
+                
+                <div className="for-card">
+                  {this.state.herbmeds.map(item =>
+                            <CardHerbMed key={item.idherbsmed} id={item.idherbsmed} name={item.name} image={item.img} efficacy={item.efficacy} reff={item.refCrude} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
+                   )}
+                </div>
+                <Pagination
+                  style={{
+                    margin:"auto",
+                    marginBottom: "10px"
+                  }}
+                  size='large'
+                  limit={this.state.lenght}
+                  offset={this.state.offset}
+                  total={this.state.lenght * this.state.pages}
+                  onClick={(e,offset, page) => this.handleClick(offset,page)}
+                />
+                {this.state.modal.open === true ? <ModalHerbMed data={this.state.onSelect} afterUpdate={this.afterUpdate} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
+                          : 
+                          null
+                } 
+                 <Fab style={{
+                   position:"fixed",
+                   width:"45px",
+                   height:"45px",
+                   bottom:"25px",
+                   right:"25px"
+                 }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                  <AddIcon />
+                </Fab>
+                
+                {this.state.snackbar.open === true ? <SnackBar data={this.state.snackbar} close={this.closeBtn}/>
+                          : 
+                          null
+                }
               </div>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row-reverse"
-              }}>
-                <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
-              </div>
-              </div>
-              
-              <div className="for-card">
-                {this.state.herbmeds.map(item =>
-                          <CardHerbMed key={item.idherbsmed} id={item.idherbsmed} name={item.name} image={item.img} efficacy={item.efficacy} reff={item.refCrude} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
-                 )}
-                {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
-                  : null }
-              </div>
-              {this.state.modal.open === true ? <ModalHerbMed data={this.state.onSelect} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
-                        : 
-                        null
-              } 
-               <Fab style={{
-                 position:"fixed",
-                 width:"45px",
-                 height:"45px",
-                 bottom:"25px",
-                 right:"25px"
-               }} color="primary" aria-label="Add" onClick={this.addBtn}>
-                <AddIcon />
-              </Fab>
-            </div>
+            }
+          </div>
+           
         );
       }
 }

@@ -9,6 +9,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Select from 'react-select';
 
+import LinearProgress from './LinearProgress'
+
 import Axios from 'axios'
 
 const List = (props) => {
@@ -48,7 +50,7 @@ class ModalHerbMed extends Component {
         this.state = {
           openModalCrude: false,
           addCrude: null,
-          loading: true,
+          loading: false,
           _id: '',
           idherbsmed:'',
           name: '',
@@ -81,6 +83,10 @@ class ModalHerbMed extends Component {
           let dataCrude =  await this.props.data.refCrude.map(dt => {
             return {label:dt.sname,value:dt._id}
           });
+          console.log(this.props.data.refMedtype)
+          let refMedtype =  await this.props.baseMedtype.find(dt => dt.value === this.props.data.refMedtype);
+          let refCompany =  await this.props.baseCompany.find(dt => dt.value === this.props.data.refCompany);
+          let refDclass =  await this.props.baseDclass.find(dt => dt.value === this.props.data.refDclass._id);
             
             this.setState({
                 _id: this.props.data._id,
@@ -96,9 +102,9 @@ class ModalHerbMed extends Component {
                 idtype: this.props.data.idtype,
                 img: this.props.data.img,
                 __v: this.props.data.__v,
-                refMedtype: this.props.data.refMedtype,
-                refCompany: this.props.data.refCompany,
-                refDclass: this.props.data.refDclass,
+                refMedtype: refMedtype,
+                refCompany: refCompany,
+                refDclass: refDclass,
                 refCrude: dataCrude
             })
 
@@ -151,7 +157,9 @@ class ModalHerbMed extends Component {
       }
 
       handleSubmitUpdate = event => {
-        console.log(this.state)
+        this.setState({
+          loading: true
+        })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -176,25 +184,32 @@ class ModalHerbMed extends Component {
       formData.append('idcompany',this.state.idcompany);
       formData.append('idtype',this.state.idtype);
       formData.append('img',this.state.img);
-      formData.append('refMedtype',this.state.refMedtype);
-      formData.append('refCompany',this.state.refCompany);
-      formData.append('refDclass',this.state.refDclass._id);
+      formData.append('refMedtype',this.state.refMedtype.value);
+      formData.append('refCompany',this.state.refCompany.value);
+      formData.append('refDclass',this.state.refDclass.value);
       this.state.refCrude.map(item =>{
         formData.append('refCrude',item.value);
       })
       Axios.patch( url,formData ,axiosConfig)
         .then(data => {
             const res = data.data;
-            console.log(res)
+            this.props.afterUpdate(res.success, res.message);
+            this.setState({
+              loading: false
+            })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+        }); 
     }
 
     handleSubmitAdd = event => {
-
+      this.setState({
+        loading: true
+      })
       let user = localStorage.getItem("user")
       user = JSON.parse(user)
       let axiosConfig = {
@@ -226,17 +241,24 @@ class ModalHerbMed extends Component {
       })
       Axios.post( url,formData,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
         });
-            event.preventDefault();
     }
 
     handleSubmitDelete = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -248,14 +270,18 @@ class ModalHerbMed extends Component {
         let url = '/jamu/api/herbsmed/delete/' + this.state.idherbsmed
       Axios.delete( url,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
-            window.location.href = '/herbmed';
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
         });
-            event.preventDefault();
     }
 
 render() {
@@ -263,15 +289,20 @@ render() {
     return (
       <div>
         <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
           <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idherbsmed}</DialogTitle>
           <DialogContent>
             {/* <DialogContentText>
               You update herbal medicine with id {this.state.idherbsmed}
             </DialogContentText> */}
-            <Button
+             <Button
               containerElement='imageherbmeds' // <-- Just add me!
               label="herbal medicine image">
-              <input type="file" />
+              <input type="file" name="img" onChange={this.onChange} />
             </Button>
             <TextField
               autoFocus
@@ -365,6 +396,51 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
+            <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px"
+             }}>
+              referen medicine type
+            </label>
+            <Select
+              value={this.state.refMedtype}
+              onChange={this.handleChange('refMedtype')}
+              options={this.props.baseMedtype}
+            />
+             <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px"
+             }}>
+              referen company of herbal medicine
+            </label>
+            <Select
+              value={this.state.refCompany}
+              onChange={this.handleChange('refCompany')}
+              options={this.props.baseCompany}
+            />
+             <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px"
+             }}>
+              referen diseases class 
+            </label>
+            <Select
+              value={this.state.refDclass}
+              onChange={this.handleChange('refDclass')}
+              options={this.props.baseDclass}
+            />
+            <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px",
+               display:"block",
+               marginTop:"10px"
+             }}>
+              referen crude drug : 
+            </label>
             <Button onClick={this.togglePopup} color="primary">
               Add Crude Drug
             </Button>
@@ -383,7 +459,7 @@ render() {
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.close} color="primary">
+            <Button onClick={this.handleSubmitUpdate} color="primary">
               Update
             </Button>
           </DialogActions>
@@ -398,18 +474,22 @@ render() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+        <DialogTitle id="alert-dialog-title">{"You want delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+            You want delete herbal medicine record data with id {this.state.idherbsmed} and name {this.state.name}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.close} color="primary">
             NO
           </Button>
-          <Button onClick={this.props.close} color="primary" autoFocus>
+          <Button onClick={this.handleSubmitDelete} color="primary" autoFocus>
             YES
           </Button>
         </DialogActions>
@@ -420,6 +500,11 @@ render() {
   }else if(this.props.modal.mode === 'add') {
     return (
       <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
           <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idherbsmed}</DialogTitle>
           <DialogContent>
             {/* <DialogContentText>
@@ -532,21 +617,51 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
+             <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px"
+             }}>
+              referen medicine type
+            </label>
             <Select
               value={this.state.refMedtype}
               onChange={this.handleChange('refMedtype')}
               options={this.props.baseMedtype}
             />
+            <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px"
+             }}>
+              referen company of herbal medicine
+            </label>
             <Select
               value={this.state.refCompany}
               onChange={this.handleChange('refCompany')}
               options={this.props.baseCompany}
             />
+            <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px"
+             }}>
+              referen diseases class 
+            </label>
             <Select
               value={this.state.refDclass}
               onChange={this.handleChange('refDclass')}
               options={this.props.baseDclass}
             />
+            <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px",
+               display:"block",
+               marginTop:"10px"
+             }}>
+              referen crude drug : 
+            </label>
             <Button onClick={this.togglePopup} color="primary">
               Add Crude Drug
             </Button>
