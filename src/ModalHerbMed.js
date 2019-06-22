@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -22,7 +23,9 @@ const ModalRefCrude = (props) => {
   return (
     <Dialog open={props.open} onClose={props.close} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">You update herbal medicine with</DialogTitle>
-          <DialogContent>
+          <DialogContent style={{
+            height:"200px"
+          }}>
             <Select
               onChange={props.handleChange('addCrude')}
               options={props.baseCrude}

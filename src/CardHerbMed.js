@@ -96,13 +96,11 @@ function CardHerbMed(props) {
           >
             {props.name}
           </Typography>
-          <Typography
-            // className={"MuiTypography--subheading"}
-            className="block-with-text"
-            variant={"caption"}
-          >
+          <p style={{
+            color:"grey"
+          }} className="block-with-text">
            {props.efficacy}
-          </Typography>
+          </p>
           <ul className="reff">
                  {props.reff.map( item => (
                     <List item = { item } />
