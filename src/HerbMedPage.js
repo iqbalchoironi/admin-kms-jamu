@@ -56,7 +56,7 @@ class HerbMeds extends Component {
 
       async componentDidMount() {
         //window.addEventListener('scroll', this.onScroll, false);
-        this.getData();
+        await this.getData();
       }
 
       // async onScroll() {
@@ -93,11 +93,11 @@ class HerbMeds extends Component {
       }
 
      async getData(){
-      const url = '/jamu/api/herbsmed/pages/'+ this.state.currentPage;
-      const urlCrude = '/jamu/api/crudedrug/getlist'
-      const urlCompany = '/jamu/api/company/getlist'
-      const urlDclass = '/jamu/api/dclass'
-      const urlMedtype = '/jamu/api/medtype'
+      const url = '/jamu/api/herbsmed/pages/' + this.state.currentPage
+      const urlCrude = '/jamu/api/crudedrug/getlist/'
+      const urlCompany = '/jamu/api/company/getlist/'
+      const urlDclass = '/jamu/api/dclass/'
+      const urlMedtype = '/jamu/api/medtype/'
       const res = await Axios.get(url);
       const resCrude = await Axios.get(urlCrude);
       const resCompany = await Axios.get(urlCompany);
