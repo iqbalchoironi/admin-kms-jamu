@@ -89,7 +89,7 @@ class TableMedicineType extends React.Component{
         {this.state.loading ? <Spinner />
         :
         <MaterialTable
-        title="Editable Example"
+        title="Management Table Medicine Type"
         columns={this.state.columns}
         data={this.state.data}
         actions={[

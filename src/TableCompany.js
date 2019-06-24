@@ -89,7 +89,7 @@ class MaterialTableDemo extends React.Component{
         {this.state.loading ? <Spinner />
         :
       <MaterialTable
-        title="Editable Example"
+        title="Company Management Table"
         columns={this.state.columns}
         data={this.state.data}
         actions={[
