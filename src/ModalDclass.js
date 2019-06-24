@@ -7,13 +7,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import LinearProgress from './LinearProgress'
+
 import Axios from 'axios'
 
 class ModalDclass extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          loading: true,
+          loading: false,
           _id: '',
           idclass:'',
           class: '',
@@ -56,7 +58,9 @@ class ModalDclass extends Component {
       }
 
       handleSubmitUpdate = event => {
-        console.log(this.state)
+        this.setState({
+          loading: true
+        })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -75,17 +79,24 @@ class ModalDclass extends Component {
         ref: this.state.ref
         } ,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
     handleSubmitAdd = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -104,17 +115,24 @@ class ModalDclass extends Component {
         ref: this.state.ref
         },axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
     handleSubmitDelete = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -126,14 +144,18 @@ class ModalDclass extends Component {
         let url = '/jamu/api/dclass/delete/' + this.state.idclass
       Axios.delete( url,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
-            window.location.href = '/dclass';
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
 render() {
@@ -141,7 +163,12 @@ render() {
     return (
       <div>
         <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idclass}</DialogTitle>
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+          <DialogTitle id="form-dialog-title">You update dclass with id {this.state.idclass} and name is {this.state.class} </DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
@@ -155,6 +182,7 @@ render() {
               onChange={this.valueChange}
             />
              <TextField
+             multiline rows={10}
               margin="dense"
               id="description"
               label="description"
@@ -165,6 +193,7 @@ render() {
               onChange={this.valueChange}
             />
             <TextField
+            multiline rows={10}
               margin="dense"
               id="diseases"
               label="diseases"
@@ -175,6 +204,7 @@ render() {
               onChange={this.valueChange}
             />
              <TextField
+             multiline rows={10}
               margin="dense"
               id="ref"
               label="ref"
@@ -204,11 +234,15 @@ render() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+        <DialogTitle id="alert-dialog-title">{"You want delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+          You want delete dclass with id {this.state.idclass} and name is {this.state.class}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -226,13 +260,18 @@ render() {
   }else if(this.props.modal.mode === 'add') {
     return (
       <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Create</DialogTitle>
+          {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+          <DialogTitle id="form-dialog-title"> Create Record data DClass : </DialogTitle>
           <DialogContent>
-          <TextField
+            <TextField
               autoFocus
               margin="dense"
               id="idclass"
-              label="ID dclass"
+              label="id Dclass"
               name="idclass"
               type="text"
               value={this.state.idclass}
@@ -250,6 +289,7 @@ render() {
               onChange={this.valueChange}
             />
              <TextField
+             multiline rows={10}
               margin="dense"
               id="description"
               label="description"
@@ -260,6 +300,7 @@ render() {
               onChange={this.valueChange}
             />
             <TextField
+            multiline rows={10}
               margin="dense"
               id="diseases"
               label="diseases"
@@ -270,6 +311,7 @@ render() {
               onChange={this.valueChange}
             />
              <TextField
+             multiline rows={10}
               margin="dense"
               id="ref"
               label="ref"

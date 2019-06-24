@@ -13,6 +13,9 @@ import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import ModalDclass from './ModalDclass';
 
+import SnackBar from "./SnackBar";
+import Pagination from "material-ui-flat-pagination";
+
 class DclassPage extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +29,11 @@ class DclassPage extends Component {
             open: false,
             mode: '',
           },
+          snackbar: {
+            open: false,
+            success: false,
+            message: '',
+          },
           currentPage: 1
         }
         // this.onScroll = this.onScroll.bind(this);
@@ -36,6 +44,7 @@ class DclassPage extends Component {
         this.detailBtn = this.detailBtn.bind(this);
         this.addBtn = this.addBtn.bind(this);
         this.closeBtn = this.closeBtn.bind(this);
+        this.afterUpdate = this.afterUpdate.bind(this);
       }
 
       async componentDidMount() {
@@ -43,27 +52,26 @@ class DclassPage extends Component {
         this.getData();
       }
 
-      async onScroll() {
-        if (
-          (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
-          !this.props.isLoading
-        ){
-          // Do awesome stuff like loading more content!
-          await this.setState({
-            loadData: true,
-            currentPage: this.state.currentPage + 1
-          })
-          this.getData();
-        }
-      };
+      // async onScroll() {
+      //   if (
+      //     (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
+      //     !this.props.isLoading
+      //   ){
+      //     // Do awesome stuff like loading more content!
+      //     await this.setState({
+      //       loadData: true,
+      //       currentPage: this.state.currentPage + 1
+      //     })
+      //     this.getData();
+      //   }
+      // };
       
      async getData(){
       const url = '/jamu/api/dclass/';
       const res = await Axios.get(url);
       const { data } = await res;
-      let newData = this.state.dclass.concat(data.data);
       this.setState({
-        dclass: newData, 
+        dclass: data.data, 
         loading: false
       })
     }
@@ -104,12 +112,32 @@ class DclassPage extends Component {
       });
     }
 
+    async afterUpdate (success, message){
+     this.getData();
+      this.setState({
+        modal: {
+          open: false,
+          mode: '',
+        },
+        snackbar: {
+          open: true,
+          success: success,
+          message: message,
+        }
+      })
+    }
+
     closeBtn() {
       this.setState({
         onSelect: null,
         modal: {
           open: false,
           mode: ''
+        },
+        snackbar: {
+          open: false,
+          success: false,
+          message: '',
         }
       })
     }
@@ -163,13 +191,6 @@ class DclassPage extends Component {
     }
 
       render() {
-        if (this.state.loading) {
-          return <Spinner />;
-        }
-    
-        if (!this.state.dclass) {
-          return <div><br></br><br></br> <br></br>didn't get a person</div>;
-        }
 
         if(this.state.inputSearch !== '' && this.state.onSearch !== []){
           return (
@@ -219,63 +240,72 @@ class DclassPage extends Component {
       }
 
         return (
-            <div style={{
-              display: "flex",
-              flexDirection:"column",
-              paddingTop:"30px"
-
-            }}>
-            <div style={{
-                width:"90%",
-                display:"flex",
-                flexDirection:"row",
-                margin:"auto"
+          <div>
+            {this.state.loading ?
+              <Spinner />
+              :
+              <div style={{
+                display: "flex",
+                flexDirection:"column",
+                paddingTop:"30px"
+  
               }}>
               <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row"
-              }}>
-                <Breadcrumbs aria-label="Breadcrumb">
-                  <Link color="inherit" href="/" >
-                    KMS Jamu
-                  </Link>
-                  <Link color="inherit" >
-                    Explore
-                  </Link>
-                  <Typography color="textPrimary">Dclass</Typography>
-                </Breadcrumbs>
-              </div>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row-reverse"
-              }}>
-                <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
-              </div>
-              </div>
-              
-              <div className="for-card">
-                {this.state.dclass.map(item =>
-                          <CardDclass key={item.idclass} id={item.idclass} name={item.class} efficacy={item.description} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
-                 )}
-                {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
-                  : null }
-                {this.state.modal.open === true ? <ModalDclass data={this.state.onSelect} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
-                        : 
-                        null
+                  width:"90%",
+                  display:"flex",
+                  flexDirection:"row",
+                  margin:"auto"
+                }}>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row"
+                }}>
+                  <Breadcrumbs aria-label="Breadcrumb">
+                    <Link color="inherit" href="/" >
+                      KMS Jamu
+                    </Link>
+                    <Link color="inherit" >
+                      Explore
+                    </Link>
+                    <Typography color="textPrimary">Dclass</Typography>
+                  </Breadcrumbs>
+                </div>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row-reverse"
+                }}>
+                  <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
+                </div>
+                </div>
+                
+                <div className="for-card">
+                  {this.state.dclass.map(item =>
+                            <CardDclass key={item.idclass} id={item.idclass}  name={item.class} efficacy={item.description} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
+                   )}
+                  {this.state.modal.open === true ? <ModalDclass data={this.state.onSelect} afterUpdate={this.afterUpdate} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
+                          : 
+                          null
+                  }
+                </div>
+                <Fab style={{
+                   position:"fixed",
+                   width:"45px",
+                   height:"45px",
+                   bottom:"25px",
+                   right:"25px"
+                 }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                  <AddIcon />
+                </Fab>
+                {this.state.snackbar.open === true ? <SnackBar data={this.state.snackbar} close={this.closeBtn}/>
+                          : 
+                          null
                 }
               </div>
-              <Fab style={{
-                 position:"fixed",
-                 width:"45px",
-                 height:"45px",
-                 bottom:"25px",
-                 right:"25px"
-               }} color="primary" aria-label="Add" onClick={this.addBtn}>
-                <AddIcon />
-              </Fab>
-            </div>
+            }
+          </div>
+           
         );
       }
 }

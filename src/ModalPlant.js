@@ -8,6 +8,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Select from 'react-select';
 
+import LinearProgress from './LinearProgress'
+
 import Axios from 'axios'
 
 const List = (props) => {
@@ -22,7 +24,9 @@ const ModalrefCrude = (props) => {
   return (
     <Dialog open={props.open} onClose={props.close} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">You update herbal medicine with</DialogTitle>
-          <DialogContent>
+          <DialogContent style={{
+            height:"200px"
+          }}>
             <Select
               onChange={props.handleChange('addCrude')}
               options={props.baseCrude}
@@ -45,7 +49,7 @@ class ModalPlant extends Component {
         this.state = {
           openModalCrude: false,
           addCrude: null,
-          loading: true,
+          loading: false,
           _id: '',
           idplant:'',
           sname: '',
@@ -106,7 +110,6 @@ class ModalPlant extends Component {
         this.setState({
           [name]: value,
         });
-        console.log(this.state)
       };
 
       valueChange(event) {
@@ -124,38 +127,46 @@ class ModalPlant extends Component {
       }
 
       handleSubmitUpdate = event => {
-        console.log(this.state)
+        this.setState({
+          loading: true
+        })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                     'Authorization': user.token
                 }
             };
             
         let url = '/jamu/api/plant/update/' + this.state.idplant
-
-        const formData = new FormData();
      
-      formData.append('name',this.state.name);
-      formData.append('refimg',this.state.refimg);
-      this.state.refCrude.map(item =>{
-        formData.append('refCrude',item.value);
-      })
-      Axios.patch( url,formData ,axiosConfig)
+      let refCrude = this.state.refCrude.map(data => data.value)
+      Axios.patch( url,{
+        sname: this.state.sname,
+        refimg: this.state.refimg,
+        refCrude: refCrude
+
+      } ,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
         });
-            event.preventDefault();
     }
 
     handleSubmitAdd = event => {
-
+      this.setState({
+        loading: true
+      })
       let user = localStorage.getItem("user")
       user = JSON.parse(user)
       let axiosConfig = {
@@ -174,17 +185,26 @@ class ModalPlant extends Component {
         refCrude: refCrude
       },axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          console.log(res)
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
+          console.log(err)
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
         });
-            event.preventDefault();
     }
 
     handleSubmitDelete = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -196,14 +216,18 @@ class ModalPlant extends Component {
         let url = '/jamu/api/plant/delete/' + this.state.idplant
       Axios.delete( url,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
-            window.location.hrefimg = '/plant';
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
         });
-            event.preventDefault();
     }
 
 render() {
@@ -211,7 +235,12 @@ render() {
     return (
       <div>
         <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idplant}</DialogTitle>
+        {this.state.loading ? 
+        <LinearProgress />
+                  : 
+                  null
+        }
+          <DialogTitle id="form-dialog-title">You update plant with id {this.state.idplant} and name is {this.state.sname} : </DialogTitle>
           <DialogContent>
             {/* <DialogContentText>
               You update herbal medicine with id {this.state.idplant}
@@ -237,6 +266,16 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
+            <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px",
+               display:"block",
+               marginTop:"10px",
+               marginBottom:"5px"
+             }}>
+              referen crude drug : 
+            </label>
             <Button onClick={this.togglePopup} color="primary">
               Add Crude Drug
             </Button>
@@ -246,15 +285,16 @@ render() {
               }
             <ul className="reff">
                  {this.state.refCrude.map( item => (
-                    <List item = { item } />
-                ))}  
+                    <List item = { item } delete={this.handleDeleteCrude} />
+                ))} 
+            
           </ul>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.close} color="primary">
+            <Button onClick={this.handleSubmitUpdate} color="primary">
               Update
             </Button>
           </DialogActions>
@@ -269,18 +309,22 @@ render() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        {this.state.loading ? 
+        <LinearProgress />
+                  : 
+                  null
+        }
+        <DialogTitle id="alert-dialog-title">{"You want delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+          You want delete plant record data with id {this.state.idplant} and name {this.state.sname}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.close} color="primary">
             NO
           </Button>
-          <Button onClick={this.props.close} color="primary" autoFocus>
+          <Button onClick={this.handleSubmitDelete} color="primary" autoFocus>
             YES
           </Button>
         </DialogActions>
@@ -291,7 +335,12 @@ render() {
   }else if(this.props.modal.mode === 'add') {
     return (
       <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idplant}</DialogTitle>
+         {this.state.loading ? 
+        <LinearProgress />
+                  : 
+                  null
+        }
+          <DialogTitle id="form-dialog-title">Create Record data Plant :</DialogTitle>
           <DialogContent>
             {/* <DialogContentText>
               You update herbal medicine with id {this.state.idplant}
@@ -327,6 +376,16 @@ render() {
               fullWidth
               onChange={this.valueChange}
             />
+            <label style={{
+               color:"grey",
+               fontWeight:"lighter",
+               fontSize:"13px",
+               display:"block",
+               marginTop:"10px",
+               marginBottom:"5px"
+             }}>
+              referen crude drug : 
+            </label>
             <Button onClick={this.togglePopup} color="primary">
               Add Crude Drug
             </Button>

@@ -83,7 +83,6 @@ class ModalHerbMed extends Component {
           let dataCrude =  await this.props.data.refCrude.map(dt => {
             return {label:dt.sname,value:dt._id}
           });
-          console.log(this.props.data.refMedtype)
           let refMedtype =  await this.props.baseMedtype.find(dt => dt.value === this.props.data.refMedtype);
           let refCompany =  await this.props.baseCompany.find(dt => dt.value === this.props.data.refCompany);
           let refDclass =  await this.props.baseDclass.find(dt => dt.value === this.props.data.refDclass._id);
@@ -102,9 +101,9 @@ class ModalHerbMed extends Component {
                 idtype: this.props.data.idtype,
                 img: this.props.data.img,
                 __v: this.props.data.__v,
-                refMedtype: refMedtype,
-                refCompany: refCompany,
-                refDclass: refDclass,
+                refMedtype: refMedtype === undefined ? null : refMedtype,
+                refCompany: refCompany === undefined ? null : refCompany,
+                refDclass: refDclass === undefined ? null : refDclass,
                 refCrude: dataCrude
             })
 
@@ -399,7 +398,10 @@ render() {
             <label style={{
                color:"grey",
                fontWeight:"lighter",
-               fontSize:"13px"
+               fontSize:"13px",
+               display:"block",
+               marginTop:"10px",
+               marginBottom:"5px"
              }}>
               referen medicine type
             </label>
@@ -411,7 +413,10 @@ render() {
              <label style={{
                color:"grey",
                fontWeight:"lighter",
-               fontSize:"13px"
+               fontSize:"13px",
+               display:"block",
+               marginTop:"10px",
+               marginBottom:"5px"
              }}>
               referen company of herbal medicine
             </label>
@@ -421,9 +426,12 @@ render() {
               options={this.props.baseCompany}
             />
              <label style={{
-               color:"grey",
-               fontWeight:"lighter",
-               fontSize:"13px"
+              color:"grey",
+              fontWeight:"lighter",
+              fontSize:"13px",
+              display:"block",
+              marginTop:"10px",
+              marginBottom:"5px"
              }}>
               referen diseases class 
             </label>
@@ -505,7 +513,7 @@ render() {
                         : 
                         null
               }
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idherbsmed}</DialogTitle>
+          <DialogTitle id="form-dialog-title">Create Record data Herbal Medicine :</DialogTitle>
           <DialogContent>
             {/* <DialogContentText>
               You update herbal medicine with id {this.state.idherbsmed}
@@ -620,7 +628,10 @@ render() {
              <label style={{
                color:"grey",
                fontWeight:"lighter",
-               fontSize:"13px"
+               fontSize:"13px",
+               display:"block",
+               marginTop:"10px",
+               marginBottom:"5px"
              }}>
               referen medicine type
             </label>
@@ -630,9 +641,12 @@ render() {
               options={this.props.baseMedtype}
             />
             <label style={{
-               color:"grey",
-               fontWeight:"lighter",
-               fontSize:"13px"
+              color:"grey",
+              fontWeight:"lighter",
+              fontSize:"13px",
+              display:"block",
+              marginTop:"10px",
+              marginBottom:"5px"
              }}>
               referen company of herbal medicine
             </label>
@@ -642,9 +656,12 @@ render() {
               options={this.props.baseCompany}
             />
             <label style={{
-               color:"grey",
-               fontWeight:"lighter",
-               fontSize:"13px"
+              color:"grey",
+              fontWeight:"lighter",
+              fontSize:"13px",
+              display:"block",
+              marginTop:"10px",
+              marginBottom:"5px"
              }}>
               referen diseases class 
             </label>

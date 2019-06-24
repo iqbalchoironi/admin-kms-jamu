@@ -13,6 +13,9 @@ import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import ModalPlant from './ModalPlant';
 
+import SnackBar from "./SnackBar";
+import Pagination from "material-ui-flat-pagination";
+
 class PlantPage extends Component {
     constructor(props) {
         super(props);
@@ -27,9 +30,16 @@ class PlantPage extends Component {
             open: false,
             mode: '',
           },
-          currentPage: 1
+          snackbar: {
+            open: false,
+            success: false,
+            message: '',
+          },
+          currentPage: 1,
+          offset:5,
+          pages: null
         }
-        this.onScroll = this.onScroll.bind(this);
+        //this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getDataSearch = this.getDataSearch.bind(this);
         this.updateBtn = this.updateBtn.bind(this);
@@ -37,10 +47,11 @@ class PlantPage extends Component {
         this.detailBtn = this.detailBtn.bind(this);
         this.addBtn = this.addBtn.bind(this);
         this.closeBtn = this.closeBtn.bind(this);
+        this.afterUpdate = this.afterUpdate.bind(this);
       }
 
       async componentDidMount() {
-        window.addEventListener('scroll', this.onScroll, false);
+        //window.addEventListener('scroll', this.onScroll, false);
         const urlCrude = '/jamu/api/crudedrug/getlist'
         const resCrude = await Axios.get(urlCrude);
         let dataCrude =  await resCrude.data.data.map(dt => {
@@ -52,27 +63,54 @@ class PlantPage extends Component {
         this.getData();
       }
 
-      async onScroll() {
-        if (
-          (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
-          !this.props.isLoading
-        ){
-          await this.setState({
-            loadData: true,
-            currentPage: this.state.currentPage + 1
-          })
-          this.getData();
-        }
-      };
+      // async onScroll() {
+      //   if (
+      //     (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
+      //     !this.props.isLoading
+      //   ){
+      //     await this.setState({
+      //       loadData: true,
+      //       currentPage: this.state.currentPage + 1
+      //     })
+      //     this.getData();
+      //   }
+      // };
       
+      async handleClick(offset,page) {
+        console.log(page)
+        await this.setState({ currentPage: page, offset });
+        this.getData();
+      }
+
      async getData(){
+      this.setState({
+        loading: true
+      })
       const url = '/jamu/api/plant/pages/' + this.state.currentPage;
       const res = await Axios.get(url);
       const { data } = await res;
-      let newData = this.state.plant.concat(data.data);
       this.setState({
-        plant: newData, 
+        pages: data.pages,
+        plant: data.data, 
         loading: false
+      })
+    }
+
+    async afterUpdate (success, message){
+      const url = '/jamu/api/plant/pages/'+ this.state.currentPage;
+      const res = await Axios.get(url);
+      const { data } = await res;
+      this.setState({
+        plant: data.data,
+        modal: {
+          open: false,
+          mode: '',
+        },
+        snackbar: {
+          open: true,
+          success: success,
+          message: message,
+        }
       })
     }
 
@@ -115,6 +153,11 @@ class PlantPage extends Component {
         modal: {
           open: false,
           mode: ''
+        },
+        snackbar: {
+          open: false,
+          success: false,
+          message: '',
         }
       })
     }
@@ -168,14 +211,6 @@ class PlantPage extends Component {
     }
 
       render() {
-        if (this.state.loading) {
-          return <Spinner />
-        }
-    
-        if (!this.state.plant) {
-          return <div><br></br><br></br> <br></br>didn't get a person</div>;
-        }
-
         if(this.state.inputSearch !== '' && this.state.onSearch !== []){
           return (
             <div style={{
@@ -224,63 +259,85 @@ class PlantPage extends Component {
       }
 
         return (
-            <div style={{
-              display: "flex",
-              flexDirection:"column",
-              paddingTop:"30px"
+          <div>
+            {this.state.loading ?
+              <Spinner />
+              :
+              <div style={{
+                display: "flex",
+                flexDirection:"column",
+                paddingTop:"30px"
+  
+              }}>
+              <div style={{
+                  width:"90%",
+                  display:"flex",
+                  flexDirection:"row",
+                  margin:"auto"
+                }}>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row"
+                }}>
+                  <Breadcrumbs aria-label="Breadcrumb">
+                    <Link color="inherit" href="/" >
+                      KMS Jamu
+                    </Link>
+                    <Link color="inherit" >
+                      Explore
+                    </Link>
+                    <Typography color="textPrimary">Plant</Typography>
+                  </Breadcrumbs>
+                </div>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row-reverse"
+                }}>
+                   <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
+                </div>
+                </div>
+                
+                <div className="for-card">
+                  {this.state.plant.map(item =>
+                            <CardExample key={item.id} id={item.idplant} name={item.sname} image={item.refimg} reff={item.refCrude} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
+                          )}
+                  {this.state.modal.open === true ? <ModalPlant baseCrude={this.state.crude} afterUpdate={this.afterUpdate} data={this.state.onSelect} modal={this.state.modal} close={this.closeBtn}/>
+                  : 
+                  null
+                  }
+                </div>
+                <Pagination
+                  style={{
+                    margin:"auto",
+                    marginBottom: "10px"
+                  }}
+                  size='large'
+                  limit={10}
+                  offset={this.state.offset}
+                  total={10 * this.state.pages}
+                  onClick={(e,offset, page) => this.handleClick(offset,page)}
+                />
 
-            }}>
-            <div style={{
-                width:"90%",
-                display:"flex",
-                flexDirection:"row",
-                margin:"auto"
-              }}>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row"
-              }}>
-                <Breadcrumbs aria-label="Breadcrumb">
-                  <Link color="inherit" href="/" >
-                    KMS Jamu
-                  </Link>
-                  <Link color="inherit" >
-                    Explore
-                  </Link>
-                  <Typography color="textPrimary">Plant</Typography>
-                </Breadcrumbs>
-              </div>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row-reverse"
-              }}>
-                 <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
-              </div>
-              </div>
-              
-              <div className="for-card">
-                {this.state.plant.map(item =>
-                          <CardExample key={item.id} id={item.idplant} name={item.sname} image={item.refimg} reff={item.refCrude} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
-                        )}
-                {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
-                  : null }
-                {this.state.modal.open === true ? <ModalPlant baseCrude={this.state.crude} data={this.state.onSelect} modal={this.state.modal} close={this.closeBtn}/>
-                : 
-                null
+                {this.state.snackbar.open === true ? <SnackBar data={this.state.snackbar} close={this.closeBtn}/>
+                          : 
+                          null
                 }
+                <Fab style={{
+                   position:"fixed",
+                   width:"45px",
+                   height:"45px",
+                   bottom:"25px",
+                   right:"25px"
+                 }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                  <AddIcon />
+                </Fab>
               </div>
-              <Fab style={{
-                 position:"fixed",
-                 width:"45px",
-                 height:"45px",
-                 bottom:"25px",
-                 right:"25px"
-               }} color="primary" aria-label="Add" onClick={this.addBtn}>
-                <AddIcon />
-              </Fab>
-            </div>
+            }
+          </div>
+
+           
         );
       }
 }

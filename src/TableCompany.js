@@ -2,9 +2,9 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import Axios from 'axios'
 
-
 import ModalCompany from './ModalCompany';
-
+import Spinner from './Spinner'
+import SnackBar from './SnackBar'
 
 class MaterialTableDemo extends React.Component{
   constructor(props) {
@@ -21,13 +21,23 @@ class MaterialTableDemo extends React.Component{
         open: false,
         mode: '',
       },
+      snackbar: {
+        open: false,
+        success: false,
+        message: '',
+      },
       onSelect: null
     }
     this.closeBtn = this.closeBtn.bind(this);
+    this.getData = this.getData.bind(this);
+    this.afterUpdate = this.afterUpdate.bind(this);
   }
 
   
   async componentDidMount() {
+    this.setState({
+      loading: true
+    })
     // window.addEventListener('scroll', this.onScroll);
     this.getData();
   }
@@ -37,10 +47,8 @@ class MaterialTableDemo extends React.Component{
     const res = await Axios.get(url);
     console.log(res)
     const { data } = await res;
-    let newData = this.state.data.concat(data.data);
-    console.log(newData)
     this.setState({
-      data: newData, 
+      data: data.data, 
       loading: false
     })
   }
@@ -51,6 +59,26 @@ class MaterialTableDemo extends React.Component{
       modal: {
         open: false,
         mode: ''
+      },
+      snackbar: {
+        open: false,
+        success: false,
+        message: '',
+      }
+    })
+  }
+
+  async afterUpdate (success, message){
+    this.getData();
+    this.setState({
+      modal: {
+        open: false,
+        mode: '',
+      },
+      snackbar: {
+        open: true,
+        success: success,
+        message: message,
       }
     })
   }
@@ -58,6 +86,8 @@ class MaterialTableDemo extends React.Component{
   render(){
     return (
       <div>
+        {this.state.loading ? <Spinner />
+        :
       <MaterialTable
         title="Editable Example"
         columns={this.state.columns}
@@ -106,10 +136,17 @@ class MaterialTableDemo extends React.Component{
           actionsColumnIndex: -1
         }}
       />
-      {this.state.modal.open === true ? <ModalCompany data={this.state.onSelect} modal={this.state.modal} close={this.closeBtn}/>
+      }
+      {this.state.modal.open === true ? <ModalCompany data={this.state.onSelect} afterUpdate={this.afterUpdate} modal={this.state.modal} close={this.closeBtn}/>
       : 
       null
       }
+
+      {this.state.snackbar.open === true ? <SnackBar data={this.state.snackbar} close={this.closeBtn}/>
+      : 
+      null
+      }
+
       </div> 
     );
   }

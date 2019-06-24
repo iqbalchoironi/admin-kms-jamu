@@ -13,7 +13,10 @@ import ModalCrude from './ModalCrude';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
-class HerbMeds extends Component {
+import SnackBar from "./SnackBar";
+import Pagination from "material-ui-flat-pagination";
+
+class CrudeDrugPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,15 +24,23 @@ class HerbMeds extends Component {
           loadData: false,
           inputSearch: '',
           onSearch:[],
-          herbmeds : [],
+          crude : [],
           plant: [],
           modal: {
             open: false,
             mode: '',
           },
-          currentPage: 1
+          snackbar: {
+            open: false,
+            success: false,
+            message: '',
+          },
+          onSelect: null,
+          currentPage: 1,
+          offset:5,
+          pages: null
         }
-        this.onScroll = this.onScroll.bind(this);
+        //this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getDataSearch = this.getDataSearch.bind(this);
         this.updateBtn = this.updateBtn.bind(this);
@@ -37,10 +48,11 @@ class HerbMeds extends Component {
         this.detailBtn = this.detailBtn.bind(this);
         this.addBtn = this.addBtn.bind(this);
         this.closeBtn = this.closeBtn.bind(this);
+        this.afterUpdate = this.afterUpdate.bind(this);
       }
 
       async componentDidMount() {
-        window.addEventListener('scroll', this.onScroll, false);
+        //window.addEventListener('scroll', this.onScroll, false);
         const urlPlant = '/jamu/api/plant/getlist'
         const resPlant = await Axios.get(urlPlant);
         let dataPlant =  await resPlant.data.data.map(dt => {
@@ -52,28 +64,55 @@ class HerbMeds extends Component {
         this.getData();
       }
 
-      async onScroll() {
-        if (
-          (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
-          !this.props.isLoading
-        ){
-          // Do awesome stuff like loading more content!
-          await this.setState({
-            loadData: true,
-            currentPage: this.state.currentPage + 1
-          })
-          this.getData();
-        }
-      };
+      async handleClick(offset,page) {
+        console.log(page)
+        await this.setState({ currentPage: page, offset });
+        this.getData();
+      }
+
+      // async onScroll() {
+      //   if (
+      //     (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
+      //     !this.props.isLoading
+      //   ){
+      //     // Do awesome stuff like loading more content!
+      //     await this.setState({
+      //       loadData: true,
+      //       currentPage: this.state.currentPage + 1
+      //     })
+      //     this.getData();
+      //   }
+      // };
       
      async getData(){
+      this.setState({
+        loading: true
+      })
       const url = '/jamu/api/crudedrug/pages/' + this.state.currentPage;
       const res = await Axios.get(url);
       const { data } = await res;
-      let newData = this.state.herbmeds.concat(data.data);
       this.setState({
-        herbmeds: newData, 
+        pages: data.pages,
+        crude: data.data, 
         loading: false
+      })
+    }
+
+    async afterUpdate (success, message){
+      const url = '/jamu/api/crudedrug/pages/'+ this.state.currentPage;
+      const res = await Axios.get(url);
+      const { data } = await res;
+      this.setState({
+        crude: data.data,
+        modal: {
+          open: false,
+          mode: '',
+        },
+        snackbar: {
+          open: true,
+          success: success,
+          message: message,
+        }
       })
     }
 
@@ -119,13 +158,18 @@ class HerbMeds extends Component {
         modal: {
           open: false,
           mode: ''
+        },
+        snackbar: {
+          open: false,
+          success: false,
+          message: '',
         }
       })
     }
 
     async updateBtn(id) {
-      let onSelect =  await this.state.herbmeds.find( c => {
-        return c.idherbsmed === id
+      let onSelect =  await this.state.crude.find( c => {
+        return c.idcrude === id
       })
       this.setState({
         onSelect: onSelect,
@@ -137,8 +181,8 @@ class HerbMeds extends Component {
   }
 
   async detailBtn(id) {
-    let onSelect =  await this.state.herbmeds.find( c => {
-      return c.idherbsmed === id
+    let onSelect =  await this.state.crude.find( c => {
+      return c.idcrude === id
     })
     this.setState({
       onSelect: onSelect,
@@ -159,8 +203,8 @@ class HerbMeds extends Component {
     }
 
     async deleteBtn(id) {
-      let onSelect =  await this.state.herbmeds.find( c => {
-        return c.idherbsmed === id
+      let onSelect =  await this.state.crude.find( c => {
+        return c.idcrude === id
       })
       this.setState({
         onSelect: onSelect,
@@ -172,14 +216,6 @@ class HerbMeds extends Component {
     }
 
       render() {
-        if (this.state.loading) {
-          return <Spinner />;
-        }
-    
-        if (!this.state.herbmeds) {
-          return <div><br></br><br></br> <br></br>didn't get a person</div>;
-        }
-
         if(this.state.inputSearch !== '' && this.state.onSearch !== []){
           return (
             <div style={{
@@ -206,7 +242,7 @@ class HerbMeds extends Component {
                   <Link color="inherit" >
                     Explore
                   </Link>
-                  <Typography color="textPrimary">Herbal Medicine</Typography>
+                  <Typography color="textPrimary">Crude Drug</Typography>
                 </Breadcrumbs>
               </div>
               <div style={{
@@ -228,65 +264,86 @@ class HerbMeds extends Component {
       }
 
         return (
-            <div style={{
-              display: "flex",
-              flexDirection:"column",
-              paddingTop:"30px"
+          <div>
+            {this.state.loading ?
+              <Spinner />
+              :
+              <div style={{
+                display: "flex",
+                flexDirection:"column",
+                paddingTop:"30px"
+  
+              }}>
+              <div style={{
+                  width:"90%",
+                  display:"flex",
+                  flexDirection:"row",
+                  margin:"auto"
+                }}>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row"
+                }}>
+                  <Breadcrumbs aria-label="Breadcrumb">
+                    <Link color="inherit" href="/" >
+                      KMS Jamu
+                    </Link>
+                    <Link color="inherit" >
+                      Explore
+                    </Link>
+                    <Typography color="textPrimary">Crude Drug</Typography>
+                  </Breadcrumbs>
+                </div>
+                <div style={{
+                  width:"50%",
+                  display:"flex",
+                  flexDirection:"row-reverse"
+                }}>
+                  <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
+                </div>
+                </div>
+                
+                <div className="for-card">
+                  {this.state.crude.map(item =>
+                            <CardCrudeDrug key={item.idcrude} id={item.idcrude} name={item.sname} efficacy={item.effect} reff={item.refPlant} update={this.updateBtn} delete={this.deleteBtn}/>
+                   )}
+                </div>
+                {this.state.modal.open === true ? <ModalCrude data={this.state.onSelect}  afterUpdate={this.afterUpdate} modal={this.state.modal} baseMedtype={this.state.medtype} basePlant={this.state.plant} close={this.closeBtn}/>
+                          : 
+                          null
+                } 
+                <Pagination
+                  style={{
+                    margin:"auto",
+                    marginBottom: "10px"
+                  }}
+                  size='large'
+                  limit={10}
+                  offset={this.state.offset}
+                  total={10 * this.state.pages}
+                  onClick={(e,offset, page) => this.handleClick(offset,page)}
+                />
 
-            }}>
-            <div style={{
-                width:"90%",
-                display:"flex",
-                flexDirection:"row",
-                margin:"auto"
-              }}>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row"
-              }}>
-                <Breadcrumbs aria-label="Breadcrumb">
-                  <Link color="inherit" href="/" >
-                    KMS Jamu
-                  </Link>
-                  <Link color="inherit" >
-                    Explore
-                  </Link>
-                  <Typography color="textPrimary">Herbal Medicine</Typography>
-                </Breadcrumbs>
+                {this.state.snackbar.open === true ? <SnackBar data={this.state.snackbar} close={this.closeBtn}/>
+                          : 
+                          null
+                }
+                 <Fab style={{
+                   position:"fixed",
+                   width:"45px",
+                   height:"45px",
+                   bottom:"25px",
+                   right:"25px"
+                 }} color="primary" aria-label="Add" onClick={this.addBtn}>
+                  <AddIcon />
+                </Fab>
               </div>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row-reverse"
-              }}>
-                <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
-              </div>
-              </div>
-              
-              <div className="for-card">
-                {this.state.herbmeds.map(item =>
-                          <CardCrudeDrug key={item.idcrudedrug} id={item.idcrudedrug} name={item.sname} efficacy={item.effect} reff={item.refPlant} update={this.updateBtn} delete={this.deleteBtn}/>
-                 )}
-                {this.state.loadData ? <div><br></br><br></br> <br></br>loading...</div>
-                  : null }
-              </div>
-              {this.state.modal.open === true ? <ModalCrude data={this.state.onSelect} modal={this.state.modal} baseMedtype={this.state.medtype} basePlant={this.state.plant} close={this.closeBtn}/>
-                        : 
-                        null
-              } 
-               <Fab style={{
-                 position:"fixed",
-                 width:"45px",
-                 height:"45px",
-                 bottom:"25px",
-                 right:"25px"
-               }} color="primary" aria-label="Add" onClick={this.addBtn}>
-                <AddIcon />
-              </Fab>
-            </div>
+            }
+          </div>
+            
         );
       }
 }
 
-export default HerbMeds;
+export default CrudeDrugPage;

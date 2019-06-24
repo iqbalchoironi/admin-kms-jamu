@@ -40,8 +40,7 @@ class HerbMeds extends Component {
           onSelect: null,
           currentPage: 1,
           offset:5,
-          pages: null,
-          lenght: null
+          pages: null
         }
         //this.onScroll = this.onScroll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -119,7 +118,6 @@ class HerbMeds extends Component {
       });
       this.setState({
         pages: data.pages,
-        lenght: data.lenght,
         herbmeds: data.data, 
         crude: dataCrude,
         company: dataCompany,
@@ -146,6 +144,7 @@ class HerbMeds extends Component {
         }
       })
     }
+    
     async getDataSearch(){
       console.log(this.state.inputSearch)
       this.setState({
@@ -344,9 +343,9 @@ class HerbMeds extends Component {
                     marginBottom: "10px"
                   }}
                   size='large'
-                  limit={this.state.lenght}
+                  limit={10}
                   offset={this.state.offset}
-                  total={this.state.lenght * this.state.pages}
+                  total={10 * this.state.pages}
                   onClick={(e,offset, page) => this.handleClick(offset,page)}
                 />
                 {this.state.modal.open === true ? <ModalHerbMed data={this.state.onSelect} afterUpdate={this.afterUpdate} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
