@@ -7,13 +7,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import LinearProgress from './LinearProgress'
+
 import Axios from 'axios'
 
 class ModalPlantEthnic extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          loading: true,
+          loading: false,
           _id: '',
           ethnic:'',
           disease_ina: '',
@@ -57,7 +59,9 @@ class ModalPlantEthnic extends Component {
       }
 
       handleSubmitUpdate = event => {
-        console.log(this.state)
+        this.setState({
+          loading: true
+        })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -80,17 +84,24 @@ class ModalPlantEthnic extends Component {
         section_ing: this.state.section_ing,
         } ,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
     handleSubmitAdd = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -112,17 +123,24 @@ class ModalPlantEthnic extends Component {
         section_ing: this.state.section_ing,
         },axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
     handleSubmitDelete = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -134,14 +152,18 @@ class ModalPlantEthnic extends Component {
         let section_ing = '/jamu/api/plantethnic/delete/' + this.state._id
       Axios.delete( section_ing,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
-            window.location.href = '/plantethnic';
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
 render() {
@@ -149,7 +171,12 @@ render() {
     return (
       <div>
         <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.ethnic}</DialogTitle>
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+          <DialogTitle id="form-dialog-title">You update Plant Etnic with name {this.state.name_ina}</DialogTitle>
           <DialogContent>
           <TextField
               autoFocus
@@ -252,11 +279,15 @@ render() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+      {this.state.loading ? 
+      <LinearProgress />
+                : 
+                null
+      }
+        <DialogTitle id="alert-dialog-title">{"You want delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+            You want delete plant ethnic record data with name {this.state.name_ina}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -274,7 +305,12 @@ render() {
   }else if(this.props.modal.mode === 'add') {
     return (
       <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Create</DialogTitle>
+         {this.state.loading ? 
+          <LinearProgress />
+                    : 
+                    null
+          }
+          <DialogTitle id="form-dialog-title">Create Data Record PLant Etnic :</DialogTitle>
           <DialogContent>
           <TextField
               autoFocus

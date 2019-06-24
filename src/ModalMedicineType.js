@@ -8,13 +8,15 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Select from 'react-select';
 
+import LinearProgress from './LinearProgress'
+
 import Axios from 'axios'
 
 class ModalMedType extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          loading: true,
+          loading: false,
           _id: '',
           idtype:'',
           medname: ''
@@ -44,7 +46,9 @@ class ModalMedType extends Component {
       }
 
       handleSubmitUpdate = event => {
-        console.log(this.state)
+        this.setState({
+          loading: true
+        })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -60,17 +64,24 @@ class ModalMedType extends Component {
         medname: this.state.medname
         } ,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
     handleSubmitAdd = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -86,17 +97,24 @@ class ModalMedType extends Component {
         medname: this.state.medname
         },axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
     handleSubmitDelete = event => {
-        console.log(this.state)
+      this.setState({
+        loading: true
+      })
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -108,14 +126,18 @@ class ModalMedType extends Component {
         let url = '/jamu/api/medtype/delete/' + this.state.idtype
       Axios.delete( url,axiosConfig)
         .then(data => {
-            const res = data.data;
-            console.log(res)
-            window.location.href = '/medtype';
+          const res = data.data;
+          this.props.afterUpdate(res.success, res.message);
+          this.setState({
+            loading: false
+          })
         })
         .catch(err => {
-            console.log(err)
-        });
-            event.preventDefault();
+          this.props.afterUpdate(false, err.message);
+          this.setState({
+            loading: false
+          })
+        })
     }
 
 render() {
@@ -123,7 +145,12 @@ render() {
     return (
       <div>
         <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">You update herbal medicine with id {this.state.idcompany}</DialogTitle>
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+          <DialogTitle id="form-dialog-title">You update medicine type with id : {this.state.idtype} and name is {this.state.medname} :</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
@@ -156,11 +183,15 @@ render() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+        <DialogTitle id="alert-dialog-title">{"You want delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+          You want delete medicine type with id : {this.state.idtype} and name is {this.state.medname}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -178,9 +209,15 @@ render() {
   }else if(this.props.modal.mode === 'add') {
     return (
       <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Create</DialogTitle>
+          {this.state.loading ? 
+              <LinearProgress />
+                        : 
+                        null
+              }
+          <DialogTitle id="form-dialog-title">Create Data Record Medicine Type :</DialogTitle>
           <DialogContent>
           <TextField
+              autoFocus
               margin="dense"
               id="idtype"
               label="ID Type of Herbal Medicine"
@@ -191,7 +228,6 @@ render() {
               onChange={this.valueChange}
             />
           <TextField
-              autoFocus
               margin="dense"
               id="name"
               label="Name of Herbal Medicine Type"
