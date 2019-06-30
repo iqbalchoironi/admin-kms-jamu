@@ -101,6 +101,9 @@ class TableEthnic extends React.Component{
         {this.state.loading ? <Spinner />
         :
         <MaterialTable
+            style={{
+              widht:"95%"
+            }}
             title="Ethnic Management Table"
             columns={this.state.columns}
             data={this.state.data}
