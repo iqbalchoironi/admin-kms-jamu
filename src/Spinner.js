@@ -24,7 +24,9 @@ function Spinner(props) {
         bottom: "0",
         right: "0"
     }}>
-      <CircularProgress className={classes.progress} />
+      <CircularProgress style={{
+        color:"#7AC143"
+      }} className={classes.progress} />
     </div>
   );
 }

@@ -87,59 +87,81 @@ class Navigation extends Component {
         <Divider /> */}
         <List>
             <ListItem button component={Link} to="/">
-              <ListItemIcon>Dashboard</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Dashboard</ListItemIcon>
               <ListItemText />
             </ListItem>
             <Divider />
             <ListItem button component={Link} to="/herbmeds">
-              <ListItemIcon>Herbal Medicine</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Herbal Medicine</ListItemIcon>
               <ListItemText />
             </ListItem>
 
             <ListItem button component={Link} to="/medtype">
-              <ListItemIcon>Medicine Type</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Medicine Type</ListItemIcon>
               <ListItemText />
             </ListItem>
 
             <ListItem button component={Link} to="/company">
-              <ListItemIcon>Company</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Company</ListItemIcon>
               <ListItemText />
             </ListItem>
 
             <ListItem button component={Link} to="/dclass">
-              <ListItemIcon>DClass</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>DClass</ListItemIcon>
               <ListItemText />
             </ListItem>
             <Divider />
 
             <ListItem button component={Link} to="/plant">
-              <ListItemIcon>Plant</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Plant</ListItemIcon>
               <ListItemText />
             </ListItem>
 
             <ListItem button component={Link} to="/crudedrug">
-              <ListItemIcon>Crude Drug</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Crude Drug</ListItemIcon>
               <ListItemText />
             </ListItem>
             <Divider />
 
             <ListItem button component={Link} to="/tacit">
-              <ListItemIcon>Tacit Knowledge</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Tacit Knowledge</ListItemIcon>
               <ListItemText />
             </ListItem>
 
             <ListItem button component={Link} to="/explicit">
-              <ListItemIcon>Explicit Knowledge</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Explicit Knowledge</ListItemIcon>
               <ListItemText />
             </ListItem>
 
             <ListItem button component={Link} to="/plantethnic">
-              <ListItemIcon>Plant Ethnic</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Plant Ethnic</ListItemIcon>
               <ListItemText />
             </ListItem>
 
             <ListItem button component={Link} to="/ethnic">
-              <ListItemIcon>Ethnic</ListItemIcon>
+              <ListItemIcon style={{
+                color:"#fafafa"
+              }}>Ethnic</ListItemIcon>
               <ListItemText />
             </ListItem>
             
@@ -151,7 +173,9 @@ class Navigation extends Component {
 
     return (
       <div>
-        <AppBar position="static">
+        <AppBar style={{
+          backgroundColor:"#7AC143"
+        }} position="static">
           <Toolbar>
             <IconButton onClick={this.toggleDrawer('left', true)} className={classes.menuButton} color="inherit" aria-label="Menu">
               <MenuIcon />
@@ -194,6 +218,10 @@ class Navigation extends Component {
         </AppBar>
         <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
           <div
+          style={{
+            backgroundColor:"#424242",
+            height:"100%"
+          }}
             tabIndex={0}
             role="button"
             onClick={this.toggleDrawer('left', false)}
