@@ -18,6 +18,9 @@ import TableEthnic from './TableEthnic'
 import TablePlantEthnic from './TablePlantEthnic'
 
 import FormExplicit from './FormExplicit'
+import Landing from './Landing'
+
+import { ProtectedRoute } from "./protected.route";
 
 
 
@@ -33,24 +36,24 @@ function App() {
       <div>
         <Navigation>
           <Switch>
-              <Route exact path="/" render={() => <h1>Home</h1>} />
+              <ProtectedRoute exact path="/" component={Landing} />
   
-              <Route exact path="/herbmeds" component={HerbMeds} />
-              <Route exact path="/medtype" component={TableMedicineType} />
-              <Route exact path="/company" component={MaterialTableDemo} />
-              <Route exact path="/dclass" component={DclassPage} />
+              <ProtectedRoute exact path="/herbmeds" component={HerbMeds} />
+              <ProtectedRoute exact path="/medtype" component={TableMedicineType} />
+              <ProtectedRoute exact path="/company" component={MaterialTableDemo} />
+              <ProtectedRoute exact path="/dclass" component={DclassPage} />
   
-              <Route exact path="/plant" component={Plant} />
-              <Route exact path="/crudedrug" component={CrudeDrugPage} />
+              <ProtectedRoute exact path="/plant" component={Plant} />
+              <ProtectedRoute exact path="/crudedrug" component={CrudeDrugPage} />
   
-              <Route exact path="/tacit" component={TacitPage} />
-              <Route exact path="/form/tacit" component={FormTacit} />
-              <Route exact path="/explicit" component={ExplicitPage} />
-              <Route exact path="/form/explicit" component={FormExplicit} />
+              <ProtectedRoute exact path="/tacit" component={TacitPage} />
+              <ProtectedRoute exact path="/form/tacit" component={FormTacit} />
+              <ProtectedRoute exact path="/explicit" component={ExplicitPage} />
+              <ProtectedRoute exact path="/form/explicit" component={FormExplicit} />
               {/* compound */}
               
-              <Route exact path="/ethnic" component={TableEthnic} />
-              <Route exact path="/plantethnic" component={TablePlantEthnic} />
+              <ProtectedRoute exact path="/ethnic" component={TableEthnic} />
+              <ProtectedRoute exact path="/plantethnic" component={TablePlantEthnic} />
             </Switch>
           </Navigation>
       </div>
