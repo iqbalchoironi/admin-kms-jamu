@@ -9,6 +9,7 @@
     "@material-ui/lab": "^3.0.0-alpha.30",
     "axios": "^0.18.0",
     "downshift": "^3.2.10",
+    "draft-js": "^0.10.5",
     "material-table": "^1.36.5",
     "material-ui-flat-pagination": "^3.2.0",
     "react": "^16.8.6",
