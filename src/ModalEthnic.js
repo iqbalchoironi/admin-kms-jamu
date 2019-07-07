@@ -33,7 +33,7 @@ class ModalEthnic extends Component {
         if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){
           let province = ''  
           if (this.props.data.refProvince){
-              province = this.props.baseProvince.find(p => p.value === this.props.data.refProvince )
+              province = this.props.baseProvince.find(p => p.value === this.props.data.refProvince._id )
             }
             this.setState({
                 _id: this.props.data._id,
