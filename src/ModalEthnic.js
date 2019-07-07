@@ -34,8 +34,6 @@ class ModalEthnic extends Component {
           let province = ''  
           if (this.props.data.refProvince){
               province = this.props.baseProvince.find(p => p.value === this.props.data.refProvince )
-            } else {
-              province = this.props.baseProvince.find(p => p.value === this.props.data.province )
             }
             this.setState({
                 _id: this.props.data._id,
@@ -88,7 +86,7 @@ class ModalEthnic extends Component {
 
       Axios.patch( url,{
         name: this.state.name,
-        province: this.state.province.value
+        refProvince: this.state.province.value
         } ,axiosConfig)
         .then(data => {
           const res = data.data;
@@ -98,10 +96,17 @@ class ModalEthnic extends Component {
           })
         })
         .catch(err => {
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
         });
     }
 
@@ -121,7 +126,7 @@ class ModalEthnic extends Component {
         let url = '/jamu/api/ethnic/add'
       Axios.post( url, {
         name: this.state.name,
-        province: this.state.province.value
+        refProvince: this.state.province.value
         },axiosConfig)
         .then(data => {
           const res = data.data;
@@ -131,10 +136,17 @@ class ModalEthnic extends Component {
           })
         })
         .catch(err => {
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
         });
     }
 
@@ -160,11 +172,18 @@ class ModalEthnic extends Component {
           })
         })
         .catch(err => {
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
-        });
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
+      })
     }
 
 render() {

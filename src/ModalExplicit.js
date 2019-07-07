@@ -234,15 +234,14 @@ render() {
         <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+          You want delete tacit knowledge record data with title {this.state.title}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.close} color="primary">
             NO
           </Button>
-          <Button onClick={this.props.close} color="primary" autoFocus>
+          <Button onClick={this.handleSubmitDelete} color="primary" autoFocus>
             YES
           </Button>
         </DialogActions>

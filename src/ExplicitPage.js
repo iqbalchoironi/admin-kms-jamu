@@ -38,17 +38,16 @@ function ListExplicit (props) {
             marginTop: "25px",
             border:"1px solid black"
         }}> 
-        <Typography variant="subheading" style={{
+        <Typography style={{
             color: "#1976d8"
-        }}>
-        <Link to={`/explicit/${ props.id }`}>
+        }} variant="h6" gutterBottom >
+      
             {props.title}
-        </Link>
         </Typography>
-        <Typography variant="caption" >
+        <Typography variant="caption" displayBlock>
              <Person /> {props.name}
         </Typography >
-        <Typography variant="caption" >
+        <Typography variant="caption" displayBlock>
              <CollectionsBookmark /> Conference paper <DateRange /> 12-12-2001
         </Typography>
         <p className="block-with-text">

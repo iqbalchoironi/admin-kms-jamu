@@ -158,9 +158,10 @@ class HerbMeds extends Component {
         };
       const res =  await Axios.get(url,{
         params: {
-          search: this.state.inputSearch
+          search: "abel"
         }
       },axiosConfig);
+      console.log(res)
       const { data } = await res;
       let newData = data.data;
       console.log(newData)

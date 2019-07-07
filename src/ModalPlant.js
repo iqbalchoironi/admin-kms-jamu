@@ -156,10 +156,17 @@ class ModalPlant extends Component {
           })
         })
         .catch(err => {
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
         });
     }
 
@@ -194,10 +201,17 @@ class ModalPlant extends Component {
         })
         .catch(err => {
           console.log(err)
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
         });
     }
 
@@ -223,10 +237,17 @@ class ModalPlant extends Component {
           })
         })
         .catch(err => {
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
         });
     }
 
