@@ -83,9 +83,9 @@ class ModalHerbMed extends Component {
           let dataCrude =  await this.props.data.refCrude.map(dt => {
             return {label:dt.sname,value:dt._id}
           });
-          let refMedtype =  await this.props.baseMedtype.find(dt => dt.value === this.props.data.refMedtype);
-          let refCompany =  await this.props.baseCompany.find(dt => dt.value === this.props.data.refCompany);
-          let refDclass =  await this.props.baseDclass.find(dt => dt.value === this.props.data.refDclass._id);
+          let refMedtype =  this.props.data.refMedtype !== undefined ? await this.props.baseMedtype.find(dt => dt.value === this.props.data.refMedtype._id) : null;
+          let refCompany =  this.props.data.refCompany !== undefined ? await this.props.baseCompany.find(dt => dt.value === this.props.data.refCompany._id) : null;
+          let refDclass =  this.props.data.refDclass !== undefined ? await this.props.baseDclass.find(dt => dt.value === this.props.data.refDclass._id) : null;
             
             this.setState({
                 _id: this.props.data._id,
@@ -183,12 +183,13 @@ class ModalHerbMed extends Component {
       formData.append('idcompany',this.state.idcompany);
       formData.append('idtype',this.state.idtype);
       formData.append('img',this.state.img);
-      formData.append('refMedtype',this.state.refMedtype.value);
-      formData.append('refCompany',this.state.refCompany.value);
-      formData.append('refDclass',this.state.refDclass.value);
+      formData.append('refMedtype',this.state.refMedtype !== null ? this.state.refMedtype.value : null);
+      formData.append('refCompany',this.state.refCompany !== null ? this.state.refCompany.value : null);
+      formData.append('refDclass',this.state.refDclass !== null ? this.state.refDclass.value : null);
       this.state.refCrude.map(item =>{
         formData.append('refCrude',item.value);
       })
+      console.log(formData.refCompany)
       Axios.patch( url,formData ,axiosConfig)
         .then(data => {
             const res = data.data;
@@ -198,11 +199,18 @@ class ModalHerbMed extends Component {
             })
         })
         .catch(err => {
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
             this.props.afterUpdate(false, err.message);
             this.setState({
               loading: false
             })
-        }); 
+          }
+        })
     }
 
     handleSubmitAdd = event => {
@@ -235,7 +243,7 @@ class ModalHerbMed extends Component {
       formData.append('refMedtype',this.state.refMedtype.value);
       formData.append('refCompany',this.state.refCompany.value);
       formData.append('refDclass',this.state.refDclass.value);
-      this.state.refCrude.map(item =>{
+      this.state.refCrude.map(item => {
         formData.append('refCrude',item.value);
       })
       Axios.post( url,formData,axiosConfig)
@@ -247,10 +255,17 @@ class ModalHerbMed extends Component {
           })
         })
         .catch(err => {
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
         });
     }
 
@@ -276,11 +291,18 @@ class ModalHerbMed extends Component {
           })
         })
         .catch(err => {
-          this.props.afterUpdate(false, err.message);
-          this.setState({
-            loading: false
-          })
-        });
+          if (err.response.data.message) {
+            this.props.afterUpdate(false, err.response.data.message);
+            this.setState({
+              loading: false
+            })
+          }else{
+            this.props.afterUpdate(false, err.message);
+            this.setState({
+              loading: false
+            })
+          }
+        })
     }
 
 render() {
