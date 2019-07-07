@@ -14,7 +14,7 @@ class TableEthnic extends React.Component{
       loading: false,
       columns: [
         { title: 'name', field: 'name' },
-        { title: 'province', field: 'refProvince'}
+        { title: 'province', field: 'refProvince.province_name'}
       ],
       data: [],
       modal: {
