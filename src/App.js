@@ -27,7 +27,7 @@ import axios from "axios";
 import './App.css'
 import FormTacit from './FormTacit';
 
-axios.defaults.baseURL = 'http://ci.apps.cs.ipb.ac.id';
+axios.defaults.baseURL = 'http://localhost:3003/';
 
 function App() {
   const path = window.location.pathname;

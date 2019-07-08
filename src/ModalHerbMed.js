@@ -83,9 +83,9 @@ class ModalHerbMed extends Component {
           let dataCrude =  await this.props.data.refCrude.map(dt => {
             return {label:dt.sname,value:dt._id}
           });
-          let refMedtype =  this.props.data.refMedtype !== undefined ? await this.props.baseMedtype.find(dt => dt.value === this.props.data.refMedtype._id) : null;
-          let refCompany =  this.props.data.refCompany !== undefined ? await this.props.baseCompany.find(dt => dt.value === this.props.data.refCompany._id) : null;
-          let refDclass =  this.props.data.refDclass !== undefined ? await this.props.baseDclass.find(dt => dt.value === this.props.data.refDclass._id) : null;
+          let refMedtype =  this.props.data.refMedtype !== null ? await this.props.baseMedtype.find(dt => dt.value === this.props.data.refMedtype._id) : null;
+          let refCompany =  this.props.data.refCompany !== null ? await this.props.baseCompany.find(dt => dt.value === this.props.data.refCompany._id) : null;
+          let refDclass =  this.props.data.refDclass !== null ? await this.props.baseDclass.find(dt => dt.value === this.props.data.refDclass._id) : null;
             
             this.setState({
                 _id: this.props.data._id,
@@ -183,9 +183,9 @@ class ModalHerbMed extends Component {
       formData.append('idcompany',this.state.idcompany);
       formData.append('idtype',this.state.idtype);
       formData.append('img',this.state.img);
-      formData.append('refMedtype',this.state.refMedtype !== null ? this.state.refMedtype.value : null);
-      formData.append('refCompany',this.state.refCompany !== null ? this.state.refCompany.value : null);
-      formData.append('refDclass',this.state.refDclass !== null ? this.state.refDclass.value : null);
+      formData.append('refMedtype',this.state.refMedtype !== null ? this.state.refMedtype.value : '');
+      formData.append('refCompany',this.state.refCompany !== null ? this.state.refCompany.value : '');
+      formData.append('refDclass',this.state.refDclass !== null ? this.state.refDclass.value : '');
       this.state.refCrude.map(item =>{
         formData.append('refCrude',item.value);
       })
