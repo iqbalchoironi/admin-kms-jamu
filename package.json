@@ -1,6 +1,5 @@
 {
   "name": "admin-kms-jamu",
-  "proxy": "http://ci.apps.cs.ipb.ac.id",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

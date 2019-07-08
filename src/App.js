@@ -21,12 +21,13 @@ import FormExplicit from './FormExplicit'
 import Landing from './Landing'
 
 import { ProtectedRoute } from "./protected.route";
-
-
+import axios from "axios";
 
 
 import './App.css'
 import FormTacit from './FormTacit';
+
+axios.defaults.baseURL = 'http://ci.apps.cs.ipb.ac.id';
 
 function App() {
   const path = window.location.pathname;
