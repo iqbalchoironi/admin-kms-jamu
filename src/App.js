@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch,Route } from 'react-router-dom';
 
-import Navigation from './Navigation'
+import Navigation from './NavigationCoba'
 import Login from './Login'
 import HerbMeds from './HerbMedPage'
 import TableMedicineType from './TableMedicineType'
@@ -27,7 +27,7 @@ import axios from "axios";
 import './App.css'
 import FormTacit from './FormTacit';
 
-axios.defaults.baseURL = 'http://localhost:3003/';
+axios.defaults.baseURL = 'http://localhost:3003';
 
 function App() {
   const path = window.location.pathname;
