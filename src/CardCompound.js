@@ -3,11 +3,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
+
 import Icon from "@material-ui/core/Icon";
+import Typography from "@material-ui/core/Typography";
 
 const styles = muiBaseTheme => ({
   card: {
@@ -30,12 +30,10 @@ const styles = muiBaseTheme => ({
     margin: `${muiBaseTheme.spacing.unit * 3}px 0`
   },
   heading: {
-    fontWeight: "bold",
-    height: "35px"
+    fontWeight: "bold"
   },
   subheading: {
-    // lineHeight: 1.8,
-    height: "50px"
+    lineHeight: 1.8
   },
   avatar: {
     display: "inline-block",
@@ -43,58 +41,25 @@ const styles = muiBaseTheme => ({
     "&:not(:first-of-type)": {
       marginLeft: -muiBaseTheme.spacing.unit
     }
-  },
-  blockText: {
-    overflow: "hidden",
-    position: "relative",
-    lineHeight: "1.2em",
-    maxHeight: "3.6em",
-    textAlign: "justify",
-    marginRight: "-1em",
-    paddingRight: "1em"
   }
 });
 
 const List = ({ item }) => {
-  if (item.sname !== "") {
-    return <li>{item.sname}</li>;
+  if (item !== null) {
+    return <li>{`${item.sname} part ${item.part}`}</li>;
   }
 
   return null;
 };
 
-function CardHerbMed(props) {
+function CardPlant(props) {
   const { classes } = props;
-
   const id = props.id;
   return (
     <div>
       <Card className={classes.card}>
-        {/* <CardMedia
-          className={classes.media}
-          image={props.image}
-        /> */}
+        <CardMedia className={classes.media} image={props.image} />
         <CardContent className={classes.content}>
-          {/* <Typography
-            style={{
-              color:"grey",
-              fontWeight: "bold"
-            }}
-            variant={"overline"}
-            gutterBottom
-          >
-            March 20 2019
-          </Typography> */}
-          {/* <Typography
-            style={{
-              fontWeight: "900",
-              lineHeight: "1.3"
-            }}
-            variant={"h6"}
-            gutterBottom
-          >
-            What happened in Thailand?
-          </Typography> */}
           <Typography
             className={"MuiTypography--heading"}
             variant={"h6"}
@@ -102,17 +67,22 @@ function CardHerbMed(props) {
           >
             {props.name}
           </Typography>
-          <p className="block-with-text">{props.efficacy}</p>
-          <ul className="reff">
-            {props.reff.map(item => (
-              <List item={item} />
-            ))}
-          </ul>
+          <Typography
+            className={"MuiTypography--subheading"}
+            variant={"caption"}
+          >
+            <ul className="reff">
+              {props.reff.map(item => {
+                if (item !== null) {
+                  item.part = props.part;
+                }
+
+                return <List item={item} />;
+              })}
+            </ul>
+          </Typography>
         </CardContent>
-        <CardActions className={"MuiCardActions-root"}>
-          {/* <Button color={"primary"} fullWidth onClick={props.detail.bind(this, id)}>
-          Detail <Icon>chevron_right_rounded</Icon>
-        </Button> */}
+        <CardActions>
           <Button
             color={"primary"}
             fullWidth
@@ -133,4 +103,4 @@ function CardHerbMed(props) {
   );
 }
 
-export default withStyles(styles)(CardHerbMed);
+export default withStyles(styles)(CardPlant);

@@ -48,7 +48,7 @@ class PlantPage extends Component {
           loadData: false,
           inputSearch: '',
           plant : [],
-          onSearch : false,
+          onSearch : [],
           crude: [],
           modal: {
             open: false,
@@ -76,6 +76,7 @@ class PlantPage extends Component {
       }
 
       async componentDidMount() {
+        //window.addEventListener('scroll', this.onScroll, false);
         const urlCrude = '/jamu/api/crudedrug/getlist'
         const resCrude = await Axios.get(urlCrude);
         let dataCrude =  await resCrude.data.data.map(dt => {
@@ -107,7 +108,6 @@ class PlantPage extends Component {
       const res = await Axios.get(url);
       const { data } = await res;
       this.setState({
-        onSearch: false,
         pages: data.pages,
         plant: data.data, 
         loading: false
@@ -152,7 +152,6 @@ class PlantPage extends Component {
       const { data } = await res;
       let newData = data.data;
       this.setState({
-        onSearch: true,
         pagesOnSearch: newData.length,
         plant: newData, 
         loading: false
@@ -263,17 +262,6 @@ class PlantPage extends Component {
                   display:"flex",
                   flexDirection:"row"
                 }}>
-                  {this.state.onSearch ?
-                     <Breadcrumbs aria-label="Breadcrumb">
-                     <Link color="inherit" href="/" >
-                       KMS Jamu
-                     </Link>
-                     <Link color="inherit" >
-                       Plant
-                     </Link>
-                     <Typography color="textPrimary">Search</Typography>
-                   </Breadcrumbs>
-                    :
                   <Breadcrumbs aria-label="Breadcrumb">
                     <Link color="inherit" href="/" >
                       KMS Jamu
@@ -283,7 +271,6 @@ class PlantPage extends Component {
                     </Link>
                     <Typography color="textPrimary">Plant</Typography>
                   </Breadcrumbs>
-                  }
                 </div>
                 <div style={{
                   width:"50%",

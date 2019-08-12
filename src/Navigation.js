@@ -21,6 +21,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
+import logo from './logo-header.svg';
+
 import { Link } from 'react-router-dom'
 
 const styles = {
@@ -180,9 +182,12 @@ class Navigation extends Component {
             <IconButton onClick={this.toggleDrawer('left', true)} className={classes.menuButton} color="inherit" aria-label="Menu">
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              Admin KMS Jamu
-            </Typography>
+            <img style={{
+                height: "40px",
+                marginTop: "-20px",
+                width: "12%"
+              }}
+              src={logo} alt="Logo" />
             {user ? (
               <div>
                 <IconButton

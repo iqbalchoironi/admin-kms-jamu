@@ -12,6 +12,39 @@ import LinearProgress from './LinearProgress'
 
 import Axios from 'axios'
 
+
+const List = (props) => {
+  if(props.item.sname !== ''){
+    return <li>{props.item.label} <button id={props.item.value} onClick={props.delete}>delete</button></li>
+  }
+
+  return null;
+}
+
+const ModalPlantethnic = (props) => {
+  return (
+    <Dialog open={props.open} onClose={props.close} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">You update herbal medicine with</DialogTitle>
+          <DialogContent style={{
+            height:"200px"
+          }}>
+            <Select
+              onChange={props.handleChange('addPlant')}
+              options={props.basePlantethnic}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={props.close} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={props.handleAddPlant} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+  )
+}
+
 class ModalEthnic extends Component {
     constructor(props) {
         super(props);
@@ -21,12 +54,16 @@ class ModalEthnic extends Component {
           name:'',
           province: '',
           refPlantethnic: [],
-          baseProvince: []
+          baseProvince: [],
+          openModalPlant: false,
+          addPlant: null,
         }
         this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
         this.valueChange = this.valueChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.handleAddPlant = this.handleAddPlant.bind(this);
+        this.togglePopup = this.togglePopup.bind(this);
       }
 
       async componentDidMount() {
@@ -35,16 +72,36 @@ class ModalEthnic extends Component {
           if (this.props.data.refProvince){
               province = this.props.baseProvince.find(p => p.value === this.props.data.refProvince._id )
             }
+
+            let dataPlant =  await this.props.data.refPlantethnic.map(dt => {
+              return {label:(dt.name_ina !== '' ? dt.name_ina : dt.species) +' | '+ dt.ethnic ,value:dt._id}
+            });
+
             this.setState({
                 _id: this.props.data._id,
                 name: this.props.data.name,
                 province: province !== undefined ? province : null ,
-                refPlantethnic: this.props.data.refPlantethnic,
+                refPlantethnic: dataPlant,
                 baseProvince: this.props.baseProvince
             })
 
            
         }
+      }
+
+      handleAddPlant = () => {
+        let newData = this.state.refPlantethnic.concat(this.state.addPlant);
+        this.setState({
+          refPlantethnic: newData,
+          addPlant: null
+        });
+        this.togglePopup();
+      }
+
+      togglePopup = () => {
+        this.setState({
+          openModalPlant: !this.state.openModalPlant
+        });
       }
 
       valueChange(event) {
@@ -54,6 +111,14 @@ class ModalEthnic extends Component {
     
         this.setState({
           [name]: value
+        });
+      }
+
+      handleDeletePlant = (e) => {
+        console.log(e.target.id)
+        let newData = this.state.refPlantethnic.filter(dt => dt.value !== e.target.id);
+        this.setState({
+          refPlantethnic: newData
         });
       }
 
@@ -83,10 +148,11 @@ class ModalEthnic extends Component {
             };
             
         let url = '/jamu/api/ethnic/update/' + this.state._id
-
+        let refPlantethnic = this.state.refPlantethnic.map(data => data.value)
       Axios.patch( url,{
         name: this.state.name,
-        refProvince: this.state.province.value
+        refProvince: this.state.province.value,
+        refPlantethnic: refPlantethnic
         } ,axiosConfig)
         .then(data => {
           const res = data.data;
@@ -124,9 +190,11 @@ class ModalEthnic extends Component {
             };
             
         let url = '/jamu/api/ethnic/add'
+        let refPlantethnic = this.state.refPlantethnic.map(data => data.value)
       Axios.post( url, {
         name: this.state.name,
-        refProvince: this.state.province.value
+        refProvince: this.state.province.value,
+        refPlantethnic: refPlantethnic
         },axiosConfig)
         .then(data => {
           const res = data.data;
@@ -227,8 +295,22 @@ render() {
               onChange={this.handleChange('province')}
               options={this.state.baseProvince}
             />
+             <Button onClick={this.togglePopup} color="primary">
+              Add Plant
+            </Button>
+          <ul className="reff">
+                 {this.state.refPlantethnic.map( item => (
+                    <List item = { item } delete={this.handleDeletePlant} />
+                ))} 
+            
+          </ul>
+          {this.state.openModalPlant === true ? <ModalPlantethnic basePlantethnic={this.props.basePlantethnic} handleChange={this.handleChange} handleAddPlant={this.handleAddPlant} close={this.togglePopup} open={this.state.openModalPlant} />
+              : 
+              null
+              }
           </DialogContent>
           <DialogActions>
+            
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
@@ -331,6 +413,20 @@ render() {
              }}>
               referen plant ethnic : 
             </label>
+            <Button onClick={this.togglePopup} color="primary">
+              Add Plant
+            </Button>
+            {this.state.openModalPlant === true ? <ModalPlantethnic basePlantethnic={this.props.basePlantethnic} handleChange={this.handleChange} handleAddPlant={this.handleAddPlant} close={this.togglePopup} open={this.state.openModalPlant} />
+              : 
+              null
+              }
+
+            <ul className="reff">
+                 {this.state.refPlantethnic.map( item => (
+                    <List item = { item } delete={this.handleDeletePlant} />
+                ))} 
+            
+          </ul>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.close} color="primary">
