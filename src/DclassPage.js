@@ -13,8 +13,30 @@ import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import ModalDclass from './ModalDclass';
 
+import Paper from '@material-ui/core/Paper';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
+import IconButton from '@material-ui/core/IconButton'
+import { withStyles } from '@material-ui/core/styles';
+
 import SnackBar from "./SnackBar";
 import Pagination from "material-ui-flat-pagination";
+
+const styles = {
+  root: {
+      padding: '2px 4px',
+      display: 'flex',
+      alignItems: 'center',
+      width: 400,
+  },
+  input: {
+    marginLeft: 8,
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+  }
+};
 
 class DclassPage extends Component {
     constructor(props) {
@@ -25,6 +47,7 @@ class DclassPage extends Component {
           inputSearch: '',
           onSearch:[],
           dclass : [],
+          onDisplay: [],
           modal: {
             open: false,
             mode: '',
@@ -71,34 +94,35 @@ class DclassPage extends Component {
       const res = await Axios.get(url);
       const { data } = await res;
       this.setState({
+        onDisplay: data.data,
         dclass: data.data, 
         loading: false
       })
     }
 
-    async getDataSearch(){
-      console.log(this.state.inputSearch)
+    async getDataSearch(e){
+
+      const target = e.target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const name = target.name;
       this.setState({
-        loadData: true
-      })
-      const url = '/jamu/api/herbsmed/search';
-      let axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json'
-          }
-        };
-      const res =  await Axios.get(url,{
-        params: {
-          search: this.state.inputSearch
-        }
-      },axiosConfig);
-      const { data } = await res;
-      let newData = data.data;
-      console.log(newData)
-      this.setState({
-        onSearch: newData, 
-        loadData: false
-      })
+        [name]: value
+      });
+
+      if(e.target.value === ''){
+        this.setState({ 
+            onDisplay: this.state.dclass
+        })
+    }else{
+        const regex = new RegExp(e.target.value, "ig");
+        let filter = this.state.dclass.filter( dt => {
+          return dt.class.match(regex)
+        })
+        this.setState({
+            onDisplay: filter,
+            loading: false 
+        })
+    }
     }
 
     handleInputChange(event) {
@@ -191,54 +215,7 @@ class DclassPage extends Component {
     }
 
       render() {
-
-        if(this.state.inputSearch !== '' && this.state.onSearch !== []){
-          return (
-            <div style={{
-              display: "flex",
-              flexDirection:"column",
-              paddingTop:"30px"
-
-            }}>
-            <div style={{
-                width:"90%",
-                display:"flex",
-                flexDirection:"row",
-                margin:"auto"
-              }}>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row"
-              }}>
-                <Breadcrumbs aria-label="Breadcrumb">
-                  <Link color="inherit" href="/" >
-                    KMS Jamu
-                  </Link>
-                  <Link color="inherit" >
-                    Explore
-                  </Link>
-                  <Typography color="textPrimary">Dclass</Typography>
-                </Breadcrumbs>
-              </div>
-              <div style={{
-                width:"50%",
-                display:"flex",
-                flexDirection:"row-reverse"
-              }}>
-                <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
-              </div>
-              </div>
-              
-              <div className="for-card">
-                {this.state.onSearch.map(item =>
-                          <CardDclass key={item.idclass} id={item.idclass} name={item.name} efficacy={item.efficacy}/>
-                 )}
-              </div>
-            </div>
-        );
-      }
-
+        const { classes } = this.props;
         return (
           <div>
             {this.state.loading ?
@@ -276,12 +253,17 @@ class DclassPage extends Component {
                   display:"flex",
                   flexDirection:"row-reverse"
                 }}>
-                  <SearchInput nameInput="inputSearch" inputValue={this.state.inputSearch} inputChange={this.handleInputChange} clickButton={this.getDataSearch}/>
+                  <Paper className={classes.root} elevation={1}>
+                        <InputBase className={classes.input} name="inputSearch" value={this.state.inputSearch} onChange={this.getDataSearch} onKeyDown={this.handleKeyDown} placeholder="Search here..." />
+                        <IconButton className={classes.iconButton} aria-label="Search">
+                            <SearchIcon />
+                        </IconButton>
+                    </Paper>  
                 </div>
                 </div>
                 
                 <div className="for-card">
-                  {this.state.dclass.map(item =>
+                  {this.state.onDisplay.map(item =>
                             <CardDclass key={item.idclass} id={item.idclass}  name={item.class} efficacy={item.description} detail={this.detailBtn} update={this.updateBtn} delete={this.deleteBtn}/>
                    )}
                   {this.state.modal.open === true ? <ModalDclass data={this.state.onSelect} afterUpdate={this.afterUpdate} modal={this.state.modal} baseMedtype={this.state.medtype} baseCompany={this.state.company} baseDclass={this.state.dclass} baseCrude={this.state.crude} close={this.closeBtn}/>
@@ -310,4 +292,4 @@ class DclassPage extends Component {
       }
 }
 
-export default DclassPage;
+export default withStyles(styles)(DclassPage);

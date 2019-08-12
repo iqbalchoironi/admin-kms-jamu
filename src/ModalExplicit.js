@@ -78,6 +78,8 @@ class ModalExplicit extends Component {
       }
 
       handleSubmitUpdate = event => {
+
+        console.log("oke")
         let user = localStorage.getItem("user")
         user = JSON.parse(user)
         let axiosConfig = {
@@ -99,7 +101,7 @@ class ModalExplicit extends Component {
         formData.append('abstract',this.state.abstract);
         formData.append('description',this.state.description);
         formData.append('publisher',this.state.publisher);
-        Axios.post( url,formData,axiosConfig)
+        Axios.patch( url,formData,axiosConfig)
           .then(data => {
               const res = data.data;
               console.log(res)
@@ -216,7 +218,7 @@ render() {
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.handleSubmitUpdate} color="primary">
+            <Button onClick={this.handleSubmitUpdate} color="primary">
               Update
             </Button>
           </DialogActions>

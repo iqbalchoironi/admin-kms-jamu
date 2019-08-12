@@ -11,7 +11,6 @@ import Typography from "@material-ui/core/Typography";
 const styles = muiBaseTheme => ({
   card: {
     maxWidth: 300,
-    height: 350,
     margin: "auto",
     transition: "0.3s",
     boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
@@ -89,10 +88,10 @@ function CardExample(props) {
             Detail <Icon>chevron_right_rounded</Icon>
           </Button> */}
           <Button color={"primary"} fullWidth onClick={props.update.bind(this, id)}>
-            Update <Icon>chevron_right_rounded</Icon>
+            Update <Icon>edit</Icon>
           </Button>
           <Button color={"primary"} fullWidth onClick={props.delete.bind(this, id)}>
-            Delete <Icon>chevron_right_rounded</Icon>
+            Delete <Icon>delete</Icon>
           </Button>
         </CardActions>
       </Card>

@@ -189,7 +189,7 @@ class ModalHerbMed extends Component {
       this.state.refCrude.map(item =>{
         formData.append('refCrude',item.value);
       })
-      console.log(formData.refCompany)
+      console.log(formData)
       Axios.patch( url,formData ,axiosConfig)
         .then(data => {
             const res = data.data;
