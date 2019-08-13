@@ -81,15 +81,32 @@ class Landing extends Component {
                         </div>
                         <div style={{
                             display:"flex",
-                            justifyContent :"center"
+                            flexDirection:"column",
+                            alignItems :"center"
                         }}>
-                            <span 
+                            {/* <span 
                                 style={{
                                     color:"grey",
-                                    fontSize: "100px"
+                                    fontSize: "40px"
                                 }}
                             >
                                 {this.state.count.coutHerbsMed} 
+                            </span> */}
+                            <span 
+                                style={{
+                                    color:"grey",
+                                    fontSize: "40px"
+                                }}
+                            >
+                                {`Jamu ${this.state.count.countJamu}`} 
+                            </span>
+                            <span 
+                                style={{
+                                    color:"grey",
+                                    fontSize: "40px"
+                                }}
+                            >
+                                {`Kampo ${this.state.count.countKampo}`} 
                             </span>
                         </div>
                         
