@@ -82,12 +82,12 @@ class HerbMeds extends Component {
     await this.getData();
   }
 
-  async componentWillReceiveProps() {
-    this.setState({
-      loading: true
-    });
-    await this.getData();
-  }
+  // async componentWillReceiveProps() {
+  //   this.setState({
+  //     loading: true
+  //   });
+  //   await this.getData();
+  // }
 
   async handleClick(offset, page) {
     console.log(page);
@@ -101,7 +101,7 @@ class HerbMeds extends Component {
     });
     const url = "/jamu/api/herbsmed/getbytype";
     const res = await Axios.get(url, {
-      params: { 
+      params: {
         type: this.props.match.params.type,
         page: this.state.currentPage
       }

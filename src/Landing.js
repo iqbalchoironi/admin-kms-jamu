@@ -53,7 +53,7 @@ class Landing extends Component {
                         gridGap: "2rem",
                         }}>
 
-                    <Link to="/herbmeds" style={{ textDecoration: 'none', color: 'grey'  }}>       
+                          
                     <div style={{
                         height: "230px",
                         boxSizing: "border-box",
@@ -92,6 +92,7 @@ class Landing extends Component {
                             >
                                 {this.state.count.coutHerbsMed} 
                             </span> */}
+                            <Link to="/herbmeds/jamu" style={{ textDecoration: 'none', color: 'grey'  }}> 
                             <span 
                                 style={{
                                     color:"grey",
@@ -100,6 +101,8 @@ class Landing extends Component {
                             >
                                 {`Jamu ${this.state.count.countJamu}`} 
                             </span>
+                            </Link> 
+                            <Link to="/herbmeds/kampo" style={{ textDecoration: 'none', color: 'grey'  }}> 
                             <span 
                                 style={{
                                     color:"grey",
@@ -108,10 +111,11 @@ class Landing extends Component {
                             >
                                 {`Kampo ${this.state.count.countKampo}`} 
                             </span>
+                            </Link> 
                         </div>
                         
                     </div>
-                    </Link> 
+                   
 
                     <Link to="/plant" style={{ textDecoration: 'none', color: 'grey'  }}>  
                     <div style={{
@@ -155,7 +159,7 @@ class Landing extends Component {
                     </div>
                     </Link>
 
-                    <Link to="/plant" style={{ textDecoration: 'none', color: 'grey'  }}>  
+                    <Link to="/compound" style={{ textDecoration: 'none', color: 'grey'  }}>  
                     <div style={{
                         height: "230px",
                         boxSizing: "border-box",
@@ -191,7 +195,7 @@ class Landing extends Component {
                                     fontSize: "100px"
                                 }}
                             >
-                                90
+                                {this.state.count.countCompound} 
                             </span>
                         </div>
                     </div>

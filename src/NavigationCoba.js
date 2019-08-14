@@ -167,8 +167,8 @@ function ListDrawer(props) {
           <List component="div" disablePadding>
             <ListItem
               button
-              component={Link}
-              to="/herbmeds/jamu"
+              component="a"
+              href="/herbmeds/jamu"
               className={classes.nested}
               selected={props.selected === 1}
               onClick={props.handleListItemClick.bind(this, 1)}
@@ -178,8 +178,8 @@ function ListDrawer(props) {
             </ListItem>
             <ListItem
               button
-              component={Link}
-              to="/herbmeds/kampo"
+              component="a"
+              href="/herbmeds/kampo"
               className={classes.nested}
               selected={props.selected === 2}
               onClick={props.handleListItemClick.bind(this, 2)}
