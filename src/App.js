@@ -28,7 +28,7 @@ import FormTacit from "./FormTacit";
 import CompoundPage from "./CompoundPage";
 
 axios.defaults.baseURL = "http://localhost:3003";
-// axios.defaults.baseURL = "http://api.jamumedicine.com";
+// axios.defaults.baseURL = "https://api.jamumedicine.com";
 
 function App() {
   const path = window.location.pathname;
@@ -42,7 +42,6 @@ function App() {
 
             {/* <ProtectedRoute exact path="/herbmeds" component={HerbMeds} /> */}
 
-            <ProtectedRoute exact path="/herbmeds/:type" component={HerbMeds} />
             <ProtectedRoute exact path="/herbmeds/:type" component={HerbMeds} />
 
             <ProtectedRoute

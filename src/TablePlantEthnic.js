@@ -39,10 +39,46 @@ class TabelPlantEthnic extends React.Component {
   }
 
   async componentDidMount() {
-    // window.addEventListener('scroll', this.onScroll);
     this.setState({
       loading: true
     });
+
+    const urlPlant = "/jamu/api/plant/getlist";
+    const resPlant = await Axios.get(urlPlant);
+    let dataPlant = await resPlant.data.data;
+    let basePlant = dataPlant.map(dt => {
+      return {
+        label: dt.sname,
+        value: dt._id
+      };
+    });
+
+    const urlEthnic = "/jamu/api/ethnic/getlist";
+    const resEthnic = await Axios.get(urlEthnic);
+    let dataEthnic = await resEthnic.data.data;
+    let baseEthnic = dataEthnic.map(dt => {
+      return {
+        label: dt.name,
+        value: dt._id
+      };
+    });
+
+    const urlProvince = "/jamu/api/province/getlist";
+    const resprovince = await Axios.get(urlProvince);
+    let dataProvince = await resprovince.data.data;
+    let baseProvince = dataProvince.map(dt => {
+      return {
+        label: dt.province_name,
+        value: dt._id
+      };
+    });
+
+    this.setState({
+      baseEthnic: baseEthnic,
+      basePlant: basePlant,
+      baseProvince: baseProvince
+    });
+
     await this.getData();
   }
 
@@ -158,6 +194,9 @@ class TabelPlantEthnic extends React.Component {
             afterUpdate={this.afterUpdate}
             modal={this.state.modal}
             close={this.closeBtn}
+            baseEthnic={this.state.baseEthnic}
+            basePlant={this.state.basePlant}
+            baseProvince={this.state.baseProvince}
           />
         ) : null}
 
