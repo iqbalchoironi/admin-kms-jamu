@@ -20,6 +20,8 @@ import TablePlantEthnic from "./TablePlantEthnic";
 import FormExplicit from "./FormExplicit";
 import Landing from "./Landing";
 
+import TableCompound from "./TableCompound";
+
 import { ProtectedRoute } from "./protected.route";
 import axios from "axios";
 
@@ -68,6 +70,12 @@ function App() {
               component={FormExplicit}
             />
             <ProtectedRoute exact path="/compound" component={CompoundPage} />
+
+            <ProtectedRoute
+              exact
+              path="/table/compound"
+              component={TableCompound}
+            />
 
             <ProtectedRoute exact path="/ethnic" component={TableEthnic} />
             <ProtectedRoute

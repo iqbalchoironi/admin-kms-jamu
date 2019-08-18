@@ -12,6 +12,21 @@ import LinearProgress from "./LinearProgress";
 
 import Axios from "axios";
 
+const List = props => {
+  if (props.item.sname !== "") {
+    return (
+      <li>
+        {props.item.label}{" "}
+        <button id={props.item.value} onClick={props.delete}>
+          delete
+        </button>
+      </li>
+    );
+  }
+
+  return null;
+};
+
 const ModalRefPlant = props => {
   return (
     <Dialog
@@ -42,21 +57,6 @@ const ModalRefPlant = props => {
   );
 };
 
-const List = props => {
-  if (props.item.sname !== "") {
-    return (
-      <li>
-        {props.item.label}{" "}
-        <button id={props.item.value} onClick={props.delete}>
-          delete
-        </button>
-      </li>
-    );
-  }
-
-  return null;
-};
-
 class ModalCompound extends Component {
   constructor(props) {
     super(props);
@@ -65,16 +65,17 @@ class ModalCompound extends Component {
       addCrude: null,
       loading: false,
       _id: "",
+      compound_id: "",
       cname: "",
       effect_compound: "",
-      effect_part: "",
-      effect_plant: "",
-      part: "",
-      part_plant: "",
-      plant_species: "",
-      refPlant: "",
-      reff_addtional: "",
-      reff_metabolites: ""
+      pubchem_ID: "",
+      knapsack_ID: "",
+      chemspider_ID: "",
+      other_ID: "",
+      note: "",
+      ref_effect: "",
+      refCrudeCompound: [],
+      refPlant: []
     };
     this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
     this.valueChange = this.valueChange.bind(this);
@@ -90,28 +91,31 @@ class ModalCompound extends Component {
       this.props.modal.mode === "detail" ||
       this.props.modal.mode === "delete"
     ) {
+      console.log(this.props.data.refPlant);
+      console.log(this.props.basePlant);
       let refPlant =
         this.props.data.refPlant !== null
-          ? await this.props.basePlant.find(
-              dt => dt.value === this.props.data.refPlant._id
-            )
-          : null;
+          ? await this.props.data.refPlant.map(dt => {
+              return { label: dt.sname, value: dt._id };
+            })
+          : [];
       // let refPlant = await this.props.data.refPlant.map(dt => {
       //   return { label: dt.sname, value: dt.idplant };
       // });
 
       this.setState({
         _id: this.props.data._id,
+        compound_id: this.props.data.compound_id,
         cname: this.props.data.cname,
-        effect_compound: this.props.effect_compound,
-        effect_part: this.props.data.effect_part,
-        effect_plant: this.props.data.effect_plant,
-        part: this.props.data.part,
-        part_plant: this.props.data.part_plant,
-        plant_species: this.props.data.plant_species,
-        refPlant: refPlant,
-        reff_addtional: this.props.data.reff_addtional,
-        reff_metabolites: this.props.data.reff_metabolites
+        effect_compound: this.props.data.effect_compound,
+        pubchem_ID: this.props.data.pubchem_ID,
+        knapsack_ID: this.props.data.knapsack_ID,
+        chemspider_ID: this.props.data.chemspider_ID,
+        other_ID: this.props.data.other_ID,
+        note: this.props.data.note,
+        ref_effect: this.props.data.ref_effect,
+        refCrudeCompound: null,
+        refPlant: refPlant
       });
     }
   }
@@ -173,20 +177,20 @@ class ModalCompound extends Component {
     };
 
     let url = "/jamu/api/compound/update/" + this.state._id;
-
+    let refPlant = this.state.refPlant.map(data => data.value);
     Axios.patch(
       url,
       {
         cname: this.state.cname,
-        effect_compound: this.props.effect_compound,
-        effect_part: this.state.effect_part,
-        effect_plant: this.state.effect_plant,
-        part: this.state.part,
-        part_plant: this.state.part_plant,
-        plant_species: this.state.plant_species,
-        refPlant: this.state.refPlant.value,
-        reff_addtional: this.state.reff_addtional,
-        reff_metabolites: this.state.reff_metabolites
+        effect_compound: this.state.effect_compound,
+        pubchem_ID: this.state.pubchem_ID,
+        knapsack_ID: this.state.knapsack_ID,
+        chemspider_ID: this.state.chemspider_ID,
+        other_ID: this.state.other_ID,
+        note: this.state.note,
+        ref_effect: this.state.ref_effect,
+        refCrudeCompound: [],
+        refPlant: refPlant
       },
       axiosConfig
     )
@@ -230,16 +234,17 @@ class ModalCompound extends Component {
     Axios.post(
       url,
       {
+        compound_id: this.state.compound_id,
         cname: this.state.cname,
-        effect_compound: this.props.effect_compound,
-        effect_part: this.state.effect_part,
-        effect_plant: this.state.effect_plant,
-        part: this.state.part,
-        part_plant: this.state.part_plant,
-        plant_species: this.state.plant_species,
-        refPlant: refPlant,
-        reff_addtional: this.state.reff_addtional,
-        reff_metabolites: this.state.reff_metabolites
+        effect_compound: this.state.effect_compound,
+        pubchem_ID: this.state.pubchem_ID,
+        knapsack_ID: this.state.knapsack_ID,
+        chemspider_ID: this.state.chemspider_ID,
+        other_ID: this.state.other_ID,
+        note: this.state.note,
+        ref_effect: this.state.ref_effect,
+        refCrudeCompound: [],
+        refPlant: refPlant
       },
       axiosConfig
     )
@@ -314,15 +319,25 @@ class ModalCompound extends Component {
           >
             {this.state.loading ? <LinearProgress /> : null}
             <DialogTitle id="form-dialog-title">
-              You update plant with id {this.state.idplant} and name is{" "}
+              You update compound with id {this.state.compound_id} and name is{" "}
               {this.state.cname} :{" "}
             </DialogTitle>
             <DialogContent>
               {/* <DialogContentText>
               You update herbal medicine with id {this.state.idplant}
             </DialogContentText> */}
-              <TextField
+              {/* <TextField
                 autoFocus
+                margin="dense"
+                id="compound_id"
+                label="Compound ID"
+                name="compound_id"
+                type="text"
+                value={this.state.compound_id}
+                fullWidth
+                onChange={this.valueChange}
+              /> */}
+              <TextField
                 margin="dense"
                 id="cname"
                 label="Compound Name"
@@ -344,71 +359,61 @@ class ModalCompound extends Component {
               />
               <TextField
                 margin="dense"
-                id="Effect Part"
-                label="Effect part"
-                name="effect_part"
+                id="Pubchem ID"
+                label="Pubchem ID"
+                name="pubchem_ID"
                 type="text"
-                value={this.state.effect_part}
+                value={this.state.pubchem_ID}
                 fullWidth
                 onChange={this.valueChange}
               />
               <TextField
                 margin="dense"
-                id="Effect Part"
-                label="Effect part"
-                name="effect_part"
+                id="Knapsack ID"
+                label="Knapsack ID"
+                name="knapsack_ID"
                 type="text"
-                value={this.state.effect_part}
+                value={this.state.knapsack_ID}
                 fullWidth
                 onChange={this.valueChange}
               />
               <TextField
                 margin="dense"
-                id="Effect Plant"
-                label="Effect plant"
-                name="effect_plant"
+                id="chemspider ID"
+                label="chemspider ID"
+                name="chemspider_ID"
                 type="text"
-                value={this.state.effect_plant}
+                value={this.state.chemspider_ID}
                 fullWidth
                 onChange={this.valueChange}
               />
               <TextField
                 margin="dense"
-                id="Part"
-                label="Part"
-                name="part"
+                id="other ID"
+                label="other ID"
+                name="other_ID"
                 type="text"
-                value={this.state.part}
+                value={this.state.other_ID}
                 fullWidth
                 onChange={this.valueChange}
               />
               <TextField
                 margin="dense"
-                id="Part"
-                label="Part"
-                name="part"
+                id="Note"
+                label="Note"
+                name="note"
                 type="text"
-                value={this.state.part}
+                value={this.state.note}
                 fullWidth
                 onChange={this.valueChange}
               />
               <TextField
                 margin="dense"
-                id="Part plant"
-                label="Part plant"
-                name="part_plant"
+                id="Ref effect"
+                label="Ref effect"
+                name="ref_effect"
                 type="text"
-                value={this.state.part_plant}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="Plant species"
-                label="plant_species"
-                name="plant_species"
-                type="text"
-                value={this.state.plant_species}
+                value={this.state.ref_effect}
                 fullWidth
                 onChange={this.valueChange}
               />
@@ -422,13 +427,25 @@ class ModalCompound extends Component {
                   marginBottom: "5px"
                 }}
               >
-                referen plant
+                Reference Plant :
               </label>
-              <Select
-                value={this.state.refPlant}
-                onChange={this.handleChange("refPlant")}
-                options={this.props.basePlant}
-              />
+              <Button onClick={this.togglePopup} color="primary">
+                Add Refren Plant
+              </Button>
+              {this.state.openModalPlant === true ? (
+                <ModalRefPlant
+                  basePlant={this.props.basePlant}
+                  handleChange={this.handleChange}
+                  handleAddPlant={this.handleAddPlant}
+                  close={this.togglePopup}
+                  open={this.state.openModalPlant}
+                />
+              ) : null}
+              <ul className="reff">
+                {this.state.refPlant.map(item => (
+                  <List item={item} delete={this.handleDeletePlant} />
+                ))}
+              </ul>
             </DialogContent>
             <DialogActions>
               <Button onClick={this.props.close} color="primary">
@@ -455,8 +472,8 @@ class ModalCompound extends Component {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              You want delete plant record data with id {this.state._id} and
-              name {this.state.cname}
+              You want delete compound record data with id{" "}
+              {this.state.compound_id} and name {this.state.cname}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -479,7 +496,7 @@ class ModalCompound extends Component {
         >
           {this.state.loading ? <LinearProgress /> : null}
           <DialogTitle id="form-dialog-title">
-            You update plant with id {this.state.idplant} and name is{" "}
+            You update compound with id {this.state.idplant} and name is{" "}
             {this.state.cname} :{" "}
           </DialogTitle>
           <DialogContent>
@@ -488,6 +505,16 @@ class ModalCompound extends Component {
             </DialogContentText> */}
             <TextField
               autoFocus
+              margin="dense"
+              id="compound_id"
+              label="Compound ID"
+              name="compound_id"
+              type="text"
+              value={this.state.compound_id}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
               margin="dense"
               id="cname"
               label="Compound Name"
@@ -509,75 +536,65 @@ class ModalCompound extends Component {
             />
             <TextField
               margin="dense"
-              id="Effect Part"
-              label="Effect part"
-              name="effect_part"
+              id="Pubchem ID"
+              label="Pubchem ID"
+              name="pubchem_ID"
               type="text"
-              value={this.state.effect_part}
+              value={this.state.pubchem_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="Effect Part"
-              label="Effect part"
-              name="effect_part"
+              id="Knapsack ID"
+              label="Knapsack ID"
+              name="knapsack_ID"
               type="text"
-              value={this.state.effect_part}
+              value={this.state.knapsack_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="Effect Plant"
-              label="Effect plant"
-              name="effect_plant"
+              id="chemspider ID"
+              label="chemspider ID"
+              name="chemspider_ID"
               type="text"
-              value={this.state.effect_plant}
+              value={this.state.chemspider_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="Part"
-              label="Part"
-              name="part"
+              id="other ID"
+              label="other ID"
+              name="other_ID"
               type="text"
-              value={this.state.part}
+              value={this.state.other_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="Part"
-              label="Part"
-              name="part"
+              id="Note"
+              label="Note"
+              name="note"
               type="text"
-              value={this.state.part}
+              value={this.state.note}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="Part plant"
-              label="Part plant"
-              name="part_plant"
+              id="Ref effect"
+              label="Ref effect"
+              name="ref_effect"
               type="text"
-              value={this.state.part_plant}
+              value={this.state.ref_effect}
               fullWidth
               onChange={this.valueChange}
             />
-            <TextField
-              margin="dense"
-              id="Plant species"
-              label="plant_species"
-              name="plant_species"
-              type="text"
-              value={this.state.plant_species}
-              fullWidth
-              onChange={this.valueChange}
-            />
-            {/* <label
+            <label
               style={{
                 color: "grey",
                 fontWeight: "lighter",
@@ -605,31 +622,14 @@ class ModalCompound extends Component {
               {this.state.refPlant.map(item => (
                 <List item={item} delete={this.handleDeletePlant} />
               ))}
-            </ul> */}
-            <label
-              style={{
-                color: "grey",
-                fontWeight: "lighter",
-                fontSize: "13px",
-                display: "block",
-                marginTop: "10px",
-                marginBottom: "5px"
-              }}
-            >
-              referen plant
-            </label>
-            <Select
-              value={this.state.refPlant}
-              onChange={this.handleChange("refPlant")}
-              options={this.props.basePlant}
-            />
+            </ul>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleSubmitUpdate} color="primary">
-              Update
+            <Button onClick={this.handleSubmitAdd} color="primary">
+              Add
             </Button>
           </DialogActions>
         </Dialog>
