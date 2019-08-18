@@ -69,7 +69,7 @@ function App() {
               path="/form/explicit"
               component={FormExplicit}
             />
-            <ProtectedRoute exact path="/compound" component={CompoundPage} />
+            <ProtectedRoute exact path="/compound" component={TableCompound} />
 
             <ProtectedRoute
               exact
