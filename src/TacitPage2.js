@@ -84,7 +84,7 @@ function ListTacit (props) {
             {props.abstract}
         </p>
 
-        <Button onClick={props.update.bind(this, id)} >
+        <Button href={`/edit/tacit/${id}`} >
           Update <Icon>edit</Icon>
         </Button>
 
