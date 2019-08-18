@@ -63,6 +63,11 @@ function App() {
 
             <ProtectedRoute exact path="/tacit" component={TacitPage} />
             <ProtectedRoute exact path="/form/tacit" component={FormTacit} />
+            <ProtectedRoute
+              exact
+              path="/edit/tacit/:id"
+              component={FormTacit}
+            />
             <ProtectedRoute exact path="/explicit" component={ExplicitPage} />
             <ProtectedRoute
               exact
