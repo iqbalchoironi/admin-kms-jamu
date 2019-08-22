@@ -157,6 +157,7 @@ class FormTacit extends Component {
       file: null,
       reference: "",
       input: "",
+      mode: "",
       editorState: EditorState.createEmpty()
     };
 
@@ -173,30 +174,37 @@ class FormTacit extends Component {
   }
 
   async componentDidMount() {
-    try {
-      const { id } = this.props.match.params;
-      const url = "/jamu/api/tacit/get/" + id;
-      const res = await Axios.get(url);
-      let data = await res.data.data;
-      let content = await JSON.parse(data.content);
-      const contentState = await convertFromRaw(content);
-      const editorState = await EditorState.createWithContent(contentState);
-      // this.afterUpdate(res.data.success, res.data.message);
+    const { id } = this.props.match.params;
+    if (id !== undefined) {
+      try {
+        const url = "/jamu/api/tacit/get/" + id;
+        const res = await Axios.get(url);
+        let data = await res.data.data;
+        let content = await JSON.parse(data.content);
+        const contentState = await convertFromRaw(content);
+        const editorState = await EditorState.createWithContent(contentState);
+        // this.afterUpdate(res.data.success, res.data.message);
+        this.setState({
+          mode: "update",
+          id: id,
+          editorState: editorState,
+          datePublish: data.datePublish,
+          reference: data.reference,
+          file: data.file,
+          title: data.title,
+          loading: false
+        });
+      } catch (err) {
+        console.log(err.message);
+        // this.afterUpdate(false, err.message);
+        this.setState({
+          onEror: true,
+          loading: false
+        });
+      }
+    } else {
       this.setState({
-        id: id,
-        editorState: editorState,
-        datePublish: data.datePublish,
-        reference: data.reference,
-        file: data.file,
-        title: data.title,
-        loading: false
-      });
-    } catch (err) {
-      console.log(err.message);
-      // this.afterUpdate(false, err.message);
-      this.setState({
-        onEror: true,
-        loading: false
+        mode: "add"
       });
     }
   }
@@ -254,33 +262,64 @@ class FormTacit extends Component {
   };
 
   handleSubmit = event => {
-    let contentState = this.state.editorState.getCurrentContent();
-    contentState = convertToRaw(contentState);
-    contentState = JSON.stringify(contentState);
-    let user = localStorage.getItem("user");
-    user = JSON.parse(user);
-    let axiosConfig = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: user.token
-      }
-    };
+    if (this.state.mode === "update") {
+      let url = "/jamu/api/tacit/update/" + this.state.id;
+      let contentState = this.state.editorState.getCurrentContent();
+      contentState = convertToRaw(contentState);
+      contentState = JSON.stringify(contentState);
+      let user = localStorage.getItem("user");
+      user = JSON.parse(user);
+      let axiosConfig = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: user.token
+        }
+      };
 
-    let url = "/jamu/api/tacit/update/" + this.state.id;
-    const formData = new FormData();
-    formData.append("file", this.state.file);
-    formData.append("title", this.state.title);
-    formData.append("content", contentState);
-    formData.append("reference", this.state.reference);
-    Axios.patch(url, formData, axiosConfig)
-      .then(data => {
-        const res = data.data;
-        console.log(res);
-        window.location.href = "/tacit";
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      const formData = new FormData();
+      formData.append("file", this.state.file);
+      formData.append("title", this.state.title);
+      formData.append("content", contentState);
+      formData.append("reference", this.state.reference);
+      Axios.patch(url, formData, axiosConfig)
+        .then(data => {
+          const res = data.data;
+          console.log(res);
+          window.location.href = "/tacit";
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      let url = "/jamu/api/tacit/add";
+      let contentState = this.state.editorState.getCurrentContent();
+      contentState = convertToRaw(contentState);
+      contentState = JSON.stringify(contentState);
+      let user = localStorage.getItem("user");
+      user = JSON.parse(user);
+      let axiosConfig = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: user.token
+        }
+      };
+
+      const formData = new FormData();
+      formData.append("file", this.state.file);
+      formData.append("title", this.state.title);
+      formData.append("content", contentState);
+      formData.append("reference", this.state.reference);
+      Axios.post(url, formData, axiosConfig)
+        .then(data => {
+          const res = data.data;
+          console.log(res);
+          window.location.href = "/tacit";
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+
     event.preventDefault();
   };
 
