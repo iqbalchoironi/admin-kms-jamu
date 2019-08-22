@@ -29,8 +29,8 @@ import "./App.css";
 import FormTacit from "./FormTacit";
 import CompoundPage from "./CompoundPage";
 
-axios.defaults.baseURL = "http://localhost:3003";
-// xios.defaults.baseURL = "https://api.jamumedicine.com";
+// axios.defaults.baseURL = "http://localhost:3003";
+axios.defaults.baseURL = "https://api.jamumedicine.com";
 
 function App() {
   const path = window.location.pathname;
