@@ -95,6 +95,12 @@ class HerbMeds extends Component {
     this.getDataPage();
   }
 
+  async handleClickSearch(offset, page) {
+    console.log(page);
+    await this.setState({ currentPage: page, offset });
+    this.getDataSearch();
+  }
+
   async getDataPage() {
     this.setState({
       loading: true
@@ -173,12 +179,13 @@ class HerbMeds extends Component {
   }
 
   async getDataSearch() {
+    const { type } = await this.props.match.params;
     console.log(this.state.inputSearch);
     this.setState({
       loading: true,
       onSearch: true
     });
-    const url = "/jamu/api/herbsmed/search";
+    const url = "jamu/api/herbsmed/getbytype/search";
     let axiosConfig = {
       headers: {
         "Content-Type": "application/json"
@@ -188,7 +195,9 @@ class HerbMeds extends Component {
       url,
       {
         params: {
-          search: this.state.inputSearch
+          search: this.state.inputSearch,
+          type: type,
+          page: this.state.currentPage
         }
       },
       axiosConfig
@@ -197,8 +206,10 @@ class HerbMeds extends Component {
     let newData = data.data;
     console.log(newData);
     this.setState({
+      onSearch: true,
       herbmeds: newData,
-      loading: false
+      loading: false,
+      pages: data.pages
     });
   }
 
@@ -354,17 +365,34 @@ class HerbMeds extends Component {
                 />
               ))}
             </div>
-            <Pagination
-              style={{
-                margin: "auto",
-                marginBottom: "10px"
-              }}
-              size="large"
-              limit={10}
-              offset={this.state.offset}
-              total={10 * this.state.pages}
-              onClick={(e, offset, page) => this.handleClick(offset, page)}
-            />
+            {this.state.onSearch ? (
+              <Pagination
+                style={{
+                  margin: "auto",
+                  marginBottom: "10px"
+                }}
+                size="large"
+                limit={10}
+                offset={this.state.offset}
+                total={10 * this.state.pages}
+                onClick={(e, offset, page) =>
+                  this.handleClickSearch(offset, page)
+                }
+              />
+            ) : (
+              <Pagination
+                style={{
+                  margin: "auto",
+                  marginBottom: "10px"
+                }}
+                size="large"
+                limit={10}
+                offset={this.state.offset}
+                total={10 * this.state.pages}
+                onClick={(e, offset, page) => this.handleClick(offset, page)}
+              />
+            )}
+
             {this.state.modal.open === true ? (
               <ModalHerbMed
                 data={this.state.onSelect}

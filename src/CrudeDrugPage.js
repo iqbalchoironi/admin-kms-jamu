@@ -90,6 +90,12 @@ class CrudeDrugPage extends Component {
     this.getData();
   }
 
+  async handleClickOnSearch(offset, page) {
+    console.log(page);
+    await this.setState({ currentPage: page, offset });
+    this.getDataSearch();
+  }
+
   async getData() {
     this.setState({
       loading: true
@@ -137,7 +143,8 @@ class CrudeDrugPage extends Component {
       url,
       {
         params: {
-          search: this.state.inputSearch
+          search: this.state.inputSearch,
+          page: this.state.currentPage
         }
       },
       axiosConfig
@@ -146,8 +153,10 @@ class CrudeDrugPage extends Component {
     let newData = data.data;
     console.log(newData);
     this.setState({
+      onSearch: true,
       crude: newData,
-      loadData: false
+      loadData: false,
+      pages: data.pages
     });
   }
 
@@ -313,18 +322,33 @@ class CrudeDrugPage extends Component {
                 close={this.closeBtn}
               />
             ) : null}
-            <Pagination
-              style={{
-                margin: "auto",
-                marginBottom: "10px"
-              }}
-              size="large"
-              limit={10}
-              offset={this.state.offset}
-              total={10 * this.state.pages}
-              onClick={(e, offset, page) => this.handleClick(offset, page)}
-            />
-
+            {this.state.onSearch ? (
+              <Pagination
+                style={{
+                  margin: "auto",
+                  marginBottom: "10px"
+                }}
+                size="large"
+                limit={10}
+                offset={this.state.offset}
+                total={10 * this.state.pages}
+                onClick={(e, offset, page) =>
+                  this.handleClickOnSearch(offset, page)
+                }
+              />
+            ) : (
+              <Pagination
+                style={{
+                  margin: "auto",
+                  marginBottom: "10px"
+                }}
+                size="large"
+                limit={10}
+                offset={this.state.offset}
+                total={10 * this.state.pages}
+                onClick={(e, offset, page) => this.handleClick(offset, page)}
+              />
+            )}
             {this.state.snackbar.open === true ? (
               <SnackBar data={this.state.snackbar} close={this.closeBtn} />
             ) : null}
