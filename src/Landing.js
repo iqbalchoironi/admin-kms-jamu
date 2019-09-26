@@ -12,7 +12,6 @@ import ExplicitIcon from './icon/expliciticon.png'
 import MedTypeIcon from './icon/medtypeicon.png'
 import PlantethnicIcon from './icon/plantethnicicon.png'
 import TacitIcon from './icon/taciticon.png'
-import color from '@material-ui/core/colors/grey';
 
 import { Link } from "react-router-dom";
 
@@ -214,14 +213,15 @@ class Landing extends Component {
                         }}>
                     <Link to="/ethnic" style={{ textDecoration: 'none'  }}>  
                     <div style={{
-                        backgroundImage: "linear-gradient(0deg,#3f51b5,#7684cf)",
+                        //backgroundImage: "linear-gradient(0deg,#3f51b5,#7684cf)",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
                         borderRadius: "0.375rem",
-                        color:"white",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
@@ -248,14 +248,15 @@ class Landing extends Component {
                     
                     <Link to="/plantethnic" style={{ textDecoration: 'none'  }}> 
                     <div style={{
-                        backgroundColor: "#00bcd4",
+                        // backgroundColor: "#00bcd4",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
                         borderRadius: "0.375rem",
-                        color:"white",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
@@ -281,14 +282,15 @@ class Landing extends Component {
                     
                     <Link to="/company" style={{ textDecoration: 'none'  }}> 
                     <div style={{
-                        backgroundColor: "#ff4081",
+                        // backgroundColor: "#ff4081",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
                         borderRadius: "0.375rem",
-                        color:"white",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
@@ -314,13 +316,15 @@ class Landing extends Component {
 
                     <Link to="/dclass" style={{ textDecoration: 'none'  }}>
                     <div style={{
-                         backgroundColor: "#ff9800",
+                        //  backgroundColor: "#ff9800",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
-                        borderRadius: "0.375rem",color:"white",
+                        borderRadius: "0.375rem",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
@@ -346,13 +350,15 @@ class Landing extends Component {
                     
                     <Link to="/medtype" style={{ textDecoration: 'none'  }}>
                     <div style={{
-                        backgroundColor: "#20c997",
+                        // backgroundColor: "#20c997",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
-                        borderRadius: "0.375rem",color:"white",
+                        borderRadius: "0.375rem",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
@@ -378,13 +384,15 @@ class Landing extends Component {
 
                     <Link to="/crudedrug" style={{ textDecoration: 'none'  }}>
                     <div style={{
-                        backgroundColor: "#dc3545",
+                        // backgroundColor: "#dc3545",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
-                        borderRadius: "0.375rem",color:"white",
+                        borderRadius: "0.375rem",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
@@ -410,14 +418,15 @@ class Landing extends Component {
                     
                     <Link to="/tacit" style={{ textDecoration: 'none'  }}>
                     <div style={{
-                        backgroundImage: "linear-gradient(90deg,#aa3c6d 0,#ff9800)",
+                        // backgroundImage: "linear-gradient(90deg,#aa3c6d 0,#ff9800)",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
                         borderRadius: "0.375rem",
-                        color:"white",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
@@ -443,14 +452,16 @@ class Landing extends Component {
                     
                     <Link to="/explicit" style={{ textDecoration: 'none'  }}>
                     <div style={{
-                        backgroundImage: "linear-gradient(90deg,#3f51b5 0,#e91e63)",
-                        backgroundColor: "#007bff",
+                        // backgroundImage: "linear-gradient(90deg,#3f51b5 0,#e91e63)",
+                        // backgroundColor: "#007bff",
+                        backgroundColor: "white",
                         height: "100px",
                         boxSizing: "border-box",
                         boxShadow: "0 2px 5px 0 rgba(0,0,0,.26)",
                         padding: "30px",
                         border: "0",
-                        borderRadius: "0.375rem",color:"white",
+                        borderRadius: "0.375rem",
+                        color:"grey",
                         display: "flex"
                     }}>
                          <img style={{
