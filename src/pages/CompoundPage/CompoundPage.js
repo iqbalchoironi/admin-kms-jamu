@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Axios from "axios";
 
-import Spinner from "./Spinner";
-import CardCompound from "./CardCompound";
+import Spinner from "../../Spinner";
+import CardCompound from "../../CardCompound";
 
 import Typography from "@material-ui/core/Typography";
 import Breadcrumbs from "@material-ui/lab/Breadcrumbs";
@@ -14,12 +14,12 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import IconButton from "@material-ui/core/IconButton";
 
-import SnackBar from "./SnackBar";
-import ErorPage from "./ErorPage";
+import SnackBar from "../../SnackBar";
+import ErorPage from "../../ErorPage";
 
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-import ModalCompound from "./ModalCompound";
+import ModalCompound from "../../ModalCompound";
 
 const styles = {
   root: {

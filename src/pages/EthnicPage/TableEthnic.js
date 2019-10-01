@@ -2,18 +2,24 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import ModalMedType from "./ModalMedicineType";
+import Spinner from "../../Spinner";
+import ModalEthnic from "../../ModalEthnic";
+import SnackBar from "../../SnackBar";
 
-import Spinner from "./Spinner";
-import SnackBar from "./SnackBar";
-
-class TableMedicineType extends React.Component {
+class TableEthnic extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       columns: [
-        { title: "ID Type of Medicine", field: "idtype" },
-        { title: "Medicine Name", field: "medname" }
+        {
+          title: "Name",
+          field: "name"
+        },
+        {
+          title: "Province",
+          field: "refProvince.province_name"
+        }
       ],
       data: [],
       modal: {
@@ -26,7 +32,8 @@ class TableMedicineType extends React.Component {
         message: ""
       },
       onSelect: null,
-      baseProvince: []
+      baseProvince: [],
+      basePlantethnic: []
     };
     this.closeBtn = this.closeBtn.bind(this);
     this.getData = this.getData.bind(this);
@@ -38,12 +45,35 @@ class TableMedicineType extends React.Component {
       loading: true
     });
     // window.addEventListener('scroll', this.onScroll);
-    this.getData();
+    const urlProvince = "/jamu/api/province/getlist";
+    const resProvince = await Axios.get(urlProvince);
+    const baseProvince = await resProvince.data.data.map(dt => {
+      return { label: dt.province_name, value: dt._id };
+    });
+
+    const urlPlantethnic = "/jamu/api/plantethnic/getlist";
+    const resPlantethnic = await Axios.get(urlPlantethnic);
+    const basePlantethnic = await resPlantethnic.data.data.map(dt => {
+      return {
+        label:
+          (dt.name_ina !== "" ? dt.name_ina : dt.species) + " | " + dt.ethnic,
+        value: dt._id
+      };
+    });
+
+    this.setState({
+      baseProvince: baseProvince,
+      basePlantethnic: basePlantethnic
+    });
+
+    await this.getData();
   }
 
   async getData() {
-    const url = "/jamu/api/medtype";
+    const url = "/jamu/api/ethnic";
+
     const res = await Axios.get(url);
+
     const { data } = await res;
     this.setState({
       data: data.data,
@@ -88,7 +118,7 @@ class TableMedicineType extends React.Component {
           <Spinner />
         ) : (
           <MaterialTable
-            title="Management Table Medicine Type"
+            title="Ethnic Management Table"
             columns={this.state.columns}
             data={this.state.data}
             actions={[
@@ -149,8 +179,9 @@ class TableMedicineType extends React.Component {
         )}
 
         {this.state.modal.open === true ? (
-          <ModalMedType
+          <ModalEthnic
             baseProvince={this.state.baseProvince}
+            basePlantethnic={this.state.basePlantethnic}
             afterUpdate={this.afterUpdate}
             data={this.state.onSelect}
             modal={this.state.modal}
@@ -166,4 +197,4 @@ class TableMedicineType extends React.Component {
   }
 }
 
-export default TableMedicineType;
+export default TableEthnic;

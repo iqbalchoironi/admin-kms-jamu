@@ -1,33 +1,30 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 
-import Navigation from "./NavigationCoba";
-import Login from "./Login";
-import HerbMeds from "./HerbMedPage";
-import TableMedicineType from "./TableMedicineType";
-import MaterialTableDemo from "./TableCompany";
-import DclassPage from "./DclassPage";
+import Navigation from "./components/navigation/NavigationCoba";
 
-import Plant from "./PlantPage";
-import CrudeDrugPage from "./CrudeDrugPage";
+import Login from "./pages/LoginPage/Login";
+import HerbMeds from "./pages/HerbmedPage/HerbMedPage";
+import TableMedicineType from "./pages/MedtypePage/TableMedicineType";
+import MaterialTableDemo from "./pages/CompanyPage/TableCompany";
+import DclassPage from "./pages/DclassPage/DclassPage";
+import TableEthnic from "./pages/EthnicPage/TableEthnic";
+import TablePlantEthnic from "./pages/PlantethnicPage/TablePlantEthnic";
+import Plant from "./pages/PlantPage/PlantPage";
+import CrudeDrugPage from "./pages/CrudePage/CrudeDrugPage";
+import Landing from "./pages/LandingPage/Landing";
+import TableCompound from "./pages/CompoundPage/TableCompound";
 
 import TacitPage from "./TacitPage2";
 import ExplicitPage from "./ExplicitPage2";
 
-import TableEthnic from "./TableEthnic";
-import TablePlantEthnic from "./TablePlantEthnic";
-
 import FormExplicit from "./FormExplicit";
-import Landing from "./Landing";
-
-import TableCompound from "./TableCompound";
-
 import { ProtectedRoute } from "./protected.route";
 import axios from "axios";
 
 import "./App.css";
 import FormTacit from "./FormTacit";
-import CompoundPage from "./CompoundPage";
+//import CompoundPage from "./page/CompoundPage/CompoundPage";
 
 // axios.defaults.baseURL = "http://localhost:3003";
 axios.defaults.baseURL = "https://api.jamumedicine.com";

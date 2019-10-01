@@ -36,7 +36,7 @@ import Icon from "@material-ui/core/Icon";
 import ModalTacit from './ModalTacit';
 
 import SnackBar from './SnackBar'
-import ErorPage from './ErorPage'
+import ErorPage from './pages/ErrorPage/ErorPage'
 
 
 const styles = {

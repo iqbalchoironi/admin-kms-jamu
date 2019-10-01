@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import Axios from "axios";
 
-import CardCrudeDrug from "./CardCrudeDrug";
-import Spinner from "./Spinner";
+import CardHerbMed from "../../components/card-herbmed/CardHerbMed";
+import SearchInput from "../../SearchInput";
+import Spinner from "../../Spinner";
 
 import Typography from "@material-ui/core/Typography";
 import Breadcrumbs from "@material-ui/lab/Breadcrumbs";
 import Link from "@material-ui/core/Link";
-import ModalCrude from "./ModalCrude";
-
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 
-import SnackBar from "./SnackBar";
+import ModalHerbMed from "../../ModalHerbMed";
+import SnackBar from "../../SnackBar";
 import Pagination from "material-ui-flat-pagination";
 
 import Paper from "@material-ui/core/Paper";
@@ -20,6 +20,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import IconButton from "@material-ui/core/IconButton";
 import { withStyles } from "@material-ui/core/styles";
+
+import ErorPage from "../ErrorPage/ErorPage";
 
 const styles = {
   root: {
@@ -36,16 +38,20 @@ const styles = {
     padding: 10
   }
 };
-class CrudeDrugPage extends Component {
+
+class HerbMeds extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
       loadData: false,
       inputSearch: "",
-      onSearch: [],
+      onSearch: false,
+      herbmeds: [],
       crude: [],
-      plant: [],
+      company: [],
+      dclass: [],
+      medtype: [],
       modal: {
         open: false,
         mode: ""
@@ -68,54 +74,98 @@ class CrudeDrugPage extends Component {
     this.detailBtn = this.detailBtn.bind(this);
     this.addBtn = this.addBtn.bind(this);
     this.closeBtn = this.closeBtn.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.afterUpdate = this.afterUpdate.bind(this);
   }
 
   async componentDidMount() {
-    //window.addEventListener('scroll', this.onScroll, false);
-    const urlPlant = "/jamu/api/plant/getlist";
-    const resPlant = await Axios.get(urlPlant);
-    let dataPlant = await resPlant.data.data.map(dt => {
-      return { label: dt.sname, value: dt._id };
-    });
-    this.setState({
-      plant: dataPlant
-    });
-    this.getData();
+    await this.getData();
   }
+
+  // async componentWillReceiveProps() {
+  //   this.setState({
+  //     loading: true
+  //   });
+  //   await this.getData();
+  // }
 
   async handleClick(offset, page) {
     console.log(page);
     await this.setState({ currentPage: page, offset });
-    this.getData();
+    this.getDataPage();
   }
 
-  async handleClickOnSearch(offset, page) {
+  async handleClickSearch(offset, page) {
     console.log(page);
     await this.setState({ currentPage: page, offset });
     this.getDataSearch();
   }
 
-  async getData() {
+  async getDataPage() {
     this.setState({
       loading: true
     });
-    const url = "/jamu/api/crudedrug/pages/" + this.state.currentPage;
-    const res = await Axios.get(url);
+    const url = "/jamu/api/herbsmed/getbytype";
+    const res = await Axios.get(url, {
+      params: {
+        type: this.props.match.params.type,
+        page: this.state.currentPage
+      }
+    });
     const { data } = await res;
     this.setState({
+      herbmeds: data.data,
+      loading: false
+    });
+  }
+
+  async getData() {
+    const { type } = await this.props.match.params;
+    const url = "/jamu/api/herbsmed/getbytype";
+    const urlCrude = "/jamu/api/crudedrug/getlist/";
+    const urlCompany = "/jamu/api/company/getlist/";
+    const urlDclass = "/jamu/api/dclass/";
+    const urlMedtype = "/jamu/api/medtype/";
+    const res = await Axios.get(url, {
+      params: {
+        type: type,
+        page: this.state.currentPage
+      }
+    });
+    const resCrude = await Axios.get(urlCrude);
+    const resCompany = await Axios.get(urlCompany);
+    const resDclass = await Axios.get(urlDclass);
+    const resMedtype = await Axios.get(urlMedtype);
+    const { data } = await res;
+    let dataCrude = await resCrude.data.data.map(dt => {
+      return { label: dt.sname, value: dt._id };
+    });
+    let dataCompany = await resCompany.data.data.map(dt => {
+      return { label: dt.cname, value: dt._id };
+    });
+    let dataDclass = await resDclass.data.data.map(dt => {
+      return { label: dt.class, value: dt._id };
+    });
+    let dataMedtype = await resMedtype.data.data.map(dt => {
+      return { label: dt.medname, value: dt._id };
+    });
+    this.setState({
       pages: data.pages,
-      crude: data.data,
+      herbmeds: data.data,
+      crude: dataCrude,
+      company: dataCompany,
+      dclass: dataDclass,
+      medtype: dataMedtype,
       loading: false
     });
   }
 
   async afterUpdate(success, message) {
-    const url = "/jamu/api/crudedrug/pages/" + this.state.currentPage;
+    const url = "/jamu/api/herbsmed/pages/" + this.state.currentPage;
     const res = await Axios.get(url);
     const { data } = await res;
     this.setState({
-      crude: data.data,
+      herbmeds: data.data,
       modal: {
         open: false,
         mode: ""
@@ -129,11 +179,13 @@ class CrudeDrugPage extends Component {
   }
 
   async getDataSearch() {
+    const { type } = await this.props.match.params;
     console.log(this.state.inputSearch);
     this.setState({
-      loadData: true
+      loading: true,
+      onSearch: true
     });
-    const url = "/jamu/api/crudedrug/search";
+    const url = "jamu/api/herbsmed/getbytype/search";
     let axiosConfig = {
       headers: {
         "Content-Type": "application/json"
@@ -144,6 +196,7 @@ class CrudeDrugPage extends Component {
       {
         params: {
           search: this.state.inputSearch,
+          type: type,
           page: this.state.currentPage
         }
       },
@@ -154,8 +207,8 @@ class CrudeDrugPage extends Component {
     console.log(newData);
     this.setState({
       onSearch: true,
-      crude: newData,
-      loadData: false,
+      herbmeds: newData,
+      loading: false,
       pages: data.pages
     });
   }
@@ -164,8 +217,6 @@ class CrudeDrugPage extends Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log(value);
-    console.log(name);
     this.setState({
       [name]: value
     });
@@ -187,8 +238,8 @@ class CrudeDrugPage extends Component {
   }
 
   async updateBtn(id) {
-    let onSelect = await this.state.crude.find(c => {
-      return c.idcrude === id;
+    let onSelect = await this.state.herbmeds.find(c => {
+      return c.idherbsmed === id;
     });
     this.setState({
       onSelect: onSelect,
@@ -200,8 +251,8 @@ class CrudeDrugPage extends Component {
   }
 
   async detailBtn(id) {
-    let onSelect = await this.state.crude.find(c => {
-      return c.idcrude === id;
+    let onSelect = await this.state.herbmeds.find(c => {
+      return c.idherbsmed === id;
     });
     this.setState({
       onSelect: onSelect,
@@ -222,8 +273,8 @@ class CrudeDrugPage extends Component {
   }
 
   async deleteBtn(id) {
-    let onSelect = await this.state.crude.find(c => {
-      return c.idcrude === id;
+    let onSelect = await this.state.herbmeds.find(c => {
+      return c.idherbsmed === id;
     });
     this.setState({
       onSelect: onSelect,
@@ -269,7 +320,7 @@ class CrudeDrugPage extends Component {
                     KMS Jamu
                   </Link>
                   <Link color="inherit">Explore</Link>
-                  <Typography color="textPrimary">Crude Drug</Typography>
+                  <Typography color="textPrimary">Herbal Medicine</Typography>
                 </Breadcrumbs>
               </div>
               <div
@@ -300,28 +351,20 @@ class CrudeDrugPage extends Component {
             </div>
 
             <div className="for-card">
-              {this.state.crude.map(item => (
-                <CardCrudeDrug
-                  key={item.idcrude}
-                  id={item.idcrude}
-                  name={item.sname}
-                  efficacy={item.effect}
-                  reff={item.refPlant}
+              {this.state.herbmeds.map(item => (
+                <CardHerbMed
+                  key={item.idherbsmed}
+                  id={item.idherbsmed}
+                  name={item.name}
+                  image={item.img}
+                  efficacy={item.efficacy}
+                  reff={item.refCrude}
+                  detail={this.detailBtn}
                   update={this.updateBtn}
                   delete={this.deleteBtn}
                 />
               ))}
             </div>
-            {this.state.modal.open === true ? (
-              <ModalCrude
-                data={this.state.onSelect}
-                afterUpdate={this.afterUpdate}
-                modal={this.state.modal}
-                baseMedtype={this.state.medtype}
-                basePlant={this.state.plant}
-                close={this.closeBtn}
-              />
-            ) : null}
             {this.state.onSearch ? (
               <Pagination
                 style={{
@@ -333,7 +376,7 @@ class CrudeDrugPage extends Component {
                 offset={this.state.offset}
                 total={10 * this.state.pages}
                 onClick={(e, offset, page) =>
-                  this.handleClickOnSearch(offset, page)
+                  this.handleClickSearch(offset, page)
                 }
               />
             ) : (
@@ -349,8 +392,18 @@ class CrudeDrugPage extends Component {
                 onClick={(e, offset, page) => this.handleClick(offset, page)}
               />
             )}
-            {this.state.snackbar.open === true ? (
-              <SnackBar data={this.state.snackbar} close={this.closeBtn} />
+
+            {this.state.modal.open === true ? (
+              <ModalHerbMed
+                data={this.state.onSelect}
+                afterUpdate={this.afterUpdate}
+                modal={this.state.modal}
+                baseMedtype={this.state.medtype}
+                baseCompany={this.state.company}
+                baseDclass={this.state.dclass}
+                baseCrude={this.state.crude}
+                close={this.closeBtn}
+              />
             ) : null}
             <Fab
               style={{
@@ -366,6 +419,10 @@ class CrudeDrugPage extends Component {
             >
               <AddIcon />
             </Fab>
+
+            {this.state.snackbar.open === true ? (
+              <SnackBar data={this.state.snackbar} close={this.closeBtn} />
+            ) : null}
           </div>
         )}
       </div>
@@ -373,4 +430,4 @@ class CrudeDrugPage extends Component {
   }
 }
 
-export default withStyles(styles)(CrudeDrugPage);
+export default withStyles(styles)(HerbMeds);
