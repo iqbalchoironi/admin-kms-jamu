@@ -2,20 +2,18 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import ModalCompany from "./ModalCompany";
-import Spinner from "./Spinner";
-import SnackBar from "./SnackBar";
+import ModalMedType from "../../ModalMedicineType";
 
-class MaterialTableDemo extends React.Component {
+import Spinner from "../../Spinner";
+import SnackBar from "../../SnackBar";
+
+class TableMedicineType extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       columns: [
-        { title: "idcompany", field: "idcompany" },
-        { title: "cname", field: "cname" },
-        { title: "address", field: "address" },
-        { title: "contact", field: "contact", type: "numeric" },
-        { title: "city", field: "city" }
+        { title: "ID Type of Medicine", field: "idtype" },
+        { title: "Medicine Name", field: "medname" }
       ],
       data: [],
       modal: {
@@ -27,7 +25,8 @@ class MaterialTableDemo extends React.Component {
         success: false,
         message: ""
       },
-      onSelect: null
+      onSelect: null,
+      baseProvince: []
     };
     this.closeBtn = this.closeBtn.bind(this);
     this.getData = this.getData.bind(this);
@@ -43,9 +42,8 @@ class MaterialTableDemo extends React.Component {
   }
 
   async getData() {
-    const url = "/jamu/api/company";
+    const url = "/jamu/api/medtype";
     const res = await Axios.get(url);
-    console.log(res);
     const { data } = await res;
     this.setState({
       data: data.data,
@@ -90,7 +88,7 @@ class MaterialTableDemo extends React.Component {
           <Spinner />
         ) : (
           <MaterialTable
-            title="Company Management Table"
+            title="Management Table Medicine Type"
             columns={this.state.columns}
             data={this.state.data}
             actions={[
@@ -149,10 +147,12 @@ class MaterialTableDemo extends React.Component {
             }}
           />
         )}
+
         {this.state.modal.open === true ? (
-          <ModalCompany
-            data={this.state.onSelect}
+          <ModalMedType
+            baseProvince={this.state.baseProvince}
             afterUpdate={this.afterUpdate}
+            data={this.state.onSelect}
             modal={this.state.modal}
             close={this.closeBtn}
           />
@@ -166,4 +166,4 @@ class MaterialTableDemo extends React.Component {
   }
 }
 
-export default MaterialTableDemo;
+export default TableMedicineType;

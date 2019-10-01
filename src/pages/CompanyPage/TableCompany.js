@@ -2,26 +2,20 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import Spinner from "./Spinner";
-import SnackBar from "./SnackBar";
+import ModalCompany from "../../ModalCompany";
+import Spinner from "../../Spinner";
+import SnackBar from "../../SnackBar";
 
-import ModalCompound from "./ModalCompound";
-
-class TableCompound extends React.Component {
+class MaterialTableDemo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
       columns: [
-        { title: "Compound ID", field: "compound_id" },
-        { title: "Compound Name", field: "cname" },
-        { title: "Effect Compound", field: "effect_compound" },
-        { title: "Pubchem ID", field: "pubchem_ID" },
-        { title: "Knapsack ID", field: "knapsack_ID" },
-        { title: "Chemspider ID", field: "chemspider_ID" },
-        { title: "Other ID", field: "other_ID" },
-        { title: "note", field: "note" },
-        { title: "reference Effect", field: "ref_effect" }
+        { title: "idcompany", field: "idcompany" },
+        { title: "cname", field: "cname" },
+        { title: "address", field: "address" },
+        { title: "contact", field: "contact", type: "numeric" },
+        { title: "city", field: "city" }
       ],
       data: [],
       modal: {
@@ -35,56 +29,27 @@ class TableCompound extends React.Component {
       },
       onSelect: null
     };
-    this.afterUpdate = this.afterUpdate.bind(this);
     this.closeBtn = this.closeBtn.bind(this);
+    this.getData = this.getData.bind(this);
+    this.afterUpdate = this.afterUpdate.bind(this);
   }
 
   async componentDidMount() {
     this.setState({
       loading: true
     });
-    const urlPlant = "/jamu/api/plant/getlist";
-    const resPlant = await Axios.get(urlPlant);
-    let dataPlant = await resPlant.data.data.map(dt => {
-      return { label: dt.sname, value: dt._id };
-    });
-    this.setState({
-      plant: dataPlant
-    });
-    await this.getData();
+    // window.addEventListener('scroll', this.onScroll);
+    this.getData();
   }
 
   async getData() {
-    // this.setState({
-    //   loading: true
-    // });
-    try {
-      const url = "/jamu/api/compound/";
-      const res = await Axios.get(url);
-      const { data } = await res;
-
-      this.setState({
-        data: data.data,
-        loading: false
-      });
-    } catch (err) {
-      console.log(err.message);
-      this.afterUpdate(false, err.message);
-      this.setState({
-        onEror: true,
-        loading: false
-      });
-    }
-  }
-
-  async afterUpdate(success, message) {
-    this.getData();
+    const url = "/jamu/api/company";
+    const res = await Axios.get(url);
+    console.log(res);
+    const { data } = await res;
     this.setState({
-      snackbar: {
-        open: true,
-        success: success,
-        message: message
-      }
+      data: data.data,
+      loading: false
     });
   }
 
@@ -103,6 +68,21 @@ class TableCompound extends React.Component {
     });
   }
 
+  async afterUpdate(success, message) {
+    this.getData();
+    this.setState({
+      modal: {
+        open: false,
+        mode: ""
+      },
+      snackbar: {
+        open: true,
+        success: success,
+        message: message
+      }
+    });
+  }
+
   render() {
     return (
       <div style={{ padding: "15px" }}>
@@ -110,18 +90,14 @@ class TableCompound extends React.Component {
           <Spinner />
         ) : (
           <MaterialTable
-            title="Compound Management Table"
+            title="Company Management Table"
             columns={this.state.columns}
             data={this.state.data}
             actions={[
               {
                 icon: "edit",
-                tooltip: "Edit Compound",
+                tooltip: "Save Company",
                 onClick: (event, rowData) => {
-                  // let onSelect = this.state.compounds.find(c => {
-                  //   return c._id === rowData._id;
-                  // });
-                  console.log(rowData);
                   this.setState({
                     onSelect: rowData,
                     modal: {
@@ -162,7 +138,7 @@ class TableCompound extends React.Component {
               actionsColumnIndex: -1,
               pageSize: 10,
               headerStyle: {
-                fontSize: "15px",
+                fontSize: "17px",
                 backgroundColor: "#6c7ae0",
                 color: "#FFF"
               },
@@ -174,14 +150,14 @@ class TableCompound extends React.Component {
           />
         )}
         {this.state.modal.open === true ? (
-          <ModalCompound
+          <ModalCompany
             data={this.state.onSelect}
             afterUpdate={this.afterUpdate}
             modal={this.state.modal}
-            basePlant={this.state.plant}
             close={this.closeBtn}
           />
         ) : null}
+
         {this.state.snackbar.open === true ? (
           <SnackBar data={this.state.snackbar} close={this.closeBtn} />
         ) : null}
@@ -190,4 +166,4 @@ class TableCompound extends React.Component {
   }
 }
 
-export default TableCompound;
+export default MaterialTableDemo;

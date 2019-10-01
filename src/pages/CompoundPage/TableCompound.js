@@ -2,24 +2,26 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import Spinner from "./Spinner";
-import ModalEthnic from "./ModalEthnic";
-import SnackBar from "./SnackBar";
+import Spinner from "../../Spinner";
+import SnackBar from "../../SnackBar";
 
-class TableEthnic extends React.Component {
+import ModalCompound from "../../ModalCompound";
+
+class TableCompound extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       columns: [
-        {
-          title: "Name",
-          field: "name"
-        },
-        {
-          title: "Province",
-          field: "refProvince.province_name"
-        }
+        { title: "Compound ID", field: "compound_id" },
+        { title: "Compound Name", field: "cname" },
+        { title: "Effect Compound", field: "effect_compound" },
+        { title: "Pubchem ID", field: "pubchem_ID" },
+        { title: "Knapsack ID", field: "knapsack_ID" },
+        { title: "Chemspider ID", field: "chemspider_ID" },
+        { title: "Other ID", field: "other_ID" },
+        { title: "note", field: "note" },
+        { title: "reference Effect", field: "ref_effect" }
       ],
       data: [],
       modal: {
@@ -31,53 +33,58 @@ class TableEthnic extends React.Component {
         success: false,
         message: ""
       },
-      onSelect: null,
-      baseProvince: [],
-      basePlantethnic: []
+      onSelect: null
     };
-    this.closeBtn = this.closeBtn.bind(this);
-    this.getData = this.getData.bind(this);
     this.afterUpdate = this.afterUpdate.bind(this);
+    this.closeBtn = this.closeBtn.bind(this);
   }
 
   async componentDidMount() {
     this.setState({
       loading: true
     });
-    // window.addEventListener('scroll', this.onScroll);
-    const urlProvince = "/jamu/api/province/getlist";
-    const resProvince = await Axios.get(urlProvince);
-    const baseProvince = await resProvince.data.data.map(dt => {
-      return { label: dt.province_name, value: dt._id };
+    const urlPlant = "/jamu/api/plant/getlist";
+    const resPlant = await Axios.get(urlPlant);
+    let dataPlant = await resPlant.data.data.map(dt => {
+      return { label: dt.sname, value: dt._id };
     });
-
-    const urlPlantethnic = "/jamu/api/plantethnic/getlist";
-    const resPlantethnic = await Axios.get(urlPlantethnic);
-    const basePlantethnic = await resPlantethnic.data.data.map(dt => {
-      return {
-        label:
-          (dt.name_ina !== "" ? dt.name_ina : dt.species) + " | " + dt.ethnic,
-        value: dt._id
-      };
-    });
-
     this.setState({
-      baseProvince: baseProvince,
-      basePlantethnic: basePlantethnic
+      plant: dataPlant
     });
-
     await this.getData();
   }
 
   async getData() {
-    const url = "/jamu/api/ethnic";
+    // this.setState({
+    //   loading: true
+    // });
+    try {
+      const url = "/jamu/api/compound/";
+      const res = await Axios.get(url);
+      const { data } = await res;
 
-    const res = await Axios.get(url);
+      this.setState({
+        data: data.data,
+        loading: false
+      });
+    } catch (err) {
+      console.log(err.message);
+      this.afterUpdate(false, err.message);
+      this.setState({
+        onEror: true,
+        loading: false
+      });
+    }
+  }
 
-    const { data } = await res;
+  async afterUpdate(success, message) {
+    this.getData();
     this.setState({
-      data: data.data,
-      loading: false
+      snackbar: {
+        open: true,
+        success: success,
+        message: message
+      }
     });
   }
 
@@ -96,21 +103,6 @@ class TableEthnic extends React.Component {
     });
   }
 
-  async afterUpdate(success, message) {
-    this.getData();
-    this.setState({
-      modal: {
-        open: false,
-        mode: ""
-      },
-      snackbar: {
-        open: true,
-        success: success,
-        message: message
-      }
-    });
-  }
-
   render() {
     return (
       <div style={{ padding: "15px" }}>
@@ -118,14 +110,18 @@ class TableEthnic extends React.Component {
           <Spinner />
         ) : (
           <MaterialTable
-            title="Ethnic Management Table"
+            title="Compound Management Table"
             columns={this.state.columns}
             data={this.state.data}
             actions={[
               {
                 icon: "edit",
-                tooltip: "Save Company",
+                tooltip: "Edit Compound",
                 onClick: (event, rowData) => {
+                  // let onSelect = this.state.compounds.find(c => {
+                  //   return c._id === rowData._id;
+                  // });
+                  console.log(rowData);
                   this.setState({
                     onSelect: rowData,
                     modal: {
@@ -166,7 +162,7 @@ class TableEthnic extends React.Component {
               actionsColumnIndex: -1,
               pageSize: 10,
               headerStyle: {
-                fontSize: "17px",
+                fontSize: "15px",
                 backgroundColor: "#6c7ae0",
                 color: "#FFF"
               },
@@ -177,18 +173,15 @@ class TableEthnic extends React.Component {
             }}
           />
         )}
-
         {this.state.modal.open === true ? (
-          <ModalEthnic
-            baseProvince={this.state.baseProvince}
-            basePlantethnic={this.state.basePlantethnic}
-            afterUpdate={this.afterUpdate}
+          <ModalCompound
             data={this.state.onSelect}
+            afterUpdate={this.afterUpdate}
             modal={this.state.modal}
+            basePlant={this.state.plant}
             close={this.closeBtn}
           />
         ) : null}
-
         {this.state.snackbar.open === true ? (
           <SnackBar data={this.state.snackbar} close={this.closeBtn} />
         ) : null}
@@ -197,4 +190,4 @@ class TableEthnic extends React.Component {
   }
 }
 
-export default TableEthnic;
+export default TableCompound;

@@ -18,7 +18,7 @@ import Divider from '@material-ui/core/Divider';
 
 import Button from '@material-ui/core/Button';
 import SnackBar from './SnackBar'
-import ErorPage from './ErorPage'
+import ErorPage from './pages/ErrorPage/ErorPage'
 
 import Paper from '@material-ui/core/Paper';
 import SearchIcon from '@material-ui/icons/Search';
