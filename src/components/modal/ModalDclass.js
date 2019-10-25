@@ -6,32 +6,40 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Select from 'react-select';
 
-import LinearProgress from './LinearProgress'
+import LinearProgress from '../linear-progress/LinearProgress'
 
 import Axios from 'axios'
 
-class ModalMedType extends Component {
+class ModalDclass extends Component {
     constructor(props) {
         super(props);
         this.state = {
           loading: false,
           _id: '',
-          idtype:'',
-          medname: ''
+          idclass:'',
+          class: '',
+          description:'',
+          diseases: '',
+          ref: ''
         }
         this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
         this.valueChange = this.valueChange.bind(this);
+        this.onChange = this.onChange.bind(this);
       }
 
       async componentDidMount() {
-        if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){           
-           this.setState({
+        if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){
+            this.setState({
                 _id: this.props.data._id,
-                idtype: this.props.data.idtype,
-                medname: this.props.data.medname
-           })
+                idclass:this.props.data.idclass,
+                class: this.props.data.class,
+                description: this.props.data.description,
+                diseases: this.props.data.diseases,
+                ref: this.props.data.ref
+            })
+
+           
         }
       }
 
@@ -43,6 +51,10 @@ class ModalMedType extends Component {
         this.setState({
           [name]: value
         });
+      }
+
+      onChange(e) {
+        this.setState({url:e.target.files[0]})
       }
 
       handleSubmitUpdate = event => {
@@ -58,10 +70,13 @@ class ModalMedType extends Component {
                 }
             };
             
-        let url = '/jamu/api/medtype/update/' + this.state.idtype
+        let url = '/jamu/api/dclass/update/' + this.state.idclass
 
       Axios.patch( url,{
-        medname: this.state.medname
+        class: this.state.class,
+        description: this.state.description,
+        diseases: this.state.diseases,
+        ref: this.state.ref
         } ,axiosConfig)
         .then(data => {
           const res = data.data;
@@ -98,10 +113,13 @@ class ModalMedType extends Component {
                 }
             };
             
-        let url = '/jamu/api/medtype/add'
+        let url = '/jamu/api/dclass/add'
       Axios.post( url, {
-        idtype: this.state.idtype,
-        medname: this.state.medname
+        idclass: this.state.idclass,
+        class_name: this.state.class,
+        description: this.state.description,
+        diseases: this.state.diseases,
+        ref: this.state.ref
         },axiosConfig)
         .then(data => {
           const res = data.data;
@@ -111,12 +129,12 @@ class ModalMedType extends Component {
           })
         })
         .catch(err => {
-          if (err.response.data.message) {
+          if (err.response.data) {
             this.props.afterUpdate(false, err.response.data.message);
             this.setState({
               loading: false
             })
-          }else{
+          } else {
             this.props.afterUpdate(false, err.message);
             this.setState({
               loading: false
@@ -137,7 +155,7 @@ class ModalMedType extends Component {
                 }
             };
             
-        let url = '/jamu/api/medtype/delete/' + this.state.idtype
+        let url = '/jamu/api/dclass/delete/' + this.state.idclass
       Axios.delete( url,axiosConfig)
         .then(data => {
           const res = data.data;
@@ -171,16 +189,49 @@ render() {
                         : 
                         null
               }
-          <DialogTitle id="form-dialog-title">You update medicine type with id : {this.state.idtype} and name is {this.state.medname} :</DialogTitle>
+          <DialogTitle id="form-dialog-title">You update dclass with id {this.state.idclass} and name is {this.state.class} </DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
               margin="dense"
-              id="name"
-              label="Name Herbal Medicine Type"
-              name="medname"
+              id="class"
+              label="dclass Name"
+              name="class"
               type="text"
-              value={this.state.medname}
+              value={this.state.class}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+             multiline rows={10}
+              margin="dense"
+              id="description"
+              label="description"
+              name="description"
+              type="text"
+              value={this.state.description}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+            multiline rows={10}
+              margin="dense"
+              id="diseases"
+              label="diseases"
+              name="diseases"
+              type="text"
+              value={this.state.diseases}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+             multiline rows={10}
+              margin="dense"
+              id="ref"
+              label="ref"
+              name="ref"
+              type="text"
+              value={this.state.ref}
               fullWidth
               onChange={this.valueChange}
             />
@@ -212,7 +263,7 @@ render() {
         <DialogTitle id="alert-dialog-title">{"You want delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          You want delete medicine type with id : {this.state.idtype} and name is {this.state.medname}
+          You want delete dclass with id {this.state.idclass} and name is {this.state.class}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -235,26 +286,59 @@ render() {
                         : 
                         null
               }
-          <DialogTitle id="form-dialog-title">Create Data Record Medicine Type :</DialogTitle>
+          <DialogTitle id="form-dialog-title"> Create Record data DClass : </DialogTitle>
           <DialogContent>
-          <TextField
+            <TextField
               autoFocus
               margin="dense"
-              id="idtype"
-              label="ID Type of Herbal Medicine"
-              name="idtype"
+              id="idclass"
+              label="id Dclass"
+              name="idclass"
               type="text"
-              value={this.state.idtype}
+              value={this.state.idclass}
               fullWidth
               onChange={this.valueChange}
             />
-          <TextField
+            <TextField
               margin="dense"
-              id="name"
-              label="Name of Herbal Medicine Type"
-              name="medname"
+              id="class"
+              label="dclass Name"
+              name="class"
               type="text"
-              value={this.state.medname}
+              value={this.state.class}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+             multiline rows={10}
+              margin="dense"
+              id="description"
+              label="description"
+              name="description"
+              type="text"
+              value={this.state.description}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+            multiline rows={10}
+              margin="dense"
+              id="diseases"
+              label="diseases"
+              name="diseases"
+              type="text"
+              value={this.state.diseases}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+             multiline rows={10}
+              margin="dense"
+              id="ref"
+              label="ref"
+              name="ref"
+              type="text"
+              value={this.state.ref}
               fullWidth
               onChange={this.valueChange}
             />
@@ -273,4 +357,4 @@ render() {
     }
 }
 
-export default ModalMedType;
+export default ModalDclass;

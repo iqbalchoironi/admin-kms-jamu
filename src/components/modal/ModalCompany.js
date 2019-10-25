@@ -7,21 +7,24 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import LinearProgress from './LinearProgress'
+import LinearProgress from '../linear-progress/LinearProgress'
 
 import Axios from 'axios'
 
-class ModalDclass extends Component {
+class ModalCompany extends Component {
     constructor(props) {
         super(props);
         this.state = {
           loading: false,
           _id: '',
-          idclass:'',
-          class: '',
-          description:'',
-          diseases: '',
-          ref: ''
+          idcompany:'',
+          cname: '',
+          address: '',
+          city: '',
+          country: '',
+          postcode: '',
+          contact: '',
+          url: ''
         }
         this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
         this.valueChange = this.valueChange.bind(this);
@@ -32,11 +35,14 @@ class ModalDclass extends Component {
         if( this.props.modal.mode === 'update' || this.props.modal.mode === 'detail' || this.props.modal.mode === 'delete'){
             this.setState({
                 _id: this.props.data._id,
-                idclass:this.props.data.idclass,
-                class: this.props.data.class,
-                description: this.props.data.description,
-                diseases: this.props.data.diseases,
-                ref: this.props.data.ref
+                idcompany:this.props.data.idcompany,
+                cname: this.props.data.cname,
+                address: this.props.data.address,
+                city: this.props.data.city,
+                country: this.props.data.country,
+                postcode: this.props.data.postcode,
+                contact: this.props.data.contact,
+                url: this.props.data.url
             })
 
            
@@ -70,13 +76,16 @@ class ModalDclass extends Component {
                 }
             };
             
-        let url = '/jamu/api/dclass/update/' + this.state.idclass
+        let url = '/jamu/api/company/update/' + this.state.idcompany
 
       Axios.patch( url,{
-        class: this.state.class,
-        description: this.state.description,
-        diseases: this.state.diseases,
-        ref: this.state.ref
+        cname: this.state.cname,
+        address: this.state.address,
+        city: this.state.city,
+        country: this.state.country,
+        postcode: this.state.postcode,
+        contact: this.state.contact,
+        url: this.state.url,
         } ,axiosConfig)
         .then(data => {
           const res = data.data;
@@ -113,13 +122,16 @@ class ModalDclass extends Component {
                 }
             };
             
-        let url = '/jamu/api/dclass/add'
+        let url = '/jamu/api/company/add'
       Axios.post( url, {
-        idclass: this.state.idclass,
-        class_name: this.state.class,
-        description: this.state.description,
-        diseases: this.state.diseases,
-        ref: this.state.ref
+        idcompany: this.state.idcompany,
+        cname: this.state.cname,
+        address: this.state.address,
+        city: this.state.city,
+        country: this.state.country,
+        postcode: this.state.postcode,
+        contact: this.state.contact,
+        url: this.state.url,
         },axiosConfig)
         .then(data => {
           const res = data.data;
@@ -129,12 +141,12 @@ class ModalDclass extends Component {
           })
         })
         .catch(err => {
-          if (err.response.data) {
+          if (err.response.data.message) {
             this.props.afterUpdate(false, err.response.data.message);
             this.setState({
               loading: false
             })
-          } else {
+          }else{
             this.props.afterUpdate(false, err.message);
             this.setState({
               loading: false
@@ -155,7 +167,7 @@ class ModalDclass extends Component {
                 }
             };
             
-        let url = '/jamu/api/dclass/delete/' + this.state.idclass
+        let url = '/jamu/api/company/delete/' + this.state.idcompany
       Axios.delete( url,axiosConfig)
         .then(data => {
           const res = data.data;
@@ -189,49 +201,76 @@ render() {
                         : 
                         null
               }
-          <DialogTitle id="form-dialog-title">You update dclass with id {this.state.idclass} and name is {this.state.class} </DialogTitle>
+          <DialogTitle id="form-dialog-title">You update company with id {this.state.idcompany} and name is {this.state.cname} :</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
               margin="dense"
-              id="class"
-              label="dclass Name"
-              name="class"
+              id="cname"
+              label="Company Name"
+              name="cname"
               type="text"
-              value={this.state.class}
+              value={this.state.cname}
               fullWidth
               onChange={this.valueChange}
             />
              <TextField
-             multiline rows={10}
               margin="dense"
-              id="description"
-              label="description"
-              name="description"
+              id="address"
+              label="Address"
+              name="address"
               type="text"
-              value={this.state.description}
+              value={this.state.address}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="city"
+              label="City"
+              name="city"
+              type="text"
+              value={this.state.city}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="country"
+              label="Country"
+              name="country"
+              type="text"
+              value={this.state.country}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="postcode"
+              label="Post Code"
+              name="postcode"
+              type="text"
+              value={this.state.postcode}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
-            multiline rows={10}
               margin="dense"
-              id="diseases"
-              label="diseases"
-              name="diseases"
+              id="contact"
+              label="Contact"
+              name="contact"
               type="text"
-              value={this.state.diseases}
+              value={this.state.contact}
               fullWidth
               onChange={this.valueChange}
             />
-             <TextField
-             multiline rows={10}
+            <TextField
               margin="dense"
-              id="ref"
-              label="ref"
-              name="ref"
+              id="url"
+              label="Url"
+              name="url"
               type="text"
-              value={this.state.ref}
+              value={this.state.url}
               fullWidth
               onChange={this.valueChange}
             />
@@ -263,7 +302,7 @@ render() {
         <DialogTitle id="alert-dialog-title">{"You want delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          You want delete dclass with id {this.state.idclass} and name is {this.state.class}
+          You want delete company with id {this.state.idcompany} and name is {this.state.cname} :
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -281,64 +320,91 @@ render() {
   }else if(this.props.modal.mode === 'add') {
     return (
       <Dialog open={this.props.modal.open} onClose={this.props.close} aria-labelledby="form-dialog-title">
-          {this.state.loading ? 
+           {this.state.loading ? 
               <LinearProgress />
                         : 
                         null
               }
-          <DialogTitle id="form-dialog-title"> Create Record data DClass : </DialogTitle>
+          <DialogTitle id="form-dialog-title">Create Data Record Company :</DialogTitle>
           <DialogContent>
-            <TextField
+          <TextField
               autoFocus
               margin="dense"
-              id="idclass"
-              label="id Dclass"
-              name="idclass"
+              id="idcompany"
+              label="ID Company"
+              name="idcompany"
               type="text"
-              value={this.state.idclass}
+              value={this.state.idcompany}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="class"
-              label="dclass Name"
-              name="class"
+              id="cname"
+              label="Company Name"
+              name="cname"
               type="text"
-              value={this.state.class}
+              value={this.state.cname}
               fullWidth
               onChange={this.valueChange}
             />
              <TextField
-             multiline rows={10}
               margin="dense"
-              id="description"
-              label="description"
-              name="description"
+              id="address"
+              label="Address"
+              name="address"
               type="text"
-              value={this.state.description}
+              value={this.state.address}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="city"
+              label="City"
+              name="city"
+              type="text"
+              value={this.state.city}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="country"
+              label="Country"
+              name="country"
+              type="text"
+              value={this.state.country}
+              fullWidth
+              onChange={this.valueChange}
+            />
+             <TextField
+              margin="dense"
+              id="postcode"
+              label="Post Code"
+              name="postcode"
+              type="text"
+              value={this.state.postcode}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
-            multiline rows={10}
               margin="dense"
-              id="diseases"
-              label="diseases"
-              name="diseases"
+              id="contact"
+              label="Contact"
+              name="contact"
               type="text"
-              value={this.state.diseases}
+              value={this.state.contact}
               fullWidth
               onChange={this.valueChange}
             />
-             <TextField
-             multiline rows={10}
+            <TextField
               margin="dense"
-              id="ref"
-              label="ref"
-              name="ref"
+              id="url"
+              label="Url"
+              name="url"
               type="text"
-              value={this.state.ref}
+              value={this.state.url}
               fullWidth
               onChange={this.valueChange}
             />
@@ -357,4 +423,4 @@ render() {
     }
 }
 
-export default ModalDclass;
+export default ModalCompany;

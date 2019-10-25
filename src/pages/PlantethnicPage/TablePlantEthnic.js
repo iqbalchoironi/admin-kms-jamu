@@ -2,9 +2,9 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import ModalPlantEthnic from "../../ModalPlantEthnic";
-import Spinner from "../../Spinner";
-import SnackBar from "../../SnackBar";
+import ModalPlantEthnic from "../../components/modal/ModalPlantEthnic";
+import Spinner from "../../components/spinner/Spinner";
+import SnackBar from "../../components/snackbar/SnackBar";
 
 class TabelPlantEthnic extends React.Component {
   constructor(props) {

@@ -1,5 +1,4 @@
-import React, { Component, Children } from "react";
-import Axios from "axios";
+import React, { Component } from "react";
 
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -10,8 +9,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -27,22 +24,21 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import PlantIcon from "./icon/planticon.png";
-import HerbMedIcon from "./icon/herbmedicon.png";
-import CompanyIcon from "./icon/companyicon.png";
-import CompoundIcon from "./icon/compoundicon.png";
-import CrudeIcon from "./icon/crudeicon.png";
-import DClassIcon from "./icon/dclassicon.png";
-import EthnicIcon from "./icon/ethnicicon.png";
-import ExplicitIcon from "./icon/expliciticon.png";
-import MedTypeIcon from "./icon/medtypeicon.png";
-import PlantethnicIcon from "./icon/plantethnicicon.png";
-import TacitIcon from "./icon/taciticon.png";
+import PlantIcon from "../../icon/planticon.png";
+import HerbMedIcon from "../../icon/herbmedicon.png";
+import CompanyIcon from "../../icon/companyicon.png";
+import CompoundIcon from "../../icon/compoundicon.png";
+import CrudeIcon from "../../icon/crudeicon.png";
+import DClassIcon from "../../icon/dclassicon.png";
+import EthnicIcon from "../../icon/ethnicicon.png";
+import ExplicitIcon from "../../icon/expliciticon.png";
+import MedTypeIcon from "../../icon/medtypeicon.png";
+import PlantethnicIcon from "../../icon/plantethnicicon.png";
+import TacitIcon from "../../icon/taciticon.png";
 
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
-import StarBorder from "@material-ui/icons/StarBorder";
 
 import { Link } from "react-router-dom";
 
@@ -158,6 +154,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={HerbMedIcon}
+              alt="herbal medicine icon"
             />
           </ListItemIcon>
           <ListItemText primary="Herbal Medicine" />
@@ -205,6 +202,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={MedTypeIcon}
+              alt="medicine type icon"
             />
           </ListItemIcon>
           <ListItemText primary="Medicine Type" />
@@ -225,6 +223,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={CompanyIcon}
+              alt="company icon"
             />
           </ListItemIcon>
           <ListItemText primary="Company" />
@@ -245,6 +244,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={DClassIcon}
+              alt="disease class icon"
             />
           </ListItemIcon>
           <ListItemText primary="Disease Class" />
@@ -266,6 +266,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={PlantIcon}
+              alt="plant icon"
             />
           </ListItemIcon>
           <ListItemText primary="Plant" />
@@ -286,6 +287,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={CrudeIcon}
+              alt="crude icon"
             />
           </ListItemIcon>
           <ListItemText primary="Crude Drug" />
@@ -306,6 +308,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={PlantethnicIcon}
+              alt="plant ethnic icon"
             />
           </ListItemIcon>
           <ListItemText primary="Plant Ethnic" />
@@ -326,6 +329,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={EthnicIcon}
+              alt="ethnic icon"
             />
           </ListItemIcon>
           <ListItemText primary="Ethnic" />
@@ -348,6 +352,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={CompoundIcon}
+              alt="compound icon"
             />
           </ListItemIcon>
           <ListItemText primary="Compound" />
@@ -370,6 +375,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={TacitIcon}
+              alt="tacit icon"
             />
           </ListItemIcon>
           <ListItemText primary="Tacit Knowledge" />
@@ -390,6 +396,7 @@ function ListDrawer(props) {
                 margin: "0"
               }}
               src={ExplicitIcon}
+              alt="explicit icon"
             />
           </ListItemIcon>
           <ListItemText primary="Explicit Knowledge" />

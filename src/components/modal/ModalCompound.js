@@ -6,31 +6,83 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-
 import Select from "react-select";
 
-import LinearProgress from "./LinearProgress";
+import LinearProgress from "../linear-progress/LinearProgress";
 
 import Axios from "axios";
 
-class ModalPlantEthnic extends Component {
+const List = props => {
+  if (props.item.sname !== "") {
+    return (
+      <li>
+        {props.item.label}{" "}
+        <button id={props.item.value} onClick={props.delete}>
+          delete
+        </button>
+      </li>
+    );
+  }
+
+  return null;
+};
+
+const ModalRefPlant = props => {
+  return (
+    <Dialog
+      open={props.open}
+      onClose={props.close}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Select Reference Plant :</DialogTitle>
+      <DialogContent
+        style={{
+          height: "200px"
+        }}
+      >
+        <Select
+          onChange={props.handleChange("addPlant")}
+          options={props.basePlant}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={props.close} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={props.handleAddPlant} color="primary">
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+class ModalCompound extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      openModalCrude: false,
+      addCrude: null,
       loading: false,
       _id: "",
-      ethnic: "",
-      disease_ina: "",
-      disease_ing: "",
-      name_ina: "",
-      species: "",
-      family: "",
-      section_ina: "",
-      section_ing: ""
+      compound_id: "",
+      cname: "",
+      effect_compound: "",
+      pubchem_ID: "",
+      knapsack_ID: "",
+      chemspider_ID: "",
+      other_ID: "",
+      note: "",
+      ref_effect: "",
+      refCrudeCompound: [],
+      refPlant: []
     };
     this.handleSubmitUpdate = this.handleSubmitUpdate.bind(this);
     this.valueChange = this.valueChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
+    this.handleAddPlant = this.handleAddPlant.bind(this);
+    this.handleDeletePlant = this.handleDeletePlant.bind(this);
   }
 
   async componentDidMount() {
@@ -39,53 +91,57 @@ class ModalPlantEthnic extends Component {
       this.props.modal.mode === "detail" ||
       this.props.modal.mode === "delete"
     ) {
-      let province = "";
-      if (this.props.data.refProvince) {
-        province = this.props.baseProvince.find(
-          p => p.value === this.props.data.refProvince
-        );
-      }
-      let ethnic = "";
-      if (this.props.data.refEthnic) {
-        ethnic = this.props.baseEthnic.find(
-          p => p.value === this.props.data.refEthnic
-        );
-      }
-      // let crude = "";
-      // if (this.props.data.refCrudedrug) {
-      //   crude = this.props.baseCrude.find(
-      //     p => p.value === this.props.data.refCrudedrug
-      //   );
-      // }
-      let plant = "";
-      if (this.props.data.refPlant) {
-        plant = this.props.basePlant.find(
-          p => p.value === this.props.data.refPlant
-        );
-      }
+      console.log(this.props.data.refPlant);
+      console.log(this.props.basePlant);
+      let refPlant =
+        this.props.data.refPlant !== null
+          ? await this.props.data.refPlant.map(dt => {
+              return { label: dt.sname, value: dt._id };
+            })
+          : [];
+      // let refPlant = await this.props.data.refPlant.map(dt => {
+      //   return { label: dt.sname, value: dt.idplant };
+      // });
 
       this.setState({
         _id: this.props.data._id,
-        ethnic: this.props.data.ethnic,
-        disease_ina: this.props.data.disease_ina,
-        disease_ing: this.props.data.disease_ing,
-        name_ina: this.props.data.name_ina,
-        species: this.props.data.species,
-        family: this.props.data.family,
-        section_ina: this.props.data.section_ina,
-        section_ing: this.props.data.section_ing,
-        refEthnic: ethnic,
-        refProvince: province,
-        // refCrudedrug: crude,
-        refPlant: plant
+        compound_id: this.props.data.compound_id,
+        cname: this.props.data.cname,
+        effect_compound: this.props.data.effect_compound,
+        pubchem_ID: this.props.data.pubchem_ID,
+        knapsack_ID: this.props.data.knapsack_ID,
+        chemspider_ID: this.props.data.chemspider_ID,
+        other_ID: this.props.data.other_ID,
+        note: this.props.data.note,
+        ref_effect: this.props.data.ref_effect,
+        refCrudeCompound: null,
+        refPlant: refPlant
       });
     }
-    this.setState({
-      baseProvince: this.props.baseProvince,
-      baseEthnic: this.props.baseEthnic,
-      basePlant: this.props.basePlant
-    });
   }
+
+  handleAddPlant = () => {
+    let newData = this.state.refPlant.concat(this.state.addPlant);
+    this.setState({
+      refPlant: newData,
+      addPlant: null
+    });
+    this.togglePopup();
+  };
+
+  handleDeletePlant = e => {
+    console.log(e.target.id);
+    let newData = this.state.refPlant.filter(dt => dt.value !== e.target.id);
+    this.setState({
+      refPlant: newData
+    });
+  };
+
+  togglePopup = () => {
+    this.setState({
+      openModalPlant: !this.state.openModalPlant
+    });
+  };
 
   handleChange = name => value => {
     this.setState({
@@ -103,6 +159,10 @@ class ModalPlantEthnic extends Component {
     });
   }
 
+  onChange(e) {
+    this.setState({ img: e.target.files[0] });
+  }
+
   handleSubmitUpdate = event => {
     this.setState({
       loading: true
@@ -116,22 +176,21 @@ class ModalPlantEthnic extends Component {
       }
     };
 
-    let url = "/jamu/api/plantethnic/update/" + this.state._id;
-
+    let url = "/jamu/api/compound/update/" + this.state._id;
+    let refPlant = this.state.refPlant.map(data => data.value);
     Axios.patch(
       url,
       {
-        ethnic: this.state.ethnic,
-        disease_ina: this.state.disease_ina,
-        disease_ing: this.state.disease_ing,
-        name_ina: this.state.name_ina,
-        species: this.state.species,
-        family: this.state.family,
-        section_ina: this.state.section_ina,
-        section_ing: this.state.section_ing,
-        refEthnic: this.state.refEthnic.value,
-        refProvince: this.state.refProvince.value,
-        refPlant: this.state.refPlant.value
+        cname: this.state.cname,
+        effect_compound: this.state.effect_compound,
+        pubchem_ID: this.state.pubchem_ID,
+        knapsack_ID: this.state.knapsack_ID,
+        chemspider_ID: this.state.chemspider_ID,
+        other_ID: this.state.other_ID,
+        note: this.state.note,
+        ref_effect: this.state.ref_effect,
+        refCrudeCompound: [],
+        refPlant: refPlant
       },
       axiosConfig
     )
@@ -170,32 +229,35 @@ class ModalPlantEthnic extends Component {
       }
     };
 
-    let url = "/jamu/api/plantethnic/add";
+    let url = "/jamu/api/compound/add";
+    let refPlant = this.state.refPlant.map(data => data.value);
     Axios.post(
       url,
       {
-        ethnic: this.state.ethnic,
-        disease_ina: this.state.disease_ina,
-        disease_ing: this.state.disease_ing,
-        name_ina: this.state.name_ina,
-        species: this.state.species,
-        family: this.state.family,
-        section_ina: this.state.section_ina,
-        section_ing: this.state.section_ing,
-        refEthnic: this.state.refEthnic.value,
-        refProvince: this.state.refProvince.value,
-        refPlant: this.state.refPlant.value
+        compound_id: this.state.compound_id,
+        cname: this.state.cname,
+        effect_compound: this.state.effect_compound,
+        pubchem_ID: this.state.pubchem_ID,
+        knapsack_ID: this.state.knapsack_ID,
+        chemspider_ID: this.state.chemspider_ID,
+        other_ID: this.state.other_ID,
+        note: this.state.note,
+        ref_effect: this.state.ref_effect,
+        refCrudeCompound: [],
+        refPlant: refPlant
       },
       axiosConfig
     )
       .then(data => {
         const res = data.data;
+        console.log(res);
         this.props.afterUpdate(res.success, res.message);
         this.setState({
           loading: false
         });
       })
       .catch(err => {
+        console.log(err);
         if (err.response.data.message) {
           this.props.afterUpdate(false, err.response.data.message);
           this.setState({
@@ -222,8 +284,8 @@ class ModalPlantEthnic extends Component {
       }
     };
 
-    let section_ing = "/jamu/api/plantethnic/delete/" + this.state._id;
-    Axios.delete(section_ing, axiosConfig)
+    let url = "/jamu/api/compound/delete/" + this.state._id;
+    Axios.delete(url, axiosConfig)
       .then(data => {
         const res = data.data;
         this.props.afterUpdate(res.success, res.message);
@@ -257,129 +319,104 @@ class ModalPlantEthnic extends Component {
           >
             {this.state.loading ? <LinearProgress /> : null}
             <DialogTitle id="form-dialog-title">
-              You update Plant Etnic with name {this.state.name_ina}
+              You update compound with id {this.state.compound_id} and name is{" "}
+              {this.state.cname} :{" "}
             </DialogTitle>
             <DialogContent>
-              <TextField
+              {/* <DialogContentText>
+              You update herbal medicine with id {this.state.idplant}
+            </DialogContentText> */}
+              {/* <TextField
                 autoFocus
                 margin="dense"
-                id="ethnic"
-                label="Ethnic"
-                name="ethnic"
+                id="compound_id"
+                label="Compound ID"
+                name="compound_id"
                 type="text"
-                value={this.state.ethnic}
+                value={this.state.compound_id}
                 fullWidth
                 onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="disease_ina"
-                label="Disease in Bahasa"
-                name="disease_ina"
-                type="text"
-                value={this.state.disease_ina}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="disease_ing"
-                label="Disease in English"
-                name="disease_ing"
-                type="text"
-                value={this.state.disease_ing}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="name_ina"
-                label="Name in Bahasa"
-                name="name_ina"
-                type="text"
-                value={this.state.name_ina}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="species"
-                label="Species"
-                name="species"
-                type="text"
-                value={this.state.species}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="family"
-                label="Family"
-                name="family"
-                type="text"
-                value={this.state.family}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="section_ina"
-                label="Section in Bahasa"
-                name="section_ina"
-                type="text"
-                value={this.state.section_ina}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <TextField
-                margin="dense"
-                id="section_ing"
-                label="Section in English"
-                name="section_ing"
-                type="text"
-                value={this.state.section_ing}
-                fullWidth
-                onChange={this.valueChange}
-              />
-              <label
-                style={{
-                  color: "grey",
-                  fontWeight: "lighter",
-                  fontSize: "13px",
-                  display: "block",
-                  marginTop: "10px",
-                  marginBottom: "5px"
-                }}
-              >
-                Ethnic :
-              </label>
-              <Select
-                value={this.state.refEthnic}
-                onChange={this.handleChange("refEthnic")}
-                options={this.state.baseEthnic}
-              />
-              <label
-                style={{
-                  color: "grey",
-                  fontWeight: "lighter",
-                  fontSize: "13px",
-                  display: "block",
-                  marginTop: "10px",
-                  marginBottom: "5px"
-                }}
-              >
-                Province :
-              </label>
-              <Select
-                value={this.state.refProvince}
-                onChange={this.handleChange("refProvince")}
-                options={this.state.baseProvince}
-              />
-              {/* <Select
-                value={this.state.refCrudedrug}
-                onChange={this.handleChange("refCrudedrug")}
-                options={this.state.baseCrude}
               /> */}
+              <TextField
+                margin="dense"
+                id="cname"
+                label="Compound Name"
+                name="cname"
+                type="text"
+                value={this.state.cname}
+                fullWidth
+                onChange={this.valueChange}
+              />
+              <TextField
+                margin="dense"
+                id="Effect Compound"
+                label="Effect Compound"
+                name="effect_compound"
+                type="text"
+                value={this.state.effect_compound}
+                fullWidth
+                onChange={this.valueChange}
+              />
+              <TextField
+                margin="dense"
+                id="Pubchem ID"
+                label="Pubchem ID"
+                name="pubchem_ID"
+                type="text"
+                value={this.state.pubchem_ID}
+                fullWidth
+                onChange={this.valueChange}
+              />
+              <TextField
+                margin="dense"
+                id="Knapsack ID"
+                label="Knapsack ID"
+                name="knapsack_ID"
+                type="text"
+                value={this.state.knapsack_ID}
+                fullWidth
+                onChange={this.valueChange}
+              />
+              <TextField
+                margin="dense"
+                id="chemspider ID"
+                label="chemspider ID"
+                name="chemspider_ID"
+                type="text"
+                value={this.state.chemspider_ID}
+                fullWidth
+                onChange={this.valueChange}
+              />
+              <TextField
+                margin="dense"
+                id="other ID"
+                label="other ID"
+                name="other_ID"
+                type="text"
+                value={this.state.other_ID}
+                fullWidth
+                onChange={this.valueChange}
+              />
+              <TextField
+                margin="dense"
+                id="Note"
+                label="Note"
+                name="note"
+                type="text"
+                value={this.state.note}
+                fullWidth
+                onChange={this.valueChange}
+              />
+              <TextField
+                margin="dense"
+                id="Ref effect"
+                label="Ref effect"
+                name="ref_effect"
+                type="text"
+                value={this.state.ref_effect}
+                fullWidth
+                onChange={this.valueChange}
+              />
               <label
                 style={{
                   color: "grey",
@@ -390,13 +427,25 @@ class ModalPlantEthnic extends Component {
                   marginBottom: "5px"
                 }}
               >
-                Plant :
+                Reference Plant :
               </label>
-              <Select
-                value={this.state.refPlant}
-                onChange={this.handleChange("refPlant")}
-                options={this.state.basePlant}
-              />
+              <Button onClick={this.togglePopup} color="primary">
+                Add Refren Plant
+              </Button>
+              {this.state.openModalPlant === true ? (
+                <ModalRefPlant
+                  basePlant={this.props.basePlant}
+                  handleChange={this.handleChange}
+                  handleAddPlant={this.handleAddPlant}
+                  close={this.togglePopup}
+                  open={this.state.openModalPlant}
+                />
+              ) : null}
+              <ul className="reff">
+                {this.state.refPlant.map(item => (
+                  <List item={item} delete={this.handleDeletePlant} />
+                ))}
+              </ul>
             </DialogContent>
             <DialogActions>
               <Button onClick={this.props.close} color="primary">
@@ -423,8 +472,8 @@ class ModalPlantEthnic extends Component {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              You want delete plant ethnic record data with name{" "}
-              {this.state.name_ina}
+              You want delete compound record data with id{" "}
+              {this.state.compound_id} and name {this.state.cname}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -447,87 +496,101 @@ class ModalPlantEthnic extends Component {
         >
           {this.state.loading ? <LinearProgress /> : null}
           <DialogTitle id="form-dialog-title">
-            Create Data Record PLant Etnic :
+            You update compound with id {this.state.idplant} and name is{" "}
+            {this.state.cname} :{" "}
           </DialogTitle>
           <DialogContent>
+            {/* <DialogContentText>
+              You update herbal medicine with id {this.state.idplant}
+            </DialogContentText> */}
             <TextField
               autoFocus
               margin="dense"
-              id="ethnic"
-              label="Ethnic"
-              name="ethnic"
+              id="compound_id"
+              label="Compound ID"
+              name="compound_id"
               type="text"
-              value={this.state.ethnic}
+              value={this.state.compound_id}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="disease_ina"
-              label="Disease in Bahasa"
-              name="disease_ina"
+              id="cname"
+              label="Compound Name"
+              name="cname"
               type="text"
-              value={this.state.disease_ina}
+              value={this.state.cname}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="disease_ing"
-              label="Disease in English"
-              name="disease_ing"
+              id="Effect Compound"
+              label="Effect Compound"
+              name="effect_compound"
               type="text"
-              value={this.state.disease_ing}
+              value={this.state.effect_compound}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="name_ina"
-              label="Name in Bahasa"
-              name="name_ina"
+              id="Pubchem ID"
+              label="Pubchem ID"
+              name="pubchem_ID"
               type="text"
-              value={this.state.name_ina}
+              value={this.state.pubchem_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="species"
-              label="Species"
-              name="species"
+              id="Knapsack ID"
+              label="Knapsack ID"
+              name="knapsack_ID"
               type="text"
-              value={this.state.species}
+              value={this.state.knapsack_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="family"
-              label="Family"
-              name="family"
+              id="chemspider ID"
+              label="chemspider ID"
+              name="chemspider_ID"
               type="text"
-              value={this.state.family}
+              value={this.state.chemspider_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="section_ina"
-              label="Section in Bahasa"
-              name="section_ina"
+              id="other ID"
+              label="other ID"
+              name="other_ID"
               type="text"
-              value={this.state.section_ina}
+              value={this.state.other_ID}
               fullWidth
               onChange={this.valueChange}
             />
             <TextField
               margin="dense"
-              id="section_ing"
-              label="Section in English"
-              name="section_ing"
+              id="Note"
+              label="Note"
+              name="note"
               type="text"
-              value={this.state.section_ing}
+              value={this.state.note}
+              fullWidth
+              onChange={this.valueChange}
+            />
+            <TextField
+              margin="dense"
+              id="Ref effect"
+              label="Ref effect"
+              name="ref_effect"
+              type="text"
+              value={this.state.ref_effect}
               fullWidth
               onChange={this.valueChange}
             />
@@ -541,59 +604,32 @@ class ModalPlantEthnic extends Component {
                 marginBottom: "5px"
               }}
             >
-              Ethnic :
+              Reference Plant :
             </label>
-            <Select
-              value={this.state.refEthnic}
-              onChange={this.handleChange("refEthnic")}
-              options={this.state.baseEthnic}
-            />
-            <label
-              style={{
-                color: "grey",
-                fontWeight: "lighter",
-                fontSize: "13px",
-                display: "block",
-                marginTop: "10px",
-                marginBottom: "5px"
-              }}
-            >
-              Province :
-            </label>
-            <Select
-              value={this.state.refProvince}
-              onChange={this.handleChange("refProvince")}
-              options={this.state.baseProvince}
-            />
-            {/* <Select
-              value={this.state.refCrudedrug}
-              onChange={this.handleChange("refCrudedrug")}
-              options={this.state.baseCrude}
-            /> */}
-            <label
-              style={{
-                color: "grey",
-                fontWeight: "lighter",
-                fontSize: "13px",
-                display: "block",
-                marginTop: "10px",
-                marginBottom: "5px"
-              }}
-            >
-              Plant :
-            </label>
-            <Select
-              value={this.state.refPlant}
-              onChange={this.handleChange("refPlant")}
-              options={this.state.basePlant}
-            />
+            <Button onClick={this.togglePopup} color="primary">
+              Add Refren Plant
+            </Button>
+            {this.state.openModalPlant === true ? (
+              <ModalRefPlant
+                basePlant={this.props.basePlant}
+                handleChange={this.handleChange}
+                handleAddPlant={this.handleAddPlant}
+                close={this.togglePopup}
+                open={this.state.openModalPlant}
+              />
+            ) : null}
+            <ul className="reff">
+              {this.state.refPlant.map(item => (
+                <List item={item} delete={this.handleDeletePlant} />
+              ))}
+            </ul>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.close} color="primary">
               Cancel
             </Button>
             <Button onClick={this.handleSubmitAdd} color="primary">
-              Create
+              Add
             </Button>
           </DialogActions>
         </Dialog>
@@ -602,4 +638,4 @@ class ModalPlantEthnic extends Component {
   }
 }
 
-export default ModalPlantEthnic;
+export default ModalCompound;

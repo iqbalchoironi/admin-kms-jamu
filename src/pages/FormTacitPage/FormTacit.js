@@ -6,11 +6,9 @@ import {
   convertToRaw,
   convertFromRaw
 } from "draft-js";
-import { FormControl, InputLabel, Input, TextField } from "@material-ui/core";
+import { FormControl, InputLabel, Input } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import AddIcon from "@material-ui/icons/Add";
-import Fab from "@material-ui/core/Fab";
 
 import Axios from "axios";
 
@@ -115,38 +113,38 @@ const InlineStyleControls = props => {
   );
 };
 
-class Popup extends React.Component {
-  render() {
-    return (
-      <div className="popup">
-        <FormControl margin="normal" fullWidth>
-          <InputLabel htmlFor="input">Add reference here</InputLabel>
-          <Input
-            value={this.props.input}
-            name="input"
-            onChange={this.props.onChange}
-            type="text"
-          />
-        </FormControl>
-        <Button
-          style={{ marginRight: "10px" }}
-          onClick={this.props.add}
-          variant="contained"
-          color="primary"
-        >
-          Add reference
-        </Button>
-        <Button
-          onClick={this.props.closePopup}
-          variant="contained"
-          color="primary"
-        >
-          Close
-        </Button>
-      </div>
-    );
-  }
-}
+// class Popup extends React.Component {
+//   render() {
+//     return (
+//       <div className="popup">
+//         <FormControl margin="normal" fullWidth>
+//           <InputLabel htmlFor="input">Add reference here</InputLabel>
+//           <Input
+//             value={this.props.input}
+//             name="input"
+//             onChange={this.props.onChange}
+//             type="text"
+//           />
+//         </FormControl>
+//         <Button
+//           style={{ marginRight: "10px" }}
+//           onClick={this.props.add}
+//           variant="contained"
+//           color="primary"
+//         >
+//           Add reference
+//         </Button>
+//         <Button
+//           onClick={this.props.closePopup}
+//           variant="contained"
+//           color="primary"
+//         >
+//           Close
+//         </Button>
+//       </div>
+//     );
+//   }
+// }
 class FormTacit extends Component {
   constructor(props) {
     super(props);

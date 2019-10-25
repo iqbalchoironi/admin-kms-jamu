@@ -2,17 +2,17 @@ import React, { Component } from "react";
 import Axios from "axios";
 
 import CardCrudeDrug from "../../components/card-crude/CardCrudeDrug";
-import Spinner from "../../Spinner";
+import Spinner from "../../components/spinner/Spinner";
 
 import Typography from "@material-ui/core/Typography";
 import Breadcrumbs from "@material-ui/lab/Breadcrumbs";
 import Link from "@material-ui/core/Link";
-import ModalCrude from "../../ModalCrude";
+import ModalCrude from "../../components/modal/ModalCrude";
 
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 
-import SnackBar from "../../SnackBar";
+import SnackBar from "../../components/snackbar/SnackBar";
 import Pagination from "material-ui-flat-pagination";
 
 import Paper from "@material-ui/core/Paper";

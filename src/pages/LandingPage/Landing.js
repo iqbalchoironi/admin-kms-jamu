@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
 
-import PlantIcon from './icon/planticon.png'
-import HerbMedIcon from './icon/herbmedicon.png'
-import CompanyIcon from './icon/companyicon.png'
-import CompoundIcon from './icon/compoundicon.png'
-import CrudeIcon from './icon/crudeicon.png'
-import DClassIcon from './icon/dclassicon.png'
-import EthnicIcon from './icon/ethnicicon.png'
-import ExplicitIcon from './icon/expliciticon.png'
-import MedTypeIcon from './icon/medtypeicon.png'
-import PlantethnicIcon from './icon/plantethnicicon.png'
-import TacitIcon from './icon/taciticon.png'
+import PlantIcon from '../../icon/planticon.png'
+import HerbMedIcon from '../../icon/herbmedicon.png'
+import CompanyIcon from '../../icon/companyicon.png'
+import CompoundIcon from '../../icon/compoundicon.png'
+import CrudeIcon from '../../icon/crudeicon.png'
+import DClassIcon from '../../icon/dclassicon.png'
+import EthnicIcon from '../../icon/ethnicicon.png'
+import ExplicitIcon from '../../icon/expliciticon.png'
+import MedTypeIcon from '../../icon/medtypeicon.png'
+import PlantethnicIcon from '../../icon/plantethnicicon.png'
+import TacitIcon from '../../icon/taciticon.png'
 
 import { Link } from "react-router-dom";
 
@@ -73,7 +73,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={HerbMedIcon} />
+                            }} alt="herbal medicine icon" src={HerbMedIcon} />
                         <h2 style={{
                             margin: "0 10px"
                         }}> Herbal Medicine</h2>
@@ -137,7 +137,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={PlantIcon} />
+                            }} alt="plant icon" src={PlantIcon} />
                         <h2 style={{
                             margin: "0 10px"
                         }}> Plant</h2>
@@ -179,7 +179,7 @@ class Landing extends Component {
                                 width: "40px",
                                 height: "40px",
                                 margin: "0"
-                                }} src={CompoundIcon} />
+                                }} alt="compound icon" src={CompoundIcon} />
                             <h2 style={{
                                 margin: "0 10px"
                             }}> Compound </h2>
@@ -228,7 +228,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={EthnicIcon} />
+                            }} alt="ethnic icon" src={EthnicIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -263,7 +263,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={PlantethnicIcon} />
+                            }} alt="plant ethnic icon" src={PlantethnicIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -297,7 +297,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={CompanyIcon} />
+                            }} alt="company icon" src={CompanyIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -331,7 +331,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={DClassIcon} />
+                            }} alt="disease class icon" src={DClassIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -365,7 +365,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={MedTypeIcon} />
+                            }} alt="medicine type icon" src={MedTypeIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -399,7 +399,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={CrudeIcon} />
+                            }} alt="crude icon" src={CrudeIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -433,7 +433,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={TacitIcon} />
+                            }} alt="tacit icon" src={TacitIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -468,7 +468,7 @@ class Landing extends Component {
                             width: "40px",
                             height: "40px",
                             margin: "0"
-                            }} src={ExplicitIcon} />
+                            }} alt="explicit icon" src={ExplicitIcon} />
                             <div style={{
                                 display: "flex",
                                 flexDirection: "column",

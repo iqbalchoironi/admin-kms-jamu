@@ -2,9 +2,9 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import ModalCompany from "../../ModalCompany";
-import Spinner from "../../Spinner";
-import SnackBar from "../../SnackBar";
+import ModalCompany from "../../components/modal/ModalCompany";
+import Spinner from "../../components/spinner/Spinner";
+import SnackBar from "../../components/snackbar/SnackBar";
 
 class MaterialTableDemo extends React.Component {
   constructor(props) {

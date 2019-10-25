@@ -4,8 +4,8 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import { withStyles } from "@material-ui/core/styles";
-import ButtonProgress from "../../ButtonProgress";
-import logo from "./logo-hijau.png";
+import ButtonProgress from "../../components/button-progress/ButtonProgress";
+import logo from "../../logo-hijau.png";
 import { Paper } from "@material-ui/core";
 
 const emailRegex = RegExp(
