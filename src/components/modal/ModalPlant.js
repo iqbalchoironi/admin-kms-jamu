@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Select from 'react-select';
 
-import LinearProgress from './LinearProgress'
+import LinearProgress from '../linear-progress/LinearProgress'
 
 import Axios from 'axios'
 

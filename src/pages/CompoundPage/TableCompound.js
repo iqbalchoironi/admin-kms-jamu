@@ -2,10 +2,10 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import Spinner from "../../Spinner";
-import SnackBar from "../../SnackBar";
+import Spinner from "../../components/spinner/Spinner";
+import SnackBar from "../../components/snackbar/SnackBar";
 
-import ModalCompound from "../../ModalCompound";
+import ModalCompound from "../../components/modal/ModalCompound";
 
 class TableCompound extends React.Component {
   constructor(props) {

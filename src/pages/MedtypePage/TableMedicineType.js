@@ -2,10 +2,10 @@ import React from "react";
 import MaterialTable from "material-table";
 import Axios from "axios";
 
-import ModalMedType from "../../ModalMedicineType";
+import ModalMedType from "../../components/modal/ModalMedicineType";
 
-import Spinner from "../../Spinner";
-import SnackBar from "../../SnackBar";
+import Spinner from "../../components/spinner/Spinner";
+import SnackBar from "../../components/snackbar/SnackBar";
 
 class TableMedicineType extends React.Component {
   constructor(props) {

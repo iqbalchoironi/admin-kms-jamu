@@ -15,15 +15,15 @@ import CrudeDrugPage from "./pages/CrudePage/CrudeDrugPage";
 import Landing from "./pages/LandingPage/Landing";
 import TableCompound from "./pages/CompoundPage/TableCompound";
 
-import TacitPage from "./TacitPage2";
-import ExplicitPage from "./ExplicitPage2";
+import TacitPage from "./pages/TacitPage/TacitPage2";
+import ExplicitPage from "./pages/ExplicitPage/ExplicitPage2";
 
-import FormExplicit from "./FormExplicit";
+import FormExplicit from "./pages/FormExplicitPage/FormExplicit";
 import { ProtectedRoute } from "./protected.route";
 import axios from "axios";
 
 import "./App.css";
-import FormTacit from "./FormTacit";
+import FormTacit from "./pages/FormTacitPage/FormTacit";
 //import CompoundPage from "./page/CompoundPage/CompoundPage";
 
 // axios.defaults.baseURL = "http://localhost:3003";

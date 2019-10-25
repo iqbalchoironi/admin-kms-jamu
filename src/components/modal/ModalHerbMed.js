@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Select from 'react-select';
 
-import LinearProgress from './LinearProgress'
+import LinearProgress from '../linear-progress/LinearProgress'
 
 import Axios from 'axios'
 
@@ -186,7 +185,7 @@ class ModalHerbMed extends Component {
       formData.append('refMedtype',this.state.refMedtype !== null ? this.state.refMedtype.value : '');
       formData.append('refCompany',this.state.refCompany !== null ? this.state.refCompany.value : '');
       formData.append('refDclass',this.state.refDclass !== null ? this.state.refDclass.value : '');
-      this.state.refCrude.map(item =>{
+      this.state.refCrude.forEach(item =>{
         formData.append('refCrude',item.value);
       })
       console.log(formData)
@@ -243,7 +242,7 @@ class ModalHerbMed extends Component {
       formData.append('refMedtype',this.state.refMedtype.value);
       formData.append('refCompany',this.state.refCompany.value);
       formData.append('refDclass',this.state.refDclass.value);
-      this.state.refCrude.map(item => {
+      this.state.refCrude.forEach(item => {
         formData.append('refCrude',item.value);
       })
       Axios.post( url,formData,axiosConfig)

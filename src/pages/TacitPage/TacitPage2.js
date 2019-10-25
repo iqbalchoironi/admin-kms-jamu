@@ -5,8 +5,7 @@ import { Link } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link2 from '@material-ui/core/Link';
-import SearchInput from './SearchInput'
-import Spinner from './Spinner'
+import Spinner from '../../components/spinner/Spinner'
 
 import Person from '@material-ui/icons/Person';
 import CollectionsBookmark from '@material-ui/icons/CollectionsBookmark'
@@ -19,10 +18,8 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 
-import { makeStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -33,10 +30,10 @@ import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import Icon from "@material-ui/core/Icon";
 
-import ModalTacit from './ModalTacit';
+import ModalTacit from '../../components/modal/ModalTacit';
 
-import SnackBar from './SnackBar'
-import ErorPage from './pages/ErrorPage/ErorPage'
+import SnackBar from '../../components/snackbar/SnackBar'
+import ErorPage from '../ErrorPage/ErorPage'
 
 
 const styles = {

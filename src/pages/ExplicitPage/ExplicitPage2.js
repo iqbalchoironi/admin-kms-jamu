@@ -1,13 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import Axios from 'axios'
-import { Link } from 'react-router-dom'
 
 import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
 import Breadcrumbs from '@material-ui/lab/Breadcrumbs';
 import Link2 from '@material-ui/core/Link';
-import SearchInput from './SearchInput'
-import Spinner from './Spinner'
+import Spinner from '../../components/spinner/Spinner'
 
 import Person from '@material-ui/icons/Person';
 import CollectionsBookmark from '@material-ui/icons/CollectionsBookmark'
@@ -17,8 +14,8 @@ import Pagination from "material-ui-flat-pagination";
 import Divider from '@material-ui/core/Divider';
 
 import Button from '@material-ui/core/Button';
-import SnackBar from './SnackBar'
-import ErorPage from './pages/ErrorPage/ErorPage'
+import SnackBar from '../../components/snackbar/SnackBar'
+import ErorPage from '../ErrorPage/ErorPage'
 
 import Paper from '@material-ui/core/Paper';
 import SearchIcon from '@material-ui/icons/Search';
@@ -29,23 +26,21 @@ import { withStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
-import { makeStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
-import ModalExplicit from './ModalExplicit';
+import ModalExplicit from '../../components/modal/ModalExplicit';
 import Icon from "@material-ui/core/Icon";
 
 const styles = {
   root: {
-      padding: '2px 4px',
-      display: 'flex',
-      alignItems: 'center',
-      width: 400,
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 400,
   },
   input: {
     marginLeft: 8,

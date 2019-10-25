@@ -1,12 +1,12 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardMedia from "@material-ui/core/CardMedia";
+//import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+//import Fab from '@material-ui/core/Fab';
+// import AddIcon from '@material-ui/icons/Add';
 
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
@@ -49,20 +49,18 @@ const styles = muiBaseTheme => ({
   }
 });
 
-const List = ({ item }) => {
-  if(item.sname !== ''){
-    return <li>{item.sname}</li>
-  }
+// const List = ({ item }) => {
+//   if(item.sname !== ''){
+//     return <li>{item.sname}</li>
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
 function CardDclass(props) {
-  const {
-    classes
-  } = props;
+  const { classes } = props;
 
-  const id = props.id
+  const id = props.id;
   return (
     <div>
       <Card className={classes.card}>
@@ -98,23 +96,34 @@ function CardDclass(props) {
           >
             {props.name}
           </Typography>
-          <p style={{
-            color:"grey"
-          }} className="block-with-text">
-           {props.efficacy}
+          <p
+            style={{
+              color: "grey"
+            }}
+            className="block-with-text"
+          >
+            {props.efficacy}
           </p>
         </CardContent>
         <CardActions className={"MuiCardActions-root"}>
-        {/* <Button color={"primary"} fullWidth onClick={props.detail.bind(this, id)}>
+          {/* <Button color={"primary"} fullWidth onClick={props.detail.bind(this, id)}>
           Detail <Icon>chevron_right_rounded</Icon>
         </Button> */}
-        <Button color={"primary"} fullWidth onClick={props.update.bind(this, id)}>
-          Update <Icon>edit</Icon>
-        </Button>
-        <Button color={"primary"} fullWidth onClick={props.delete.bind(this, id)}>
-          Delete <Icon>delete</Icon>
-        </Button>
-      </CardActions>
+          <Button
+            color={"primary"}
+            fullWidth
+            onClick={props.update.bind(this, id)}
+          >
+            Update <Icon>edit</Icon>
+          </Button>
+          <Button
+            color={"primary"}
+            fullWidth
+            onClick={props.delete.bind(this, id)}
+          >
+            Delete <Icon>delete</Icon>
+          </Button>
+        </CardActions>
       </Card>
     </div>
   );
